@@ -1,0 +1,31 @@
+{
+  "name": "quiescent-for-js",
+  "version": "0.0.1",
+  "description": "A library providing an abstraction to React components similar to that of quiescent for clojurescript.",
+  "main": "component.js",
+  "directories": {
+    "example": "example"
+  },
+  "dependencies": {
+    "react": "^0.11.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/torgeir/quiescent-for-js.git"
+  },
+  "keywords": [
+    "quiescent",
+    "react",
+    "immutable"
+  ],
+  "author": "@torgeir,@mikaelbr",
+  "license": "mit",
+  "bugs": {
+    "url": "https://github.com/torgeir/quiescent-for-js/issues"
+  },
+  "homepage": "https://github.com/torgeir/quiescent-for-js"
+}
