@@ -1,7 +1,7 @@
 var EventEmitter = require("events").EventEmitter;
 var React = require('react');
 
-var component = require('../component');
+var component = require('../../component');
 
 var Heading = component(function (data, statics) {
   function onClick () {
