@@ -1,6 +1,6 @@
 var React = require('react');
 var immstruct = require('immstruct');
-var component = require('../');
+var component = require('../../');
 
 var EventEmitter = require('events').EventEmitter;
 
