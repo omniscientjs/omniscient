@@ -4,14 +4,15 @@ module.exports = function component (fn) {
   var Component = React.createClass({
 
     render: function () {
-      return fn.call(this, this.props.value, this.props.statics);
+      return fn.call(this, this.props.cursor, this.props.statics);
     },
 
     shouldComponentUpdate: function (nextProps) {
-      return this.props.value != nextProps.value;
+      return this.props.cursor != nextProps.cursor;
     }
   });
-  return function (value, statics) {
-    return Component({ value: value, statics: statics });
+
+  return function (cursor, statics) {
+    return Component({ cursor: cursor, statics: statics });
   };
 };
