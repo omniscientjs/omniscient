@@ -177,7 +177,7 @@ component.shouldComponentUpdate = function (newProps, newState) {
   return true; // don't do do this
 };
 
-var AlwaysRenderingText = component(function (cursor) {
+var InefficientAlwaysRenderingText = component(function (cursor) {
   return React.DOM.text(cursor.get('text'));
 });
 ```
