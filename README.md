@@ -1,8 +1,15 @@
 Omniscient [![NPM version][npm-image]][npm-url] [![Dependency Status][depstat-image]][depstat-url]
 =========
 
-<img src="https://raw.githubusercontent.com/torgeir/omniscient/master/omniscient_logo.png" align="right" width="100px">
-> A library providing an abstraction for React components similar to that of Quiescent for clojurescript. Except, sometimes you need state! Omniscient pairs the simplicity of Quiescent with the cursors of Om, for js, using Immutable.js.
+<img src="https://raw.githubusercontent.com/torgeir/omniscient/master/omniscient_logo.png" align="right" width="150px">
+> A library providing an abstraction for React components for passing same
+data structure through the entire component flow using cursors and immutable
+data structures. Similar to that of [Quiescent](https://github.com/levand/quiescent) for clojurescript. Except,
+sometimes you need state!
+
+> Omniscient pairs the simplicity of [Quiescent](https://github.com/levand/quiescent) with
+the cursors of [Om](https://github.com/swannodette/om), for js, using
+[Immutable.js](https://github.com/facebook/immutable-js).
 
 ```js
 var component = require('omniscient'),
