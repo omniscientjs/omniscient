@@ -74,6 +74,69 @@ var FocusingInput = component([Props, SaveOnEdit], function (cursor, statics) {
 });
 ```
 
+### Back-Talk from Child to Parent Through Statics
+
+There are some use cases where you want to deligate responsibility to some
+one else higher up (ancestors). This should be done by passing something
+called `statics`. Statics are passed as second argument to a component.
+
+Per default (except special-case `shared` static - see below), changing
+a static value won't result in component updating (causing shouldCompontentUpdate
+to return `true`).
+
+By providing an event bus or event emitter as a static, you can provide
+a way for children to talk to parents. See example below.
+
+```js
+var Item = component(function (cursor, statics) {
+  var onClick = function () {
+    statics.events.emit('data', cursor);
+  };
+  return React.DOM.li({ onClick: onClick }, React.DOM.text(cursor.get('text')));
+});
+
+var events = new EventEmitter();
+events.on('data', function (itemCursor) {
+  console.log('Hello from', itemCursor);
+});
+
+var List = component(function (cursor) {
+  return React.DOM.ul({}, cursor.toArray().map(function (itemCursor) {
+    return Item(itemCursor, { events: events });
+  });
+});
+```
+
+### Shared State Between Parent and Child
+
+Some times you need to share a state from parent to child. This can be something
+like toggling between editing-modes in a blog-post. There is a special kind
+of `static` called `shared`, that can hold this sort if information.
+
+*Unlike all other statics, changing a shared static will cause the view to re-render*.
+
+```js
+var Item = component(function (cursor, statics) {
+  // Will not re-render if statics.arbitraryData changes
+  console.log(statics.arbitraryData); //=> "someData
+
+  // Will re-render if `statics.shared.fromParent` changes
+  if (statics.shared.fromParent) {
+    return React.DOM.text(cursor.get('text'));
+  }
+  return React.DOM.li({ onClick: onClick }, React.DOM.text(cursor.get('text')));
+});
+
+var List = component(function (cursor) {
+  return React.DOM.ul({}, cursor.toArray().map(function (itemCursor) {
+    return Item(itemCursor, {
+      shared: { fromParent: cursor.get('valueFromParent') },
+      arbitraryData: 'someData'
+    });
+  });
+});
+```
+
 ### Providing Component Keys
 
 For correct merging of states and components between render cycles, React needs a key as part of the props of a component. With Omniscient, such a key can be passed as the first argument to `component`.
