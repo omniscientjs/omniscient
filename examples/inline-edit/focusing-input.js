@@ -1,5 +1,5 @@
 var React = require('react');
-var component = require('../../component');
+var component = require('omniscient');
 var d = React.DOM;
 
 var FocusOnRender = {
