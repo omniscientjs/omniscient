@@ -160,9 +160,14 @@ var List = component(function (cursor) {
 Omniscient provides an efficient default `shouldComponentUpdate` that works well with immutable data structures, but can easily be changed through the use of mixins.
 
 ```js
+
+// Override the default Omniscient shouldComponentUpdate
+// by using a mixin.
 var ShouldComponentUpdateMixin = {
-  shouldComponentUpdate: function () {
-    return true;
+  shouldComponentUpdate: function (newProps, newState) {
+    // Your implementation here.
+
+    return true; // Don't do this. It will re-render components every time
   };
 };
 
@@ -179,7 +184,9 @@ from Omniscient.
 
 ```js
 component.shouldComponentUpdate = function (newProps, newState) {
-  return true;
+  // Your implementation here.
+
+  return true; // Don't do this. It will re-render components every time
 };
 
 var AlwaysRenderingText = component(ShouldComponentUpdateMixin, function (cursor) {
@@ -194,6 +201,8 @@ var AlwaysRenderingText = component(ShouldComponentUpdateMixin, function (cursor
 [depstat-url]: https://gemnasium.com/torgeir/omniscient
 [depstat-image]: http://img.shields.io/gemnasium/torgeir/omniscient.svg?style=flat
 
+
+---
 
 *Logo is composed by icons from [Iconmoon](http://www.icomoon.io)
 and [Picol](http://picol.org). Licensed under [CC BY 3.0](http://creativecommons.org/licenses/by/3.0/)*
