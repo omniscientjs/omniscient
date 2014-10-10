@@ -108,7 +108,7 @@ Unlike Quiescent, Omniscient allows for component local state. That is, all the 
 
 #### Sharing state between parent and child
 
-Some times you need to share state between a parent and child component. A special kind of [`static`](#talking-back-from-child-to-parent) called `shared` can hold this sort of information.
+Some times you need to share state between a parent and child component. A special kind of [`static`](#statics) called `shared` can hold this sort of information.
 
 *Unlike all other statics, changing a `shared` static will cause the view to re-render*.
 
