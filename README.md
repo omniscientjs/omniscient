@@ -52,7 +52,7 @@ You can also share other commonly used functions through mixins.
 
 ```js
 var Props = {
-  setProps: function (props) {
+  swapProps: function (props) {
     this.props.cursor.update(function (state) {
       return state.mergeDeep(props);
     };
@@ -61,7 +61,7 @@ var Props = {
 
 var SaveOnEdit = {
   onEdit: function (e) {
-    this.setProps({ text: e.currentTarget.value });
+    this.swapProps({ text: e.currentTarget.value });
   }
 };
 
