@@ -17,7 +17,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/torgeir/quiescent-for-js.git"
+    "url": "git://github.com/torgeir/omiescent.git"
   },
   "keywords": [
     "quiescent",
@@ -27,7 +27,7 @@
   "author": "@torgeir,@mikaelbr",
   "license": "mit",
   "bugs": {
-    "url": "https://github.com/torgeir/quiescent-for-js/issues"
+    "url": "https://github.com/torgeir/omiescent/issues"
   },
-  "homepage": "https://github.com/torgeir/quiescent-for-js"
+  "homepage": "https://github.com/torgeir/omiescent"
 }
