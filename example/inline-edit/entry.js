@@ -8,7 +8,7 @@ var component = require('../../component'),
 var Editable = require('./editable');
 
 var Item = component(function (cursor) {
-  return Editable(cursor);
+  return d.li({}, Editable(cursor));
 });
 
 var List = component(function (cursor) {

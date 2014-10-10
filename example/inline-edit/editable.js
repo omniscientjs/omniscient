@@ -21,10 +21,9 @@ var EditMixin = {
 
 var Editable = module.exports = component(EditMixin, function (cursor) {
   if (this.state.editing) {
-    return d.li({},
-                d.form({ onSubmit: this.onSubmit },
+    return d.form({ onSubmit: this.onSubmit },
                   d.input({ value: cursor.get('text'), onChange: this.onChange }),
-                  d.button({}, 'doit')));
+                  d.button({}, 'doit'));
   }
-  return d.li({ onClick: this.onEdit }, cursor.get('text'));
+  return d.span({ onClick: this.onEdit }, cursor.get('text'));
 });
