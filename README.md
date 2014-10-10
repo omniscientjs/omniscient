@@ -193,3 +193,7 @@ var AlwaysRenderingText = component(ShouldComponentUpdateMixin, function (cursor
 
 [depstat-url]: https://gemnasium.com/torgeir/omniscient
 [depstat-image]: http://img.shields.io/gemnasium/torgeir/omniscient.svg?style=flat
+
+
+*Logo is composed by icons from [Iconmoon](http://www.icomoon.io)
+and [Picol](http://picol.org). Licensed under [CC BY 3.0](http://creativecommons.org/licenses/by/3.0/)*
