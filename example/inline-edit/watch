@@ -1,0 +1,1 @@
+watchify entry.js -o bundle.js -dv
