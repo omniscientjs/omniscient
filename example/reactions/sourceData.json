@@ -1,0 +1,14 @@
+{
+  "app": {
+    "isInAddMode": false,
+    "pb": {
+      "gif": null,
+      "isRunning": false,
+
+      "ic": {
+        "showImage": false,
+        "image": null
+      }
+    }
+  }
+}
