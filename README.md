@@ -1,10 +1,10 @@
-Omniescent
+Omniscient
 =========
 
-A library providing an abstraction for React components similar to that of Quiescent for clojurescript. Except, sometimes you need state! Omniescent pairs the simplicity of Quiescent with the cursors of Om, for js, using Immutable.js.
+A library providing an abstraction for React components similar to that of Quiescent for clojurescript. Except, sometimes you need state! Omniscient pairs the simplicity of Quiescent with the cursors of Om, for js, using Immutable.js.
 
 ```js
-var component = require('omniescent'),
+var component = require('omniscient'),
     React     = require('react'),
     immstruct = require('immstruct');
 
@@ -23,7 +23,7 @@ React.renderComponent(
 
 ### Reuse mixins
 
-Omniescent encourages reuse of your existing react mixins.
+Omniscient encourages reuse of your existing react mixins.
 
 ```js
 var SelectOnRender = {
