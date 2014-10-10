@@ -1,0 +1,1 @@
+watchify router.js -o bundle.js -dv
