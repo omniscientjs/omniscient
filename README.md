@@ -84,7 +84,7 @@ As an example, communicating information back to the parent component from a chi
 
 ```js
 var Item = component(function (cursor, statics) {
-  var onClick = function () {
+  var onClick = function () {
     statics.events.emit('data', cursor);
   };
   return React.DOM.li({ onClick: onClick }, React.DOM.text({}, cursor.get('text')));
