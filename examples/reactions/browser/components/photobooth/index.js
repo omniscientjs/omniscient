@@ -1,5 +1,5 @@
 var React = require('react');
-var component = require('omniescent');
+var component = require('omniscient');
 var setPropsMixin = require('immstruct/mixins/setProps');
 
 

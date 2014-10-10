@@ -1,5 +1,5 @@
 var React = require('react');
-var component = require('omniescent');
+var component = require('omniscient');
 
 module.exports = component(function (cursor, statics) {
   var src = cursor.get('image');

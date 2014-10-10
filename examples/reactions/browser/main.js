@@ -1,6 +1,6 @@
 var React = require('react');
 var immstruct = require('immstruct');
-var component = require('omniescent');
+var component = require('omniscient');
 var EventEmitter = require('events').EventEmitter;
 
 var data = JSON.parse(require('fs').readFileSync(__dirname + '/../sourceData.json', 'utf-8'));
