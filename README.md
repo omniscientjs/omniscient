@@ -74,7 +74,7 @@ var SavingFocusingInput = component([Props, SaveOnEdit, SelectOnRender], functio
 
 ### Statics
 
-When you need to provide other data for your component that what it's rendering is based off of, you pass statics, just like with Quiescent. By default, changing a static's value does not result in a re-rendering of a component.
+When you need to provide other data for your component that what its rendering is based off of, you pass statics, just like with Quiescent. By default, changing a static's value does not result in a re-rendering of a component.
 
 Statics can be passed as second argument to your component.
 
