@@ -16,3 +16,21 @@ React.renderComponent(
   Heading({ text: 'some text' }),
   $('.app'));
 ```
+
+### Reuse mixins
+
+Omniescent encourages reuse of your existing react mixins.
+
+```js
+var SelectOnRender = {
+  componentDidMount: function () {
+    this.getDOMNode().select();
+  }
+};
+
+var FocusingInput = component(SelectOnRender, function (cursor, statics) {
+  var onChange = statics.onChange || function () {};
+  return d.input({ value: cursor.get('text'), onChange: onChange });
+});
+```
+
