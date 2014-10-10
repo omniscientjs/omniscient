@@ -36,6 +36,28 @@ var FocusingInput = component(SelectOnRender, function (cursor, statics) {
 });
 ```
 
+You can also share other commonly used functions through mixins.
+
+```js
+var Props = {
+  setProps: function (props) {
+    this.props.cursor.update(function (state) {
+      return state.mergeDeep(props);
+    };
+  }
+};
+
+var SaveOnEdit = {
+  onEdit: function (e) {
+    this.setProps({ text: e.currentTarget.value });
+  }
+};
+
+var FocusingInput = component([Props, SaveOnEdit], function (cursor, statics) {
+  return React.DOM.input({ value: cursor.get('text'), onChange: onEdit });
+});
+```
+
 ### Providing Component Keys
 
 For correct merging of states and components between render cycles, React needs a key as part of the props of a component. With Omniscient, such a key can be passed as the first argument to `component`.
