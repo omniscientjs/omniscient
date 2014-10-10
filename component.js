@@ -37,10 +37,13 @@ function shouldComponentUpdate (nextProps, nextState) {
   var sharedState     = this.props.statics.shared,
       sharedNextState = nextProps.statics.shared;
 
+  var nextCursor    = nextProps.cursor.deref ? nextProps.cursor.deref() : nextProps.cursor,
+      currentCursor = this.props.cursor.deref ? this.props.cursor.deref() : this.props.cursor;
+
   var hasSharedState = (sharedState || sharedNextState);
   var shouldUpdateShared = hasSharedState && (!isEqualState(sharedState, sharedNextState));
 
-  var shouldUpdate = !isEqualCursor(this.props.cursor.deref(), nextProps.cursor.deref()) ||
+  var shouldUpdate = !isEqualCursor(currentCursor, nextCursor ||
                      !isEqualState(this.state, nextState);
 
   return shouldUpdate || shouldUpdateShared;
