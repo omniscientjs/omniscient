@@ -11,11 +11,16 @@ module.exports = function component (mixins, render) {
     mixins = [];
   }
 
+  if (!Array.isArray(mixins)) {
+    mixins = [mixins];
+  }
+
+  if (!hasShouldComponentUpdate(mixins)) {
+    mixins = [ShouldComponentUpdate].concat(mixins);
+  }
+
   var Component = React.createClass({
-    mixins: [ShouldComponentUpdate].concat(mixins),
-
-    getInitialState: function () { return {}; },
-
+    mixins: mixins,
     render: function () {
       return render.call(this, this.props.cursor, this.props.statics);
     }
@@ -56,4 +61,10 @@ function shouldComponentUpdate (nextProps, nextState) {
                      !isEqualState(this.state, nextState);
 
   return shouldUpdate || shouldUpdateShared;
+}
+
+function hasShouldComponentUpdate (mixins) {
+  return !!mixins.filter(function (mixin) {
+    return !!mixin.shouldComponentUpdate;
+  }).length;
 }
