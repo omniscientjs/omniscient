@@ -102,7 +102,7 @@ var ShouldComponentUpdateMixin = {
 };
 
 var AlwaysRenderingText = component(ShouldComponentUpdateMixin, function (cursor) {
-  return React.DOM.text(cursor.get('text'));
+  return React.DOM.text({}, cursor.get('text'));
 });
 ```
 
@@ -118,7 +118,7 @@ component.shouldComponentUpdate = function (newProps, newState) {
 };
 
 var AlwaysRenderingText = component(ShouldComponentUpdateMixin, function (cursor) {
-  return React.DOM.text(cursor.get('text'));
+  return React.DOM.text({}, cursor.get('text'));
 });
 ```
 
