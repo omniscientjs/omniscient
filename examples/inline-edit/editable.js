@@ -2,6 +2,8 @@ var React = require('react');
 var component = require('../../component');
 var d = React.DOM;
 
+var FocusingInput = require('./focusing-input');
+
 var EditMixin = {
   onEdit: function onEdit () {
     this.setState({ editing: true });
@@ -22,7 +24,7 @@ var EditMixin = {
 var Editable = module.exports = component(EditMixin, function (cursor) {
   if (this.state.editing) {
     return d.form({ onSubmit: this.onSubmit },
-                  d.input({ value: cursor.get('text'), onChange: this.onChange }),
+                  FocusingInput(cursor, { onChange: this.onChange }),
                   d.button({}, 'doit'));
   }
   return d.span({ onClick: this.onEdit }, cursor.get('text'));
