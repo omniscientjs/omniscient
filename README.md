@@ -27,7 +27,7 @@ structure.on('render', render);
 
 [`immstruct`](https://github.com/mikaelbr/immstruct) is a simple
 wrapper [`Immutable.js`](https://github.com/facebook/immutable-js)
-for handling re-render when a immutable data structure is changed.
+for handling re-render when an immutable data structure is changed.
 `immstruct` is not a requirement for Omniscient, but it makes
 the usage much easier (see [how to use immstruct](https://github.com/mikaelbr/immstruct/blob/master/README.md)).
 You can use any other cursors or you can use `Immutable.js` directly.
