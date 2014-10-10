@@ -1,7 +1,7 @@
-Omniscient
+Omniscient [![NPM version][npm-image]][npm-url] [![Dependency Status][depstat-image]][depstat-url]
 =========
 
-A library providing an abstraction for React components similar to that of Quiescent for clojurescript. Except, sometimes you need state! Omniscient pairs the simplicity of Quiescent with the cursors of Om, for js, using Immutable.js.
+> A library providing an abstraction for React components similar to that of Quiescent for clojurescript. Except, sometimes you need state! Omniscient pairs the simplicity of Quiescent with the cursors of Om, for js, using Immutable.js.
 
 ```js
 var component = require('omniscient'),
@@ -121,3 +121,10 @@ var AlwaysRenderingText = component(ShouldComponentUpdateMixin, function (cursor
   return React.DOM.text(cursor.get('text'));
 });
 ```
+
+
+[npm-url]: https://npmjs.org/package/omniscient
+[npm-image]: http://img.shields.io/npm/v/omniscient.svg?style=flat
+
+[depstat-url]: https://gemnasium.com/torgeir/omniscient
+[depstat-image]: http://img.shields.io/gemnasium/torgeir/omniscient.svg?style=flat
