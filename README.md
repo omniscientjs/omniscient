@@ -1,7 +1,7 @@
 Omniscient [![NPM version][npm-image]][npm-url] [![Dependency Status][depstat-image]][depstat-url]
 =========
 
-<img src="./omniscient_logo.svg" style="float: left; width: 70px; margin: 17px 10px;">
+<img src="https://raw.githubusercontent.com/torgeir/omniscient/master/omniscient_logo.png" style="float: left; width: 70px; margin: 17px 10px;">
 > A library providing an abstraction for React components similar to that of Quiescent for clojurescript. Except, sometimes you need state! Omniscient pairs the simplicity of Quiescent with the cursors of Om, for js, using Immutable.js.
 
 ```js
