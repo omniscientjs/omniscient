@@ -52,7 +52,7 @@ function shouldComponentUpdate (nextProps, nextState) {
   var hasSharedState = (sharedState || sharedNextState);
   var shouldUpdateShared = hasSharedState && (!isEqualState(sharedState, sharedNextState));
 
-  var shouldUpdate = !isEqualCursor(currentCursor, nextCursor ||
+  var shouldUpdate = !isEqualCursor(currentCursor, nextCursor) ||
                      !isEqualState(this.state, nextState);
 
   return shouldUpdate || shouldUpdateShared;
