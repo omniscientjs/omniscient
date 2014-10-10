@@ -1,4 +1,4 @@
-# REACTions - Demo for using omniescent and immstruct with React
+# REACTions - Demo for using omniscient and immstruct with React
 
 Install dependencies
 ```
