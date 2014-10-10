@@ -2,10 +2,9 @@ Omniscient [![NPM version][npm-image]][npm-url] [![Dependency Status][depstat-im
 =========
 
 <img src="https://raw.githubusercontent.com/torgeir/omniscient/master/omniscient_logo.png" align="right" width="150px">
-> A library providing an abstraction for React components for passing same
+> A library providing an abstraction for React components for passing the same
 data structure through the entire component flow using cursors and immutable
-data structures. Similar to that of [Quiescent](https://github.com/levand/quiescent) for clojurescript. Except,
-sometimes you need state!
+data structures. Similar to that of [Quiescent](https://github.com/levand/quiescent) for clojurescript. Except, Omniscient allows for component local state.
 
 > Omniscient pairs the simplicity of [Quiescent](https://github.com/levand/quiescent) with
 the cursors of [Om](https://github.com/swannodette/om), for js, using
@@ -27,25 +26,16 @@ function render () {
   React.renderComponent(Heading(structure.cursor()), $('.app'));
 }
 
-// Render and render on new immutable structure
+// Render and re-render on new immutable structure
 render();
 structure.on('render', render);
 ```
 
-[`immstruct`](https://github.com/mikaelbr/immstruct) is a simple
-wrapper [`Immutable.js`](https://github.com/facebook/immutable-js)
-for handling re-render when an immutable data structure is changed.
-`immstruct` is not a requirement for Omniscient, but it makes
-the usage much easier (see [how to use immstruct](https://github.com/mikaelbr/immstruct/blob/master/README.md)).
-You can use any other cursors or you can use `Immutable.js` directly.
+[`immstruct`](https://github.com/mikaelbr/immstruct) is a simple wrapper for [`Immutable.js`](https://github.com/facebook/immutable-js) that ease handling re-render when an immutable data structure is replaced through the use of cursors. `immstruct` is not a requirement for Omniscient, but makes a great fit.
 
+### Reuseable mixins
 
-**Note:** If you are using something other than cursors from Immutable.js,
-you should look into [implementing your own shouldComponentUpdate](#efficient-shouldcomponentupdate-easily-overridable).
-
-### Reuseable Mixins
-
-Omniscient encourages reuse of your existing react mixins.
+Omniscient is fully compatible with exising react components, and encourages reuse of your existing mixins.
 
 ```js
 var SelectOnRender = {
@@ -77,79 +67,72 @@ var SaveOnEdit = {
   }
 };
 
-var FocusingInput = component([Props, SaveOnEdit], function (cursor, statics) {
+var SavingFocusingInput = component([Props, SaveOnEdit, SelectOnRender], function (cursor, statics) {
   return React.DOM.input({ value: cursor.get('text'), onChange: onEdit });
 });
 ```
 
-### Back-Talk from Child to Parent Through Statics
+### Statics
 
-There are some use cases where you want to deligate responsibility to some
-one else higher up (ancestors). This should be done by passing something
-called `statics`. Statics are passed as second argument to a component.
+When you need to provide other data for your component that what it's rendering is based off of, you pass statics, just like with Quiescent. By default, changing a static's value does not result in a re-rendering of a component.
 
-Per default (except special-case `shared` static - see below), changing
-a static value won't result in component updating (causing shouldCompontentUpdate
-to return `true`).
+Statics can be passed as second argument to your component.
 
-By providing an event bus or event emitter as a static, you can provide
-a way for children to talk to parents. See [example below](#shared-state-between-parent-and-child).
+#### Talking back from child to parent
+
+As an example, communicating information back to the parent component from a child component can be done by making an event emitter available as a static for your child component.
 
 ```js
 var Item = component(function (cursor, statics) {
   var onClick = function () {
     statics.events.emit('data', cursor);
   };
-  return React.DOM.li({ onClick: onClick }, React.DOM.text(cursor.get('text')));
+  return React.DOM.li({ onClick: onClick }, React.DOM.text({}, cursor.get('text')));
 });
 
 var events = new EventEmitter();
-events.on('data', function (itemCursor) {
-  console.log('Hello from', itemCursor);
+events.on('data', function (item) {
+  console.log('Hello from', item);
 });
 
 var List = component(function (cursor) {
-  return React.DOM.ul({}, cursor.toArray().map(function (itemCursor) {
-    return Item(itemCursor, { events: events });
+  return React.DOM.ul({}, cursor.toArray().map(function (item) {
+    return Item(item, { events: events });
   });
 });
 ```
 
-### Shared State Between Parent and Child
+### State
 
-Some times you need to share a state from parent to child. This can be something
-like toggling between editing-modes in a blog-post or simply a boolean flag.
-There is a special kind of [`static`](#back-talk-from-child-to-parent-through-statics)
- called `shared`, that can hold this sort if information.
+Unlike Quiescent, Omniscient allows for component local state. That is, all the usual react component methods are available on `this` for use through mixins. You are free to `this.setState({ .. })` for component local view state.
 
-*Unlike [all other statics](#back-talk-from-child-to-parent-through-statics),
-changing a shared static will cause the view to re-render*.
+#### Sharing state between parent and child
+
+Some times you need to share state between a parent and child component. A special kind of [`static`](#talking-back-from-child-to-parent) called `shared` can hold this sort of information.
+
+*Unlike all other statics, changing a `shared` static will cause the view to re-render*.
 
 ```js
 var Item = component(function (cursor, statics) {
-  // Will not re-render if statics.arbitraryData changes
-  console.log(statics.arbitraryData); //=> "someData
-
-  // Will re-render if `statics.shared.fromParent` changes
+  // re-renders when `statics.shared.fromParent` changes
   if (statics.shared.fromParent) {
-    return React.DOM.text(cursor.get('text'));
+    return React.DOM.text({}, cursor.get('text'));
   }
-  return React.DOM.li({ onClick: onClick }, React.DOM.text(cursor.get('text')));
+  return React.DOM.li({ onClick: onClick }, React.DOM.text({}, cursor.get('text')));
 });
 
 var List = component(function (cursor) {
   return React.DOM.ul({}, cursor.toArray().map(function (itemCursor) {
     return Item(itemCursor, {
-      shared: { fromParent: cursor.get('valueFromParent') },
-      arbitraryData: 'someData'
+      shared: { fromParent: cursor.get('valueFromParent') }
     });
   });
 });
 ```
 
-### Providing Component Keys
+### Providing component keys
 
-For correct merging of states and components between render cycles, React needs a key as part of the props of a component. With Omniscient, such a key can be passed as the first argument to `component`.
+For correct merging of states and components between render cycles, React needs a `key` as part of the props of a component. With Omniscient, such a key can be passed as the first argument to the `component` function.
 
 ```js
 var Item = component(function (cursor) {
@@ -163,54 +146,55 @@ var List = component(function (cursor) {
 });
 ```
 
-### Efficient shouldComponentUpdate, easily overridable
+### Efficient shouldComponentUpdate
 
-Omniscient provides an [efficient default](https://github.com/torgeir/omniscient/blob/master/component.js#L47-L64) `shouldComponentUpdate` that works well with immutable data structures.
+Omniscient provides an [efficient default](https://github.com/torgeir/omniscient/blob/master/component.js#L47-L64) `shouldComponentUpdate` that works well with the immutable data structures of Immutable.js.
+
+#### Overriding shouldCompontentUpdate
 
 However, an individual component's `shouldComponentUpdate` can easily be changed through the use of mixins:
 
 ```js
-
-// Override the default Omniscient shouldComponentUpdate
-// by using a mixin.
 var ShouldComponentUpdateMixin = {
   shouldComponentUpdate: function (newProps, newState) {
-    // Your implementation here.
-
-    return true; // Don't do this. It will re-render components every time
+    // your custom implementation
+    return true; // don't do this
   };
 };
 
-var AlwaysRenderingText = component(ShouldComponentUpdateMixin, function (cursor) {
+var InefficientAlwaysRenderingText = component(ShouldComponentUpdateMixin, function (cursor) {
   return React.DOM.text(cursor.get('text'));
 });
 ```
 
-#### Override shouldCompontentUpdate globally
+#### Overriding the default shouldCompontentUpdate globally
 
-If you want to override `shouldCompontentUpdate` across your entire
-project, you can do this by setting the `shouldCompontentUpdate` method
-from Omniscient.
+If you want to override `shouldCompontentUpdate` across your entire project, you can do this by setting the `shouldCompontentUpdate` method from Omniscient.
 
 ```js
 component.shouldComponentUpdate = function (newProps, newState) {
-  // Your implementation here.
-
-  return true; // Don't do this. It will re-render components every time
+  // your custom implementation
+  return true; // don't do do this
 };
 
-var AlwaysRenderingText = component(ShouldComponentUpdateMixin, function (cursor) {
+var AlwaysRenderingText = component(function (cursor) {
   return React.DOM.text(cursor.get('text'));
 });
 ```
 
+### Immstruct
+
+Immstruct is not a requirement for Omniscient, and you are free to choose any other cursor implementation, or you can use Immutable.js directly.
+
+If you are using something other than the cursors from Immutable.js, however, make sure to provide a custom implementation of `shouldComponentUpdate` for efficient rendering.
+
+See [how to use immstruct](https://github.com/mikaelbr/immstruct/blob/master/README.md) for more information.
 
 [npm-url]: https://npmjs.org/package/omniscient
 [npm-image]: http://img.shields.io/npm/v/omniscient.svg?style=flat
 
 [depstat-url]: https://gemnasium.com/torgeir/omniscient
 [depstat-image]: http://img.shields.io/gemnasium/torgeir/omniscient.svg?style=flat
-
 
 ---
 
