@@ -158,7 +158,9 @@ var List = component(function (cursor) {
 
 ### Efficient shouldComponentUpdate, easily overridable
 
-Omniscient provides an efficient default `shouldComponentUpdate` that works well with immutable data structures, but can easily be changed through the use of mixins.
+Omniscient provides an [efficient default](https://github.com/torgeir/omniscient/blob/master/component.js#L47-L64) `shouldComponentUpdate` that works well with immutable data structures.
+
+However, an individual component's `shouldComponentUpdate` can easily be changed through the use of mixins:
 
 ```js
 
