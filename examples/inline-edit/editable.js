@@ -5,6 +5,11 @@ var d = React.DOM;
 var FocusingInput = require('./focusing-input');
 
 var EditMixin = {
+
+  getInitialState: function () {
+    return {};
+  },
+
   onEdit: function onEdit () {
     this.setState({ editing: true });
   },

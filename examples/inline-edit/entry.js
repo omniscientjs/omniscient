@@ -12,7 +12,9 @@ var Item = component(function (cursor) {
 });
 
 var List = component(function (cursor) {
-  return d.ul({}, cursor.toArray().map(Item));
+  return d.ul({}, cursor.toArray().map(function (item, key) {
+    return Item(key, item);
+  }));
 });
 
 var data = immstruct({
