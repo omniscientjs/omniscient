@@ -21,8 +21,17 @@ module.exports = function component (mixins, render) {
     }
   });
 
-  return function (cursor, statics) {
-    return Component({ cursor: cursor, statics: statics });
+  return function (key, cursor, statics) {
+    if (typeof key === 'object') {
+      statics = cursor;
+      cursor  = key;
+      key     = void 0;
+    }
+    var props = { cursor: cursor, statics: statics };
+    if (key) {
+      props.key = key;
+    }
+    return Component(props);
   };
 };
 
