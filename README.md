@@ -105,3 +105,19 @@ var AlwaysRenderingText = component(ShouldComponentUpdateMixin, function (cursor
   return React.DOM.text(cursor.get('text'));
 });
 ```
+
+#### Override shouldCompontentUpdate globally
+
+If you want to override `shouldCompontentUpdate` across your entire
+project, you can do this by setting the `shouldCompontentUpdate` method
+from Omniscient.
+
+```js
+component.shouldComponentUpdate = function (newProps, newState) {
+  return true;
+};
+
+var AlwaysRenderingText = component(ShouldComponentUpdateMixin, function (cursor) {
+  return React.DOM.text(cursor.get('text'));
+});
+```
