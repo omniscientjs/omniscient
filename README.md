@@ -5,16 +5,20 @@ A library providing an abstraction for React components similar to that of Quies
 
 ```js
 var component = require('omniescent'),
-    React     = require('react');
+    React     = require('react'),
+    immstruct = require('immstruct');
 
-var Heading = component(function (value) {
-  return React.DOM.text({}, value.text);
+var Heading = component(function (cursor) {
+  return React.DOM.text({}, cursor.get('text'));
+});
+
+var data = immstruct({
+  text: 'some text'
 });
 
 $ = document.querySelector.bind(document);
 React.renderComponent(
-  Heading({ text: 'some text' }),
-  $('.app'));
+  Heading(data.cursor()), $('.app'));
 ```
 
 ### Reuse mixins
