@@ -1,0 +1,13 @@
+{
+  "name": "omniscient-example",
+  "version": "1.0.0",
+  "main": "example.js",
+  "author": "@torgeir",
+  "license": "mit",
+  "dependencies": {
+    "immstruct": "^0.7.0",
+    "immutable": "^2.2.1",
+    "omniscient": "^0.1.0",
+    "react": "^0.11.2"
+  }
+}
