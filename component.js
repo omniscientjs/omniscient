@@ -1,5 +1,4 @@
 var React = require('react');
-var Immutable = require('immutable');
 var shallowEqualImmutable = require('react-immutable-render-mixin/shallowEqualImmutable');
 
 var ShouldComponentUpdate = {

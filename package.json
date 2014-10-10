@@ -7,7 +7,6 @@
     "example": "example"
   },
   "dependencies": {
-    "immutable": "^2.2.1",
     "react": "^0.11.2",
     "react-immutable-render-mixin": "^0.5.1"
   },
