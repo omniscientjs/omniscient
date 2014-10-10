@@ -2,9 +2,7 @@ Omniscient [![NPM version][npm-image]][npm-url] [![Dependency Status][depstat-im
 =========
 
 <img src="https://raw.githubusercontent.com/torgeir/omniscient/master/omniscient_logo.png" align="right" width="150px">
-> A library providing an abstraction for React components for passing the same
-data structure through the entire component flow using cursors and immutable
-data structures. Similar to that of [Quiescent](https://github.com/levand/quiescent) for clojurescript. Except, Omniscient allows for component local state.
+> A library providing an abstraction for React components that allows for top down rendering of immutable data. Using cursors into immutable datastructures the nested components does not need knowledge of the entire structure.
 
 > Omniscient pairs the simplicity of [Quiescent](https://github.com/levand/quiescent) with
 the cursors of [Om](https://github.com/swannodette/om), for js, using
