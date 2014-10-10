@@ -36,7 +36,7 @@ render();
 data.on('swap', render);
 
 setInterval(function () {
-  var bucket = parseInt(Math.random() * 5);
+  var bucket = parseInt(Math.random() * 20);
   var number = parseInt(Math.random() * 10);
   console.log('bucket', bucket, 'number', number);
 
@@ -46,4 +46,4 @@ setInterval(function () {
     }
     return state.unshift(number);
   });
-}, 50);
+}, 30);
