@@ -25,14 +25,14 @@ structure.on('render', render);
 ```
 
 [`immstruct`](https://github.com/mikaelbr/immstruct) is a simple
-wrapper for [`Immutable.js`](https://github.com/facebook/immutable-js)
-for handling re-render when an immutable data structure is changed.
+wrapper [`Immutable.js`](https://github.com/facebook/immutable-js)
+for handling re-render when a immutable data structure is changed.
 `immstruct` is not a requirement for Omniscient, but it makes
 the usage much easier (see [how to use immstruct](https://github.com/mikaelbr/immstruct/blob/master/README.md)).
 You can use any other cursors or you can use `Immutable.js` directly.
 
 
-**Note:** If you are using something other than the cursors from Immutable.js,
+**Note:** If you are using something other than cursors from Immutable.js,
 you should look into [implementing your own shouldComponentUpdate](#efficient-shouldcomponentupdate-easily-overridable).
 
 ### Reuseable Mixins
@@ -85,7 +85,7 @@ a static value won't result in component updating (causing shouldCompontentUpdat
 to return `true`).
 
 By providing an event bus or event emitter as a static, you can provide
-a way for children to talk to parents. See example below.
+a way for children to talk to parents. See [example below](#shared-state-between-parent-and-child).
 
 ```js
 var Item = component(function (cursor, statics) {
@@ -110,10 +110,12 @@ var List = component(function (cursor) {
 ### Shared State Between Parent and Child
 
 Some times you need to share a state from parent to child. This can be something
-like toggling between editing-modes in a blog-post. There is a special kind
-of `static` called `shared`, that can hold this sort if information.
+like toggling between editing-modes in a blog-post or simply a boolean flag.
+There is a special kind of [`static`](#back-talk-from-child-to-parent-through-statics)
+ called `shared`, that can hold this sort if information.
 
-*Unlike all other statics, changing a shared static will cause the view to re-render*.
+*Unlike [all other statics](#back-talk-from-child-to-parent-through-statics),
+changing a shared static will cause the view to re-render*.
 
 ```js
 var Item = component(function (cursor, statics) {
@@ -165,7 +167,7 @@ var ShouldComponentUpdateMixin = {
 };
 
 var AlwaysRenderingText = component(ShouldComponentUpdateMixin, function (cursor) {
-  return React.DOM.text({}, cursor.get('text'));
+  return React.DOM.text(cursor.get('text'));
 });
 ```
 
@@ -181,7 +183,7 @@ component.shouldComponentUpdate = function (newProps, newState) {
 };
 
 var AlwaysRenderingText = component(ShouldComponentUpdateMixin, function (cursor) {
-  return React.DOM.text({}, cursor.get('text'));
+  return React.DOM.text(cursor.get('text'));
 });
 ```
 
