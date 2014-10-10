@@ -74,7 +74,7 @@ var SavingFocusingInput = component([Props, SaveOnEdit, SelectOnRender], functio
 
 ### Statics
 
-When you need to provide other data for your component that what its rendering is based off of, you pass statics, just like with Quiescent. By default, changing a static's value does not result in a re-rendering of a component.
+When you need to provide other data for your component that what its rendering is based off of, you pass statics. By default, changing a static's value does not result in a re-rendering of a component.
 
 Statics can be passed as second argument to your component.
 
@@ -104,7 +104,7 @@ var List = component(function (cursor) {
 
 ### State
 
-Unlike Quiescent, Omniscient allows for component local state. That is, all the usual react component methods are available on `this` for use through mixins. You are free to `this.setState({ .. })` for component local view state.
+Omniscient allows for component local state. That is, all the usual react component methods are available on `this` for use through mixins. You are free to `this.setState({ .. })` for component local view state.
 
 #### Sharing state between parent and child
 
