@@ -32,7 +32,17 @@ module.exports.isEqualCursor = shallowEqualImmutable;
 module.exports.isEqualState = shallowEqualImmutable;
 
 function shouldComponentUpdate (nextProps, nextState) {
-  var shouldUpdate = !module.exports.isEqualCursor(this.props.cursor.deref(), nextProps.cursor.deref()) ||
-                     !module.exports.isEqualState(this.state, nextState);
-  return shouldUpdate;
+  var isEqualState  = module.exports.isEqualState,
+      isEqualCursor = module.exports.isEqualCursor;
+
+  var sharedState     = this.props.statics.shared,
+      sharedNextState = nextProps.statics.shared;
+
+  var hasSharedState = (sharedState || sharedNextState);
+  var shouldUpdateShared = hasSharedState && (!isEqualState(sharedState, sharedNextState));
+
+  var shouldUpdate = !isEqualCursor(this.props.cursor.deref(), nextProps.cursor.deref()) ||
+                     !isEqualState(this.state, nextState);
+
+  return shouldUpdate || shouldUpdateShared;
 }

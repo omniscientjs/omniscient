@@ -1,6 +1,6 @@
 {
   "name": "omiescent",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "A library providing an abstraction for React components similar to that of Quiescent for clojurescript. Except, sometimes you need state! Omiescent pairs the simplicity of Quiescent with the cursors of Om, for js, using Immutable.js.",
   "main": "component.js",
   "directories": {
