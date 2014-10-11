@@ -43,16 +43,17 @@ module.exports = function component (mixins, render) {
 
 module.exports.shouldComponentUpdate = shouldComponentUpdate;
 module.exports.isEqualCursor = shallowEqualImmutable;
-module.exports.isEqualState = shallowEqualImmutable;
+module.exports.isEqualState = deepEqual;
 
 function shouldComponentUpdate (nextProps, nextState) {
+
   var isEqualState  = module.exports.isEqualState;
 
   var nextCursors    = guaranteeArray(nextProps.cursor),
       currentCursors = guaranteeArray(this.props.cursor);
 
   // Easiest check.
-  if (nextCursor.length !== currentCursor.length) {
+  if (nextCursors.length !== nextCursors.length) {
     return true;
   }
 
@@ -86,7 +87,7 @@ function not (fn) {
 }
 
 function isCursor (potential) {
-  return !!potential.deref;
+  return potential && !!potential.deref;
 }
 
 function hasCursorsChanged (current, next) {
@@ -95,12 +96,12 @@ function hasCursorsChanged (current, next) {
   current = current.filter(isCursor);
   next    = next.filter(isCursor);
 
-  return !current.filter(isCursor).every(function (curr, i) {
+  return !current.every(function (curr, i) {
     if (!next[i]) {
       return false;
     }
 
-    return !isEqualCursor(curr.deref(), next[i].deref());
+    return isEqualCursor(curr.deref(), next[i].deref());
   });
 }
 
@@ -108,7 +109,7 @@ function hasPropertiesChanged (current, next) {
   current = current.filter(not(isCursor));
   next    = next.filter(not(isCursor));
 
-  return !current.filter(isCursor).every(function (curr, i) {
+  return !current.every(function (curr, i) {
     if (!next[i]) {
       return false;
     }
