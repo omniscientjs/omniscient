@@ -8,6 +8,7 @@ var shouldComponentUpdate = require('../').shouldComponentUpdate;
 describe('shouldComponentUpdate', function () {
 
   describe('should update', function () {
+
     it('if cursors are different', function () {
       var data = Immutable.fromJS({ foo: 'bar', bar: [1, 2, 3] });
       shouldUpdate(data.cursor(['foo']), null, data.cursor(['bar']), null);
