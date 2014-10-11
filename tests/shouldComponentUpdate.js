@@ -60,13 +60,3 @@ function callShouldUpdate (cursor, state, nextCursor, nextState) {
     state: state
   }, nextProps, nextState);
 }
-
-function next (cursor) {
-  return { cursor: cursor };
-}
-
-function current (cursor) {
-  return {
-    props: { cursor: cursor }
-  };
-}
