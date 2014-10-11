@@ -8,6 +8,10 @@ Omniscient [![NPM version][npm-image]][npm-url] [![Build Status][travis-image]][
 the cursors of [Om](https://github.com/swannodette/om), for js, using
 [Immutable.js](https://github.com/facebook/immutable-js).
 
+### Cursors
+
+Using cursors, child components can have the outer immutable structure swapped when a component's data is changed. A re render is triggered, but only components referencing the changed piece of state will actually be re rendered.
+
 ```js
 var React     = require('react'),
     immstruct = require('immstruct'),
