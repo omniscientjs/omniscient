@@ -100,25 +100,28 @@ function hasChangedCursors (current, next) {
   current = current.filter(isCursor);
   next    = next.filter(isCursor);
 
-  return !current.every(function (curr, i) {
+  return !current.every(cursorIsEqual);
+
+  function cursorIsEqual(curr, i) {
     if (!next[i]) {
       return false;
     }
-
     return isEqualCursor(curr.deref(), next[i].deref());
-  });
+  }
 }
 
 function hasChangedProperties (current, next) {
   current = current.filter(not(isCursor));
   next    = next.filter(not(isCursor));
 
-  return !current.every(function (curr, i) {
+  return !current.every(propertyIsEqual);
+
+  function propertyIsEqual(curr, i) {
     if (!next[i]) {
       return false;
     }
     return deepEqual(curr, next[i]);
-  });
+  }
 }
 
 function hasShouldComponentUpdate (mixins) {
