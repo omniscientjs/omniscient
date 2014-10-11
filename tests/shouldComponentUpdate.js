@@ -5,52 +5,43 @@ var shouldComponentUpdate = require('../').shouldComponentUpdate;
 
 describe('shouldComponentUpdate', function () {
 
-  it('should not update component if passing same cursors', function () {
-    var data = Immutable.fromJS({ foo: 'bar' });
-    var cursor = data.cursor([]);
-    var props = {
+  function next (cursor) {
+    return {
+      cursor: cursor
+    };
+  }
+
+  function current (cursor) {
+    return {
       props: {
         cursor: cursor
       }
     };
-    var nextProps = {
-      cursor: cursor
-    };
+  }
+
+  it('should not update component if passing same cursors', function () {
+    var data = Immutable.fromJS({ foo: 'bar' });
+    var props = current(data.cursor());
+    var nextProps = next(data.cursor());
 
     assert(shouldComponentUpdate.call(props, nextProps) === false);
   });
 
   it('should update if cursors are different', function () {
     var data = Immutable.fromJS({ foo: 'bar', bar: [1, 2, 3] });
-    var props = {
-      props: {
-        cursor: data.cursor(['foo'])
-      }
-    };
-
-    var nextProps = {
-      cursor: data.cursor(['bar'])
-    };
+    var props = current(data.cursor(['foo']));
+    var nextProps = next(data.cursor(['bar']));
 
     assert(shouldComponentUpdate.call(props, nextProps));
   });
 
 
-  it('should be able to take array of cursors', function () {
+  it('should be able to take multiple cursors', function () {
     var data = Immutable.fromJS({ foo: 'bar', bar: [1, 2, 3] });
     var data2 = Immutable.fromJS({ baz: [1, 2, 3] });
 
-    var cursors = [data.cursor(['foo']), data2.cursor()];
-
-    var props = {
-      props: {
-        cursor: [data.cursor(['foo']), data2.cursor()]
-      }
-    };
-
-    var nextProps = {
-      cursor: [data.cursor(['foo']), data2.cursor()]
-    };
+    var props = current([data.cursor(['foo']), data2.cursor()]);
+    var nextProps = next([data.cursor(['foo']), data2.cursor()]);
 
     assert(shouldComponentUpdate.call(props, nextProps) === false);
   });
@@ -60,15 +51,11 @@ describe('shouldComponentUpdate', function () {
     var data = Immutable.fromJS({ foo: 'bar', bar: [1, 2, 3] });
     var data2 = Immutable.fromJS({ baz: [1, 2, 3] });
 
-    var props = {
-      props: {
-        cursor: [data.cursor(['foo']), data2.cursor()]
-      }
-    };
-
-    var nextProps = {
-      cursor: [data.cursor(['foo']).update(function (x) { return 1; }), data2.cursor()]
-    };
+    var props = current([data.cursor(['foo']), data2.cursor()]);
+    var nextProps = next([
+        data.cursor(['foo']).update(function (x) { return 1; }),
+        data2.cursor()
+    ]);
 
     assert(shouldComponentUpdate.call(props, nextProps));
   });
