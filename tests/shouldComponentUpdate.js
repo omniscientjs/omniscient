@@ -26,6 +26,11 @@ describe('shouldComponentUpdate', function () {
       );
     });
 
+    it('if object literal has changed even if the cursor is the same', function () {
+      var data = Immutable.fromJS({ foo: 'bar' });
+      shouldUpdate([data.cursor(), { foo: 'hello' }], null, [data.cursor(), { bar: 'good bye' }], null);
+    });
+
     it('if state has changed', function () {
       shouldUpdate(null, { foo: 'hello' }, null, { foo: 'bar' });
     });
@@ -51,9 +56,15 @@ describe('shouldComponentUpdate', function () {
       shouldNotUpdate(null, null, null, null, { foo: 'hello' }, { bar: 'bye' });
     });
 
+
     it('component if passing same cursors', function () {
       var data = Immutable.fromJS({ foo: 'bar' });
       shouldNotUpdate(data.cursor(), null, data.cursor(), null);
+    });
+
+    it('component if passing same cursors and same data for multiple values', function () {
+      var data = Immutable.fromJS({ foo: 'bar' });
+      shouldNotUpdate([data.cursor(), { foo: 'hello' }], null, [data.cursor(), { foo: 'hello' }], null);
     });
 
     it('if multiple cursors point to the same data', function () {

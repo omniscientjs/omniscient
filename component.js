@@ -117,8 +117,7 @@ function hasPropertiesChanged (current, next) {
     if (!next[i]) {
       return false;
     }
-
-    return !deepEqual(curr, next[i]);
+    return deepEqual(curr, next[i]);
   });
 }
 
