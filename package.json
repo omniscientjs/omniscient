@@ -23,7 +23,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/torgeir/omniscient.git"
+    "url": "git://github.com/omniscientjs/omniscient.git"
   },
   "keywords": [
     "quiescent",
@@ -33,7 +33,7 @@
   "author": "@torgeir,@mikaelbr",
   "license": "mit",
   "bugs": {
-    "url": "https://github.com/torgeir/omniscient/issues"
+    "url": "https://github.com/omniscientjs/omniscient/issues"
   },
-  "homepage": "https://github.com/torgeir/omniscient"
+  "homepage": "https://github.com/omniscientjs/omniscient"
 }
