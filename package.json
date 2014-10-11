@@ -19,7 +19,7 @@
   },
   "scripts": {
     "test": "mocha -R spec tests/**",
-    "test-watch": "mocha -w -R min tests/**"
+    "test-watch": "mocha -G -w -R min tests/**"
   },
   "repository": {
     "type": "git",
