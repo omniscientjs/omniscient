@@ -23,6 +23,13 @@ describe('shouldComponentUpdate', function () {
                    data.cursor(['bar']), null);
     });
 
+    it('when there\'s no longer a cursors', function () {
+      var data = Immutable.fromJS({ foo: 'bar', bar: [1, 2, 3] });
+
+      shouldUpdate(data.cursor(['bar']), null,
+                   null, null);
+    });
+
     it('when one of multiple cursors have changed', function () {
       var data  = Immutable.fromJS({ foo: 'bar', bar: [1, 2, 3] });
       var data2 = Immutable.fromJS({ baz: [1, 2, 3] });
