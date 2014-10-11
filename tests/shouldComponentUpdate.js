@@ -1,7 +1,6 @@
 var chai = require('chai');
 chai.should();
 
-var assert = require('assert');
 var Immutable = require('immutable');
 
 var shouldComponentUpdate = require('../').shouldComponentUpdate;
@@ -16,10 +15,7 @@ describe('shouldComponentUpdate', function () {
 
   it('should update if cursors are different', function () {
     var data = Immutable.fromJS({ foo: 'bar', bar: [1, 2, 3] });
-    var props = current(data.cursor(['foo']));
-    var nextProps = next(data.cursor(['bar']));
-
-    assert(shouldComponentUpdate.call(props, nextProps));
+    shouldUpdate(data.cursor(['foo']), null, data.cursor(['bar']), null);
   });
 
 
@@ -27,10 +23,10 @@ describe('shouldComponentUpdate', function () {
     var data = Immutable.fromJS({ foo: 'bar', bar: [1, 2, 3] });
     var data2 = Immutable.fromJS({ baz: [1, 2, 3] });
 
-    var props = current([data.cursor(['foo']), data2.cursor()]);
-    var nextProps = next([data.cursor(['foo']), data2.cursor()]);
-
-    assert(shouldComponentUpdate.call(props, nextProps) === false);
+    shouldNotUpdate(
+      [data.cursor(['foo']), data2.cursor()], null,
+      [data.cursor(['foo']), data2.cursor()], null
+    );
   });
 
 
@@ -38,13 +34,13 @@ describe('shouldComponentUpdate', function () {
     var data = Immutable.fromJS({ foo: 'bar', bar: [1, 2, 3] });
     var data2 = Immutable.fromJS({ baz: [1, 2, 3] });
 
-    var props = current([data.cursor(['foo']), data2.cursor()]);
-    var nextProps = next([
+    shouldUpdate(
+      [data.cursor(['foo']), data2.cursor()], null,
+      [
         data.cursor(['foo']).update(function (x) { return 1; }),
         data2.cursor()
-    ]);
-
-    assert(shouldComponentUpdate.call(props, nextProps));
+      ], null
+    );
   });
 });
 
