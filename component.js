@@ -23,7 +23,7 @@ module.exports = function component (mixins, render) {
   var Component = React.createClass({
     mixins: mixins,
     render: function () {
-      return render.call(this, this.props.cursor, this.props.statics);
+      return render.apply(this, this.props.cursors.concat(this.props.statics));
     }
   });
 
@@ -33,10 +33,30 @@ module.exports = function component (mixins, render) {
       cursor  = key;
       key     = void 0;
     }
-    var props = { cursor: cursor, statics: statics };
+
+    var hasMultipleCursors = Array.isArray(cursor);
+
+    var firstCursor;
+    if (hasMultipleCursors) {
+      firstCursor = cursor[0];
+    }
+    else {
+      firstCursor = cursor;
+    }
+
+    var props = { cursor: firstCursor, statics: statics };
+
     if (key) {
       props.key = key;
     }
+
+    if (hasMultipleCursors) {
+      props.cursors = cursor;
+    }
+    else {
+      props.cursors = [firstCursor];
+    }
+
     return Component(props);
   };
 };
@@ -80,7 +100,7 @@ function guaranteeArray (prop) {
   if (!Array.isArray(prop)) {
     return [prop];
   }
-  
+
   return prop;
 }
 
