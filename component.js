@@ -78,8 +78,9 @@ function guaranteeArray (prop) {
   }
 
   if (!Array.isArray(prop)) {
-    prop = [prop];
+    return [prop];
   }
+  
   return prop;
 }
 
@@ -101,7 +102,7 @@ function hasChangedCursors (current, next) {
 
   return !current.every(cursorIsEqual);
 
-  function cursorIsEqual(curr, i) {
+  function cursorIsEqual (curr, i) {
     if (!next[i]) {
       return false;
     }
@@ -115,7 +116,7 @@ function hasChangedProperties (current, next) {
 
   return !current.every(propertyIsEqual);
 
-  function propertyIsEqual(curr, i) {
+  function propertyIsEqual (curr, i) {
     if (!next[i]) {
       return false;
     }
