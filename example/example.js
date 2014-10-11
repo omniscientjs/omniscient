@@ -10,9 +10,10 @@ var data = immstruct({ numbers: {} });
 var Bucket = component(function (cursor, statics) {
   var numbers = cursor.toArray();
   return d.li({},
-              numbers.reduce(function (acc, n) {
+              d.b({}, "Bucket #", statics.label, " "),
+              d.span({}, "(", numbers.reduce(function (acc, n) {
                 return acc + 1;
-              }, 0),
+              }, 0), ")"),
               ": ",
               numbers.map(function (number, key) {
                 return number;
@@ -20,9 +21,10 @@ var Bucket = component(function (cursor, statics) {
 });
 
 var Buckets = component(function (cursor) {
+  var labels = Object.keys(cursor.toJS());
   return d.ul({},
               cursor.toArray().map(function (number, i) {
-                return Bucket("bucket-" + i, number);
+                return Bucket("bucket-" + i, number, { label: labels[i] });
               }));
 });
 
@@ -36,9 +38,8 @@ render();
 data.on('swap', render);
 
 setInterval(function () {
-  var bucket = parseInt(Math.random() * 20);
+  var bucket = parseInt(Math.random() * 30);
   var number = parseInt(Math.random() * 10);
-  console.log('bucket', bucket, 'number', number);
 
   data.cursor(['numbers', bucket]).update(function (state) {
     if (!state) {
