@@ -1,5 +1,6 @@
 var React = require('react');
 var shallowEqualImmutable = require('react-immutable-render-mixin/shallowEqualImmutable');
+var deepEqual = require('deep-equal');
 
 var ShouldComponentUpdate = {
   shouldComponentUpdate: module.exports.shouldComponentUpdate
@@ -88,10 +89,6 @@ function isCursor (potential) {
   return !!potential.deref;
 }
 
-function deepEqual (current, next) {
-  return true;
-}
-
 function hasCursorsChanged (current, next) {
   var isEqualCursor = module.exports.isEqualCursor;
 
@@ -116,7 +113,7 @@ function hasPropertiesChanged (current, next) {
       return false;
     }
 
-    return !isDeepEqual(curr, next[i]);
+    return !deepEqual(curr, next[i]);
   });
 }
 
