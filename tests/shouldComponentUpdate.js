@@ -46,10 +46,13 @@ describe('shouldComponentUpdate', function () {
       shouldNotUpdate(null, { foo: { bar : 'hello' } }, null, { foo: { bar : 'hello' } });
     });
 
+    it('if only static has changed', function () {
+      var data = Immutable.fromJS({ foo: 'bar' });
+      shouldNotUpdate(null, null, null, null, { foo: 'hello' }, { bar: 'bye' });
+    });
 
     it('component if passing same cursors', function () {
       var data = Immutable.fromJS({ foo: 'bar' });
-
       shouldNotUpdate(data.cursor(), null, data.cursor(), null);
     });
 
@@ -67,17 +70,23 @@ describe('shouldComponentUpdate', function () {
 
 });
 
-function shouldNotUpdate (cursor, state, nextCursor, nextState) {
-  callShouldUpdate(cursor, state, nextCursor, nextState).should.equal(false);
+function shouldNotUpdate (cursor, state, nextCursor, nextState, currentStatic, nextStatic) {
+  callShouldUpdate(cursor, state, nextCursor, nextState, currentStatic, nextStatic).should.equal(false);
 }
 
-function shouldUpdate (cursor, state, nextCursor, nextState) {
-  callShouldUpdate(cursor, state, nextCursor, nextState).should.equal(true);
+function shouldUpdate (cursor, state, nextCursor, nextState, currentStatic, nextStatic) {
+  callShouldUpdate(cursor, state, nextCursor, nextState, currentStatic, nextStatic).should.equal(true);
 }
 
-function callShouldUpdate (cursor, state, nextCursor, nextState) {
+function callShouldUpdate (cursor, state, nextCursor, nextState, currentStatic, nextStatic) {
   var props     = { cursor: cursor };
   var nextProps = { cursor: nextCursor };
+
+  if (currentStatic || nextStatic) {
+    props.static     = currentStatic;
+    nextProps.static = nextStatic;
+  }
+
   return shouldComponentUpdate.call({
     props: props,
     state: state
