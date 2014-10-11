@@ -30,7 +30,7 @@ describe('shouldComponentUpdate', function () {
   });
 
 
-  it('should update if one of multiple cursors has changed', function () {
+  it('should update if one of multiple cursors have changed', function () {
     var data = Immutable.fromJS({ foo: 'bar', bar: [1, 2, 3] });
     var data2 = Immutable.fromJS({ baz: [1, 2, 3] });
 
