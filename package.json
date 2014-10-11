@@ -12,11 +12,12 @@
     "react-immutable-render-mixin": "^0.5.1"
   },
   "devDependencies": {
+    "chai": "^1.9.2",
     "immutable": "^2.2.3",
     "mocha": "^1.21.4"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha -w -R min tests/**"
   },
   "repository": {
     "type": "git",

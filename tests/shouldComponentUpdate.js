@@ -1,3 +1,6 @@
+var chai = require('chai');
+chai.should();
+
 var assert = require('assert');
 var Immutable = require('immutable');
 
@@ -5,26 +8,10 @@ var shouldComponentUpdate = require('../').shouldComponentUpdate;
 
 describe('shouldComponentUpdate', function () {
 
-  function next (cursor) {
-    return {
-      cursor: cursor
-    };
-  }
-
-  function current (cursor) {
-    return {
-      props: {
-        cursor: cursor
-      }
-    };
-  }
-
   it('should not update component if passing same cursors', function () {
     var data = Immutable.fromJS({ foo: 'bar' });
-    var props = current(data.cursor());
-    var nextProps = next(data.cursor());
 
-    assert(shouldComponentUpdate.call(props, nextProps) === false);
+    shouldNotUpdate(data.cursor(), null, data.cursor(), null);
   });
 
   it('should update if cursors are different', function () {
@@ -60,3 +47,30 @@ describe('shouldComponentUpdate', function () {
     assert(shouldComponentUpdate.call(props, nextProps));
   });
 });
+
+function shouldNotUpdate (cursor, state, nextCursor, nextState) {
+  callShouldUpdate(cursor, state, nextCursor, nextState).should.equal(false);
+}
+
+function shouldUpdate (cursor, state, nextCursor, nextState) {
+  callShouldUpdate(cursor, state, nextCursor, nextState).should.equal(true);
+}
+
+function callShouldUpdate (cursor, state, nextCursor, nextState) {
+  var props     = { cursor: cursor };
+  var nextProps = { cursor: nextCursor };
+  return shouldComponentUpdate.call({
+    props: props,
+    state: state
+  }, nextProps, nextState);
+}
+
+function next (cursor) {
+  return { cursor: cursor };
+}
+
+function current (cursor) {
+  return {
+    props: { cursor: cursor }
+  };
+}
