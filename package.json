@@ -1,6 +1,6 @@
 {
   "name": "omniscient",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A library providing an abstraction for React components for passing the same data structure through the entire component flow using cursors and immutable data structures.",
   "main": "component.js",
   "directories": {
