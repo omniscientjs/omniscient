@@ -54,9 +54,8 @@ var SelectOnRender = {
   }
 };
 
-var FocusingInput = component(SelectOnRender, function (cursor, statics) {
-  var onChange = statics.onChange || function () {};
-  return React.DOM.input({ value: cursor.get('text'), onChange: onChange });
+var FocusingInput = component(SelectOnRender, function (cursor) {
+  return React.DOM.input({ value: cursor.get('text') });
 });
 ```
 
@@ -77,7 +76,7 @@ var SaveOnEdit = {
   }
 };
 
-var SavingFocusingInput = component([Props, SaveOnEdit, SelectOnRender], function (cursor, statics) {
+var SavingFocusingInput = component([Props, SaveOnEdit, SelectOnRender], function (cursor) {
   return React.DOM.input({ value: cursor.get('text'), onChange: onEdit });
 });
 ```
@@ -88,9 +87,20 @@ When you need to provide other data for your component than what its rendering i
 
 Statics can be passed as second argument to your component.
 
+```js
+var FocusingInput = component(SelectOnRender, function (cursor, statics) {
+  var onChange = statics.onChange || function () {};
+  return React.DOM.input({ value: cursor.get('text'), onChange: onChange });
+});
+
+var SomeForm = component(function (cursor) {
+  return React.DOM.form({}, FocusingInput(cursor, { onChange: console.log.bind(console) }));
+});
+```
+
 #### Talking back from child to parent
 
-As an example, communicating information back to the parent component from a child component can be done by making an event emitter available as a static for your child component.
+Communicating information back to the parent component from a child component can be done by making an event emitter available as a static for your child component.
 
 ```js
 var Item = component(function (cursor, statics) {
