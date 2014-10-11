@@ -35,26 +35,15 @@ module.exports = function component (mixins, render) {
     }
 
     var hasMultipleCursors = Array.isArray(cursor);
-
-    var firstCursor;
-    if (hasMultipleCursors) {
-      firstCursor = cursor[0];
-    }
-    else {
-      firstCursor = cursor;
-    }
+    var firstCursor = hasMultipleCursors ? cursor[0] : cursor;
 
     var props = { cursor: firstCursor, cursors: [], statics: statics || [] };
+    if (!!firstCursor) {
+      props.cursors = hasMultipleCursors ? cursor : [firstCursor];
+    }
 
     if (key) {
       props.key = key;
-    }
-
-    if (hasMultipleCursors) {
-      props.cursors = cursor;
-    }
-    else if (firstCursor) {
-      props.cursors.push(firstCursor);
     }
 
     return Component(props);
