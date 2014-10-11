@@ -48,19 +48,77 @@ function shouldComponentUpdate (nextProps, nextState) {
   var isEqualState  = module.exports.isEqualState,
       isEqualCursor = module.exports.isEqualCursor;
 
-  var sharedState     = this.props.statics.shared,
-      sharedNextState = nextProps.statics.shared;
+  var nextCursors    = guaranteeArray(nextProps.cursor),
+      currentCursors = guaranteeArray(this.props.cursor);
 
-  var nextCursor    = nextProps.cursor.deref ? nextProps.cursor.deref() : nextProps.cursor,
-      currentCursor = this.props.cursor.deref ? this.props.cursor.deref() : this.props.cursor;
+  // Easiest check.
+  if (nextCursor.length !== currentCursor.length) {
+    return true;
+  }
 
-  var hasSharedState = (sharedState || sharedNextState);
-  var shouldUpdateShared = hasSharedState && (!isEqualState(sharedState, sharedNextState));
+  if (hasCursorsChanged(currentCursors, nextCursors)) {
+    return true;
+  }
 
-  var shouldUpdate = !isEqualCursor(currentCursor, nextCursor) ||
-                     !isEqualState(this.state, nextState);
+  if (!isEqualState(this.state, nextState)) {
+    return true;
+  }
 
-  return shouldUpdate || shouldUpdateShared;
+  if (hasPropertiesChanged(currentCursors, nextCursors)) {
+    return true;
+  }
+
+  return false;
+}
+
+
+function guaranteeArray (prop) {
+  if (!Array.isArray(prop)) {
+    prop = [prop];
+  }
+  return prop;
+}
+
+function not (fn) {
+  return function () {
+    return !fn.apply(fn, arguments);
+  };
+}
+
+function isCursor (potential) {
+  return !!potential.deref;
+}
+
+function deepEqual (current, next) {
+  return true;
+}
+
+function hasCursorsChanged (current, next) {
+  var isEqualCursor = module.exports.isEqualCursor;
+
+  current = current.filter(isCursor);
+  next    = next.filter(isCursor);
+
+  return !current.filter(isCursor).every(function (curr, i) {
+    if (!next[i]) {
+      return false;
+    }
+
+    return !isEqualCursor(curr.deref(), next[i].deref());
+  });
+}
+
+function hasPropertiesChanged (current, next) {
+  current = current.filter(not(isCursor));
+  next    = next.filter(not(isCursor));
+
+  return !current.filter(isCursor).every(function (curr, i) {
+    if (!next[i]) {
+      return false;
+    }
+
+    return !isDeepEqual(curr, next[i]);
+  });
 }
 
 function hasShouldComponentUpdate (mixins) {
