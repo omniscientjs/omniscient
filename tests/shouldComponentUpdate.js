@@ -7,6 +7,10 @@ var shouldComponentUpdate = require('../').shouldComponentUpdate;
 
 describe('shouldComponentUpdate', function () {
 
+  it('should not always update components without cursors', function () {
+    shouldNotUpdate(null, null, null, null);
+  });
+
   it('should not update component if passing same cursors', function () {
     var data = Immutable.fromJS({ foo: 'bar' });
 

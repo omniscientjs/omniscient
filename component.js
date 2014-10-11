@@ -74,6 +74,10 @@ function shouldComponentUpdate (nextProps, nextState) {
 
 
 function guaranteeArray (prop) {
+  if (!prop) {
+    return [];
+  }
+
   if (!Array.isArray(prop)) {
     prop = [prop];
   }
