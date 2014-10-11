@@ -61,7 +61,7 @@ function shouldComponentUpdate (nextProps, nextState) {
   var nextCursors    = guaranteeArray(nextProps.cursor),
       currentCursors = guaranteeArray(this.props.cursor);
 
-  if (nextCursors.length !== nextCursors.length) {
+  if (currentCursors.length !== nextCursors.length) {
     return true;
   }
 
@@ -108,10 +108,6 @@ function hasChangedCursors (current, next) {
 
   current = current.filter(isCursor);
   next    = next.filter(isCursor);
-
-  if (current.length !== next.length) {
-    return true;
-  }
 
   return !current.every(cursorIsEqual);
 
