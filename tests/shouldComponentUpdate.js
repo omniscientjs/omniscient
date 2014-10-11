@@ -19,24 +19,23 @@ describe('shouldComponentUpdate', function () {
 
       shouldUpdate(
         [data.cursor(['foo']), data2.cursor()], null,
-        [
-          data.cursor(['foo']).update(function (x) { return 1; }),
-          data2.cursor()
-        ], null
-      );
+        [data.cursor(['foo']).update(function (x) { return 1; }), data2.cursor()], null);
     });
 
     it('if object literal has changed even if the cursor is the same', function () {
       var data = Immutable.fromJS({ foo: 'bar' });
-      shouldUpdate([data.cursor(), { foo: 'hello' }], null, [data.cursor(), { bar: 'good bye' }], null);
+      shouldUpdate([data.cursor(), { foo: 'hello' }], null,
+                   [data.cursor(), { bar: 'good bye' }], null);
     });
 
     it('if state has changed', function () {
-      shouldUpdate(null, { foo: 'hello' }, null, { foo: 'bar' });
+      shouldUpdate(null, { foo: 'hello' },
+                   null, { foo: 'bar' });
     });
 
     it('if deep state has changed', function () {
-      shouldUpdate(null, { foo: { bar : 'hello' } }, null, { foo: { bar : 'bye' } });
+      shouldUpdate(null, { foo: { bar : 'hello' } },
+                   null, { foo: { bar : 'bye' } });
     });
 
   });
@@ -48,23 +47,28 @@ describe('shouldComponentUpdate', function () {
     });
 
     it('if deep state is same', function () {
-      shouldNotUpdate(null, { foo: { bar : 'hello' } }, null, { foo: { bar : 'hello' } });
+      shouldNotUpdate(null, { foo: { bar : 'hello' } },
+                      null, { foo: { bar : 'hello' } });
     });
 
     it('if only static has changed', function () {
       var data = Immutable.fromJS({ foo: 'bar' });
-      shouldNotUpdate(null, null, null, null, { foo: 'hello' }, { bar: 'bye' });
+      shouldNotUpdate(null, null,
+                      null, null,
+                      { foo: 'hello' }, { bar: 'bye' });
     });
 
 
     it('component if passing same cursors', function () {
       var data = Immutable.fromJS({ foo: 'bar' });
-      shouldNotUpdate(data.cursor(), null, data.cursor(), null);
+      shouldNotUpdate(data.cursor(), null,
+                      data.cursor(), null);
     });
 
     it('component if passing same cursors and same data for multiple values', function () {
       var data = Immutable.fromJS({ foo: 'bar' });
-      shouldNotUpdate([data.cursor(), { foo: 'hello' }], null, [data.cursor(), { foo: 'hello' }], null);
+      shouldNotUpdate([data.cursor(), { foo: 'hello' }], null,
+                      [data.cursor(), { foo: 'hello' }], null);
     });
 
     it('if multiple cursors point to the same data', function () {
@@ -73,12 +77,9 @@ describe('shouldComponentUpdate', function () {
 
       shouldNotUpdate(
         [data.cursor(['foo']), data2.cursor()], null,
-        [data.cursor(['foo']), data2.cursor()], null
-      );
+        [data.cursor(['foo']), data2.cursor()], null);
     });
-
-  })
-
+  });
 });
 
 function shouldNotUpdate (cursor, state, nextCursor, nextState, currentStatic, nextStatic) {
