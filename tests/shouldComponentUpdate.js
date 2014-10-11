@@ -16,14 +16,14 @@ describe('shouldComponentUpdate', function () {
                    data.cursor(['bar']), null);
     });
 
-    it('when there\'s suddenly a cursors', function () {
+    it('when there\'s suddenly a cursor', function () {
       var data = Immutable.fromJS({ foo: 'bar', bar: [1, 2, 3] });
 
       shouldUpdate(null, null,
                    data.cursor(['bar']), null);
     });
 
-    it('when there\'s no longer a cursors', function () {
+    it('when there\'s no longer a cursor', function () {
       var data = Immutable.fromJS({ foo: 'bar', bar: [1, 2, 3] });
 
       shouldUpdate(data.cursor(['bar']), null,
