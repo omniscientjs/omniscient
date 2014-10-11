@@ -17,7 +17,7 @@ describe('shouldComponentUpdate', function () {
     });
 
     it('when one of multiple cursors have changed', function () {
-      var data = Immutable.fromJS({ foo: 'bar', bar: [1, 2, 3] });
+      var data  = Immutable.fromJS({ foo: 'bar', bar: [1, 2, 3] });
       var data2 = Immutable.fromJS({ baz: [1, 2, 3] });
 
       shouldUpdate(
@@ -28,18 +28,18 @@ describe('shouldComponentUpdate', function () {
     it('when object literal has changed even if the cursor is the same', function () {
       var data = Immutable.fromJS({ foo: 'bar' });
       
-      shouldUpdate([data.cursor(), { foo: 'hello' }], null,
+      shouldUpdate([data.cursor(), { foo: 'hello'    }], null,
                    [data.cursor(), { bar: 'good bye' }], null);
     });
 
     it('when state has changed', function () {
       shouldUpdate(null, { foo: 'hello' },
-                   null, { foo: 'bar' });
+                   null, { foo: 'bar'   });
     });
 
     it('when deep state has changed', function () {
       shouldUpdate(null, { foo: { bar : 'hello' } },
-                   null, { foo: { bar : 'bye' } });
+                   null, { foo: { bar : 'bye'   } });
     });
 
   });
