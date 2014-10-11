@@ -13,8 +13,6 @@ var React     = require('react'),
     immstruct = require('immstruct'),
     component = require('omniscient');
 
-var structure = immstruct({ greeting: 'Welcome', name: '' });
-
 var NameInput = component(function (cursor) {
   var onChange = function (e) {
     cursor.update('name', function (name) {
@@ -31,14 +29,17 @@ var Welcome = component(function (cursor) {
                          NameInput(cursor));
 });
 
-render();
-structure.on('swap', render);
+
+var structure = immstruct({ greeting: 'Welcome', name: '' });
 
 function render () {
   React.renderComponent(
     Welcome(structure.cursor()),
     document.querySelector('.app'));
 }
+
+render();
+structure.on('swap', render);
 ```
 
 [`immstruct`](https://github.com/mikaelbr/immstruct) is a simple wrapper for [`Immutable.js`](https://github.com/facebook/immutable-js) that ease handling re-render when an immutable data structure is replaced through the use of cursors. `immstruct` is not a requirement for Omniscient, but makes a great fit.
