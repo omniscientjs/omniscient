@@ -44,7 +44,7 @@ module.exports = function component (mixins, render) {
       firstCursor = cursor;
     }
 
-    var props = { cursor: firstCursor, statics: statics };
+    var props = { cursor: firstCursor, cursors: [], statics: statics || [] };
 
     if (key) {
       props.key = key;
@@ -53,8 +53,8 @@ module.exports = function component (mixins, render) {
     if (hasMultipleCursors) {
       props.cursors = cursor;
     }
-    else {
-      props.cursors = [firstCursor];
+    else if (firstCursor) {
+      props.cursors.push(firstCursor);
     }
 
     return Component(props);

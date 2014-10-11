@@ -50,6 +50,16 @@ describe('component', function () {
 
   describe("render function arguments", function () {
 
+    it('should handle no arguments', function (done) {
+      var mixins = [{ componentDidMount: done, myMixin: noop }];
+      var Component = component(mixins, function () {
+        arguments.length.should.equal(0);
+        return React.DOM.text(null, 'hello');
+      });
+
+      render(Component());
+    });
+
     it('should pass single cursor and statics', function (done) {
       var mixins = [{ componentDidMount: done, myMixin: noop }];
       var cursor = {};
