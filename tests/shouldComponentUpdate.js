@@ -11,6 +11,7 @@ describe('shouldComponentUpdate', function () {
 
     it('when cursors are different', function () {
       var data = Immutable.fromJS({ foo: 'bar', bar: [1, 2, 3] });
+      
       shouldUpdate(data.cursor(['foo']), null,
                    data.cursor(['bar']), null);
     });
@@ -26,6 +27,7 @@ describe('shouldComponentUpdate', function () {
 
     it('when object literal has changed even if the cursor is the same', function () {
       var data = Immutable.fromJS({ foo: 'bar' });
+      
       shouldUpdate([data.cursor(), { foo: 'hello' }], null,
                    [data.cursor(), { bar: 'good bye' }], null);
     });
@@ -55,6 +57,7 @@ describe('shouldComponentUpdate', function () {
 
     it('when only static has changed', function () {
       var data = Immutable.fromJS({ foo: 'bar' });
+      
       shouldNotUpdate(null, null,
                       null, null,
                       { foo: 'hello' }, { bar: 'bye' });
@@ -63,12 +66,14 @@ describe('shouldComponentUpdate', function () {
 
     it('when passing same cursors', function () {
       var data = Immutable.fromJS({ foo: 'bar' });
+      
       shouldNotUpdate(data.cursor(), null,
                       data.cursor(), null);
     });
 
     it('when passing same cursors and same data for multiple values', function () {
       var data = Immutable.fromJS({ foo: 'bar' });
+      
       shouldNotUpdate([data.cursor(), { foo: 'hello' }], null,
                       [data.cursor(), { foo: 'hello' }], null);
     });
