@@ -59,13 +59,13 @@ describe('shouldComponentUpdate', function () {
     });
 
 
-    it('component if passing same cursors', function () {
+    it('if passing same cursors', function () {
       var data = Immutable.fromJS({ foo: 'bar' });
       shouldNotUpdate(data.cursor(), null,
                       data.cursor(), null);
     });
 
-    it('component if passing same cursors and same data for multiple values', function () {
+    it('if passing same cursors and same data for multiple values', function () {
       var data = Immutable.fromJS({ foo: 'bar' });
       shouldNotUpdate([data.cursor(), { foo: 'hello' }], null,
                       [data.cursor(), { foo: 'hello' }], null);
