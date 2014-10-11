@@ -52,7 +52,6 @@ function shouldComponentUpdate (nextProps, nextState) {
   var nextCursors    = guaranteeArray(nextProps.cursor),
       currentCursors = guaranteeArray(this.props.cursor);
 
-  // Easiest check.
   if (nextCursors.length !== nextCursors.length) {
     return true;
   }
