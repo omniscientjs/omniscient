@@ -9,24 +9,36 @@ the cursors of [Om](https://github.com/swannodette/om), for js, using
 [Immutable.js](https://github.com/facebook/immutable-js).
 
 ```js
-var component = require('omniscient'),
-    React     = require('react'),
-    immstruct = require('immstruct');
+var React     = require('react'),
+    immstruct = require('immstruct'),
+    component = require('omniscient');
 
-var Heading = component(function (cursor) {
-  return React.DOM.text({}, cursor.get('text'));
+var structure = immstruct({ greeting: 'Welcome', name: '' });
+
+var NameInput = component(function (cursor) {
+  var onChange = function (e) {
+    cursor.update('name', function (name) {
+      return e.currentTarget.value;
+    });
+  };
+  return React.DOM.input({ value: cursor.get('name'), onChange: onChange });
 });
 
-var structure = immstruct({ text: 'some text' });
+var Welcome = component(function (cursor) {
+  var name = cursor.get('name');
+  return React.DOM.p({}, cursor.get('greeting'),
+                         name ? ", " + name : "", "!",
+                         NameInput(cursor));
+});
 
-$ = document.querySelector.bind(document);
-function render () {
-  React.renderComponent(Heading(structure.cursor()), $('.app'));
-}
-
-// Render and re-render on new immutable structure
 render();
 structure.on('swap', render);
+
+function render () {
+  React.renderComponent(
+    Welcome(structure.cursor()),
+    document.querySelector('.app'));
+}
 ```
 
 [`immstruct`](https://github.com/mikaelbr/immstruct) is a simple wrapper for [`Immutable.js`](https://github.com/facebook/immutable-js) that ease handling re-render when an immutable data structure is replaced through the use of cursors. `immstruct` is not a requirement for Omniscient, but makes a great fit.
