@@ -1,8 +1,8 @@
-Omniscient [![NPM version][npm-image]][npm-url] [![Dependency Status][depstat-image]][depstat-url]
+Omniscient [![NPM version][npm-image]][npm-url] [![Build Status][travis-image]][travis-url] [![Dependency Status][depstat-image]][depstat-url]
 =========
 
 <img src="https://raw.githubusercontent.com/torgeir/omniscient/master/omniscient_logo.png" align="right" width="150px">
-> A library providing an abstraction for React components that allows for top-down rendering of immutable data. Using cursors into immutable datastructures the nested components does not need knowledge of the entire immutable data structure, but are still capable of swapping out their own piece of data to trigger a re render of affected components. 
+> A library providing an abstraction for React components that allows for top-down rendering of immutable data. Using cursors into immutable datastructures the nested components does not need knowledge of the entire immutable data structure, but are still capable of swapping out their own piece of data to trigger a re render of affected components.
 
 > Omniscient pairs the simplicity of [Quiescent](https://github.com/levand/quiescent) with
 the cursors of [Om](https://github.com/swannodette/om), for js, using
@@ -213,6 +213,9 @@ See [how to use immstruct](https://github.com/mikaelbr/immstruct/blob/master/REA
 
 [npm-url]: https://npmjs.org/package/omniscient
 [npm-image]: http://img.shields.io/npm/v/omniscient.svg?style=flat
+
+[travis-url]: http://travis-ci.org/omniscientjs/omniscient
+[travis-image]: http://img.shields.io/travis/omniscientjs/omniscient.svg?style=flat
 
 [depstat-url]: https://gemnasium.com/torgeir/omniscient
 [depstat-image]: http://img.shields.io/gemnasium/torgeir/omniscient.svg?style=flat
