@@ -23,14 +23,13 @@ var NameInput = component(function (cursor) {
 });
 
 var Welcome = component(function (cursor) {
-  var name = cursor.get('name');
-  return React.DOM.p({}, cursor.get('greeting'),
-                         name ? ", " + name : "", "!",
-                         NameInput(cursor));
+  var guest = cursor.get('guest');
+  var name = guest.get('name') ? ", " + guest.get('name') : "";
+  return React.DOM.p({}, cursor.get('greeting'), name, "!",
+                         NameInput(guest));
 });
 
-
-var structure = immstruct({ greeting: 'Welcome', name: '' });
+var structure = immstruct({ greeting: 'Welcome', guest: { name: '' } });
 
 function render () {
   React.renderComponent(
