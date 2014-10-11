@@ -45,8 +45,7 @@ module.exports.isEqualCursor = shallowEqualImmutable;
 module.exports.isEqualState = shallowEqualImmutable;
 
 function shouldComponentUpdate (nextProps, nextState) {
-  var isEqualState  = module.exports.isEqualState,
-      isEqualCursor = module.exports.isEqualCursor;
+  var isEqualState  = module.exports.isEqualState;
 
   var nextCursors    = guaranteeArray(nextProps.cursor),
       currentCursors = guaranteeArray(this.props.cursor);
