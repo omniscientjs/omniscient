@@ -127,30 +127,6 @@ var List = component(function (cursor) {
 
 Omniscient allows for component local state. That is, all the usual react component methods are available on `this` for use through mixins. You are free to `this.setState({ .. })` for component local view state.
 
-#### Sharing state between parent and child
-
-Some times you need to share state between a parent and child component. A special kind of [`static`](#statics) called `shared` can hold this sort of information.
-
-*Unlike all other statics, changing a `shared` static will cause the view to re-render*.
-
-```js
-var Item = component(function (cursor, statics) {
-  // re-renders when `statics.shared.fromParent` changes
-  if (statics.shared.fromParent) {
-    return React.DOM.text({}, cursor.get('text'));
-  }
-  return React.DOM.li({ onClick: onClick }, React.DOM.text({}, cursor.get('text')));
-});
-
-var List = component(function (cursor) {
-  return React.DOM.ul({}, cursor.toArray().map(function (itemCursor) {
-    return Item(itemCursor, {
-      shared: { fromParent: cursor.get('valueFromParent') }
-    });
-  });
-});
-```
-
 ### Providing component keys
 
 For correct merging of states and components between render cycles, React needs a `key` as part of the props of a component. With Omniscient, such a key can be passed as the first argument to the `component` function.
