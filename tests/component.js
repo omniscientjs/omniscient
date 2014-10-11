@@ -8,11 +8,11 @@ chai.should();
 var component = require('../');
 
 
-describe('component', function () {
+describe('component', function () {
 
-  describe('mixins', function () {
+  describe('mixins', function () {
 
-    it('should take mixins', function (done) {
+    it('should take mixins', function (done) {
       var mixins = [{ componentDidMount: done, myMixin: noop }];
 
       var Component = component(mixins, function () {
@@ -23,7 +23,7 @@ describe('component', function () {
       render(Component());
     });
 
-    it('should set React key', function (done) {
+    it('should set React key', function (done) {
       var mixins = [{ componentDidMount: done, myMixin: noop }];
 
       var Component = component(mixins, function () {
@@ -35,8 +35,8 @@ describe('component', function () {
       render(Component('myKey'));
     });
 
-    it('should have overridable shouldComponentUpdate in mixin', function (done) {
-      var shouldUpdate = function (nextProps) { return true; };
+    it('should have overridable shouldComponentUpdate in mixin', function (done) {
+      var shouldUpdate = function (nextProps) { return true; };
       var mixins = [{ componentDidMount: done, shouldComponentUpdate: shouldUpdate }];
 
       var Component = component(mixins, function () {
@@ -60,7 +60,7 @@ describe('component', function () {
       render(Component());
     });
 
-    it('should pass single cursor and statics', function (done) {
+    it('should pass single cursor and statics', function (done) {
       var mixins = [{ componentDidMount: done, myMixin: noop }];
       var cursor = {};
       var statics = {};
@@ -122,18 +122,18 @@ describe('component', function () {
     });
   });
 
-  beforeEach(function() {
+  beforeEach(function () {
     global.document = jsdom.jsdom('<html><body></body></html>');
     global.window = global.document.parentWindow;
   });
 
-  afterEach(function() {
+  afterEach(function () {
     delete global.document;
     delete global.window;
   });
 });
 
-function noop () {}
+function noop () {}
 
 function render (component) {
   ReactTestUtils.renderIntoDocument(component);
