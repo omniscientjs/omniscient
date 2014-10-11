@@ -109,6 +109,10 @@ function hasChangedCursors (current, next) {
   current = current.filter(isCursor);
   next    = next.filter(isCursor);
 
+  if (current.length !== next.length) {
+    return true;
+  }
+
   return !current.every(cursorIsEqual);
 
   function cursorIsEqual (curr, i) {
