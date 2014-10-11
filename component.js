@@ -57,7 +57,7 @@ function shouldComponentUpdate (nextProps, nextState) {
     return true;
   }
 
-  if (hasCursorsChanged(currentCursors, nextCursors)) {
+  if (hasChangedCursors(currentCursors, nextCursors)) {
     return true;
   }
 
@@ -65,7 +65,7 @@ function shouldComponentUpdate (nextProps, nextState) {
     return true;
   }
 
-  if (hasPropertiesChanged(currentCursors, nextCursors)) {
+  if (hasChangedProperties(currentCursors, nextCursors)) {
     return true;
   }
 
@@ -94,7 +94,7 @@ function isCursor (potential) {
   return potential && !!potential.deref;
 }
 
-function hasCursorsChanged (current, next) {
+function hasChangedCursors (current, next) {
   var isEqualCursor = module.exports.isEqualCursor;
 
   current = current.filter(isCursor);
@@ -109,7 +109,7 @@ function hasCursorsChanged (current, next) {
   });
 }
 
-function hasPropertiesChanged (current, next) {
+function hasChangedProperties (current, next) {
   current = current.filter(not(isCursor));
   next    = next.filter(not(isCursor));
 
