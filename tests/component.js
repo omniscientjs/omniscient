@@ -11,6 +11,7 @@ var component = require('../');
 describe('component', function () {
 
   describe('mixins', function () {
+
     beforeEach(function() {
       global.document = jsdom.jsdom('<html><body></body></html>');
       global.window = global.document.parentWindow;
@@ -22,21 +23,15 @@ describe('component', function () {
     });
 
     it('should be able to take mixins', function (done) {
-      var Component = component([{
-        myMixin: noop
-      }], function () {
+      var mixins = [{ componentDidMount: done, myMixin: noop }];
+      var Component = component(mixins, function () {
         this.should.have.property('myMixin');
-        this.should.not.have.property('bogusMixin');
-
-        done();
         return React.DOM.text(null, 'hello');
       });
 
       ReactTestUtils.renderIntoDocument(Component());
     });
-
   });
 });
-
 
 function noop () {}
