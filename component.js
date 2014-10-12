@@ -1,11 +1,16 @@
 var React = require('react');
 var deepEqual = require('deep-equal');
 
+module.exports = component;
+module.exports.shouldComponentUpdate = shouldComponentUpdate;
+module.exports.isEqualCursor = function (a, b) { return a === b; };
+module.exports.isEqualState = deepEqual;
+
 var ShouldComponentUpdate = {
   shouldComponentUpdate: module.exports.shouldComponentUpdate
 };
 
-module.exports = function component (mixins, render) {
+function component (mixins, render) {
   if (typeof mixins === 'function') {
     render = mixins;
     mixins = [];
@@ -44,14 +49,9 @@ module.exports = function component (mixins, render) {
 
     return Component(props);
   };
-};
-
-module.exports.shouldComponentUpdate = shouldComponentUpdate;
-module.exports.isEqualCursor = function (a, b) { return a === b; };
-module.exports.isEqualState = deepEqual;
+}
 
 function shouldComponentUpdate (nextProps, nextState) {
-
   var isEqualState  = module.exports.isEqualState;
 
   var nextCursors    = guaranteeObject(nextProps.cursor),
