@@ -9,6 +9,22 @@ var component = require('../');
 
 describe('component', function () {
 
+  describe('arguments', function () {
+
+    it('should take displayName', function (done) {
+      var mixins = [{ componentDidMount: done }];
+      var Component = component('myComponent', mixins, function () {
+        this.constructor.should.have.property('displayName');
+        this.constructor.displayName.should.equal('myComponent');
+
+        return React.DOM.text(null, 'hello');
+      });
+
+      render(Component());
+    });
+
+  });
+
   describe('mixins', function () {
 
     it('should take mixins', function (done) {

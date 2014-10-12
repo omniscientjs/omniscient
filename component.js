@@ -15,44 +15,17 @@ var ShouldComponentUpdate = {
   shouldComponentUpdate: module.exports.shouldComponentUpdate
 };
 
-function component (name, mixins, render) {
-  // signature: render
-  if (typeof name === 'function') {
-    render = name;
-    mixins = [];
-  }
-  // signature: name, render
-  if (typeof name === 'string' && typeof mixins === 'function') {
-    render = mixins;
-    mixins = [];
-  }
-  // signature: mixins, render
-  if (Array.isArray(name) && typeof mixins === 'function') {
-    render = mixins;
-    mixins = name;
-  }
+function component (displayName, mixins, render) {
+  var options = createDefaultArguments(displayName, mixins, render);
 
-  if (!Array.isArray(mixins)) {
-    mixins = [mixins];
-  }
-
-  if (!hasShouldComponentUpdate(mixins)) {
-    mixins = [ShouldComponentUpdate].concat(mixins);
-  }
-
-  var proto = {
-    mixins: mixins,
+  var Component = React.createClass({
+    displayName: options.displayName,
+    mixins: options.mixins,
     render: function () {
-      debug('render():', this.name, this.props.key ? "key:"+this.props.key : "");
-      return render.call(this, this.props.cursor, this.props.statics);
+      debug('render():', this.constructor.displayName, this.props.key ? "key:" + this.props.key : "");
+      return options.render.call(this, this.props.cursor, this.props.statics);
     }
-  };
-
-  if (name) {
-    proto.name = name;
-  }
-
-  var Component = React.createClass(proto);
+  });
 
   return function (key, cursor, statics) {
     if (typeof key === 'object') {
@@ -74,8 +47,49 @@ function component (name, mixins, render) {
   };
 }
 
+function createDefaultArguments (displayName, mixins, render) {
+
+  // (render)
+  if (typeof displayName === 'function') {
+    return {
+      displayName: void 0,
+      mixins: [],
+      render: displayName
+    };
+  }
+
+  // (mixins, render)
+  if (typeof displayName === 'object' && typeof mixins === 'function') {
+    render      = mixins;
+    mixins      = displayName;
+    displayName = void 0;
+  }
+
+  // (displayName, render)
+  if (typeof displayName === 'string' && typeof mixins === 'function') {
+    render = mixins;
+    mixins = [];
+  }
+
+  // Else (displayName, mixins, render)
+
+  if (!Array.isArray(mixins)) {
+    mixins = [mixins];
+  }
+
+  if (!hasShouldComponentUpdate(mixins)) {
+    mixins = [ShouldComponentUpdate].concat(mixins);
+  }
+
+  return {
+    displayName: displayName,
+    mixins: mixins,
+    render: render
+  };
+}
+
 function shouldComponentUpdate (nextProps, nextState) {
-  debug('shouldComponentUpdate():', this.name, this.props.key ? "key:"+this.props.key : "");
+  debug('shouldComponentUpdate():', this.constructor.displayName, this.props.key ? "key:"+this.props.key : "");
 
   var isEqualState  = module.exports.isEqualState;
 
@@ -129,7 +143,7 @@ function hasChangedProperties (current, next) {
   current = filterKeyValue(current, not(isCursor));
   next    = filterKeyValue(next, not(isCursor));
 
-  for (var key in current) 
+  for (var key in current)
     if (!deepEqual(current[key], next[key]))
       return true;
   return false;
