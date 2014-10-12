@@ -12,13 +12,15 @@
   },
   "devDependencies": {
     "chai": "^1.9.2",
-    "immutable": "^2.2.3",
+    "immstruct": "^0.8.1",
+    "immutable": "^2.3.0",
     "jsdom": "^1.0.1",
-    "mocha": "^1.21.4"
+    "mocha": "^1.21.4",
+    "react": "^0.11.2"
   },
   "scripts": {
-    "test": "mocha -R spec tests/**",
-    "test-watch": "mocha -G -w -R min tests/**"
+    "test": "mocha -R spec tests/**-test.js",
+    "test-watch": "mocha -G -w -R min tests/**-test.js"
   },
   "repository": {
     "type": "git",

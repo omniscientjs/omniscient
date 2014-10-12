@@ -11,10 +11,6 @@ module.exports.debug = function () {
   debug = console.log.bind(console);
 };
 
-var ShouldComponentUpdate = {
-  shouldComponentUpdate: module.exports.shouldComponentUpdate
-};
-
 function component (displayName, mixins, render) {
   var options = createDefaultArguments(displayName, mixins, render);
 
@@ -76,6 +72,9 @@ function createDefaultArguments (displayName, mixins, render) {
   }
 
   if (!hasShouldComponentUpdate(mixins)) {
+    var ShouldComponentUpdate = {
+      shouldComponentUpdate: module.exports.shouldComponentUpdate
+    };
     mixins = [ShouldComponentUpdate].concat(mixins);
   }
 
