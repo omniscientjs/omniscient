@@ -3,10 +3,9 @@ var jsdom = require('jsdom');
 var React  = require("react/addons"),
     ReactTestUtils = React.addons.TestUtils;
 
-chai.should();
+var should = chai.should();
 
 var component = require('../');
-
 
 describe('component', function () {
 
@@ -52,8 +51,9 @@ describe('component', function () {
 
     it('should handle no arguments', function (done) {
       var mixins = [{ componentDidMount: done, myMixin: noop }];
-      var Component = component(mixins, function () {
-        arguments.length.should.equal(0);
+      var Component = component(mixins, function (cursor, statics) {
+        should.not.exist(cursor);
+        should.not.exist(statics);
         return React.DOM.text(null, 'hello');
       });
 
@@ -62,16 +62,16 @@ describe('component', function () {
 
     it('should pass single cursor and statics', function (done) {
       var mixins = [{ componentDidMount: done, myMixin: noop }];
-      var cursor = {};
+      var cursor1 = {};
       var statics = {};
 
-      var Component = component(mixins, function (cursorarg, staticsarg) {
-        cursorarg.should.equal(cursor);
+      var Component = component(mixins, function (cursor, staticsarg) {
+        cursor.should.equal(cursor1);
         staticsarg.should.equal(statics);
         return React.DOM.text(null, 'hello');
       });
 
-      render(Component(cursor, statics));
+      render(Component(cursor1, statics));
     });
 
     it('should pass multiple cursors and statics', function (done) {
@@ -80,13 +80,13 @@ describe('component', function () {
       var cursor2 = {};
       var statics = {};
 
-      var Component = component(mixins, function (cursor1arg, cursor2arg, staticarg) {
-        cursor1arg.should.equal(cursor1);
-        cursor2arg.should.equal(cursor2);
+      var Component = component(mixins, function (cursor, staticarg) {
+        cursor.one.should.equal(cursor1);
+        cursor.two.should.equal(cursor2);
         staticarg.should.equal(statics);
         return React.DOM.text(null, 'hello');
       });
-      render(Component([cursor1, cursor2], statics));
+      render(Component({ one: cursor1, two: cursor2 }, statics));
     });
   });
 
@@ -112,13 +112,13 @@ describe('component', function () {
       var statics = {};
 
       var Component = component(mixins, function () {
-        this.props.cursors[0].should.equal(cursor1);
-        this.props.cursors[1].should.equal(cursor2);
+        this.props.cursor.one.should.equal(cursor1);
+        this.props.cursor.two.should.equal(cursor2);
         this.props.statics.should.equal(statics);
         return React.DOM.text(null, 'hello');
       });
 
-      render(Component([cursor1, cursor2], statics));
+      render(Component({ one: cursor1, two: cursor2 }, statics));
     });
   });
 
