@@ -55,11 +55,22 @@ function shouldComponentUpdate (nextProps, nextState) {
 
   var isEqualState  = module.exports.isEqualState;
 
-  var nextCursors    = guaranteeArray(nextProps.cursor),
-      currentCursors = guaranteeArray(this.props.cursor);
+  var nextCursors    = guaranteeObject(nextProps.cursor),
+      currentCursors = guaranteeObject(this.props.cursor);
 
-  if (currentCursors.length !== nextCursors.length) {
+  var nextCursorsKeys    = Object.keys(nextCursors);
+  var currentCursorsKeys = Object.keys(currentCursors);
+
+  if (currentCursorsKeys.length !== nextCursorsKeys.length) {
     return true;
+  }
+
+  var sortedNextCursorKeys     = nextCursorsKeys.sort(),
+      sortedCurrentCursorsKeys = currentCursorsKeys.sort();
+  for (var i = 0; i < sortedCurrentCursorsKeys.length; i++) {
+    if (sortedNextCursorKeys[i] !== sortedCurrentCursorsKeys[i]) {
+      return true;
+    }
   }
 
   if (hasChangedCursors(currentCursors, nextCursors)) {
@@ -78,18 +89,16 @@ function shouldComponentUpdate (nextProps, nextState) {
 }
 
 
-function guaranteeArray (prop) {
+function guaranteeObject (prop) {
   if (!prop) {
     return [];
   }
 
   if (isCursor(prop)) {
-    return [prop];
+    return { _dummy_key: prop };
   }
 
-  var arr = [];
-  for (var key in prop) arr.push(prop[key]);
-  return arr;
+  return prop;
 }
 
 function not (fn) {
@@ -103,37 +112,45 @@ function isCursor (potential) {
 }
 
 function hasChangedCursors (current, next) {
+  current = filterKeyValue(current, isCursor);
+  next    = filterKeyValue(next, isCursor);
+
   var isEqualCursor = module.exports.isEqualCursor;
 
-  current = current.filter(isCursor);
-  next    = next.filter(isCursor);
+  var key;
+  for (key in current)
+    if (!isEqualCursor(current[key].deref(), next[key].deref()))
+      return true;
 
-  return !current.every(cursorIsEqual);
-
-  function cursorIsEqual (curr, i) {
-    if (!next[i]) {
-      return false;
-    }
-    return isEqualCursor(curr.deref(), next[i].deref());
-  }
+  for (key in next)
+    if (!isEqualCursor(next[key].deref(), current[key].deref()))
+      return true;
 }
 
 function hasChangedProperties (current, next) {
-  current = current.filter(not(isCursor));
-  next    = next.filter(not(isCursor));
+  current = filterKeyValue(current, not(isCursor));
+  next    = filterKeyValue(next, not(isCursor));
 
-  return !current.every(propertyIsEqual);
+  var key;
+  for (key in current)
+    if (!deepEqual(current[key], next[key]))
+      return true;
 
-  function propertyIsEqual (curr, i) {
-    if (!next[i]) {
-      return false;
-    }
-    return deepEqual(curr, next[i]);
-  }
+  for (key in next)
+    if (!deepEqual(next[key], current[key]))
+      return true;
 }
 
 function hasShouldComponentUpdate (mixins) {
   return !!mixins.filter(function (mixin) {
     return !!mixin.shouldComponentUpdate;
   }).length;
+}
+
+function filterKeyValue (object, predicate) {
+  var key, filtered = {};
+  for (key in object)
+    if (predicate(object[key]))
+      filtered[key] = object[key];
+  return filtered;
 }

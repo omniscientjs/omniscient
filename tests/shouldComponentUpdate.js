@@ -48,6 +48,13 @@ describe('shouldComponentUpdate', function () {
                    { one: data.cursor(), two: { bar: 'good bye' }}, null);
     });
 
+    it('when same cursors change keys', function () {
+      var data = Immutable.fromJS({ foo: 'bar', bar: [1, 2, 3] });
+
+      shouldUpdate({ one:     data.cursor(['foo']) }, null,
+                   { changed: data.cursor(['foo']) }, null);
+    });
+
     it('when state has changed', function () {
       shouldUpdate(null, { foo: 'hello' },
                    null, { foo: 'bar'   });
