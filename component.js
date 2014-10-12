@@ -65,12 +65,13 @@ function shouldComponentUpdate (nextProps, nextState) {
     return true;
   }
 
-  var sortedNextCursorKeys     = nextCursorsKeys.sort(),
-      sortedCurrentCursorsKeys = currentCursorsKeys.sort();
-  for (var i = 0; i < sortedCurrentCursorsKeys.length; i++) {
-    if (sortedNextCursorKeys[i] !== sortedCurrentCursorsKeys[i]) {
-      return true;
-    }
+  function existsInBoth (key) {
+    return currentCursors[key] && nextCursors[key];
+  }
+
+  var hasDifferentKeys = !currentCursorsKeys.every(existsInBoth);
+  if (hasDifferentKeys) {
+    return true;
   }
 
   if (hasChangedCursors(currentCursors, nextCursors)) {
@@ -91,7 +92,7 @@ function shouldComponentUpdate (nextProps, nextState) {
 
 function guaranteeObject (prop) {
   if (!prop) {
-    return [];
+    return {};
   }
 
   if (isCursor(prop)) {
@@ -108,7 +109,7 @@ function not (fn) {
 }
 
 function isCursor (potential) {
-  return potential && !!potential.deref;
+  return potential && typeof potential.deref === 'function';
 }
 
 function hasChangedCursors (current, next) {
@@ -117,27 +118,18 @@ function hasChangedCursors (current, next) {
 
   var isEqualCursor = module.exports.isEqualCursor;
 
-  var key;
-  for (key in current)
+  for (var key in current) {
     if (!isEqualCursor(current[key].deref(), next[key].deref()))
       return true;
-
-  for (key in next)
-    if (!isEqualCursor(next[key].deref(), current[key].deref()))
-      return true;
+  }
 }
 
 function hasChangedProperties (current, next) {
   current = filterKeyValue(current, not(isCursor));
   next    = filterKeyValue(next, not(isCursor));
 
-  var key;
-  for (key in current)
+  for (var key in current)
     if (!deepEqual(current[key], next[key]))
-      return true;
-
-  for (key in next)
-    if (!deepEqual(next[key], current[key]))
       return true;
 }
 
