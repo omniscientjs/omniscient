@@ -1,13 +1,15 @@
 var React     = require('react'),
-    component = require('omniscient'),
+    component = require('../'),
     immstruct = require('immstruct'),
     Immutable = require('immutable');
+
+component.debug();
 
 var d = React.DOM;
 
 var data = immstruct({ numbers: {} });
 
-var Bucket = component(function (cursor, statics) {
+var Bucket = component("Bucket", function (cursor, statics) {
   var numbers = cursor.toArray();
   return d.li({},
               d.b({}, "Bucket #", statics.label, " "),
@@ -20,7 +22,7 @@ var Bucket = component(function (cursor, statics) {
               }));
 });
 
-var Buckets = component(function (cursor) {
+var Buckets = component("Buckets", function (cursor) {
   var labels = Object.keys(cursor.toJS());
   return d.ul({},
               cursor.toArray().map(function (number, i) {
@@ -47,4 +49,4 @@ setInterval(function () {
     }
     return state.unshift(number);
   });
-}, 30);
+}, 1000);

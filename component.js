@@ -6,14 +6,30 @@ module.exports.shouldComponentUpdate = shouldComponentUpdate;
 module.exports.isEqualCursor = function (a, b) { return a === b; };
 module.exports.isEqualState = deepEqual;
 
+var debug = function () {};
+module.exports.debug = function () {
+  debug = console.log.bind(console);
+};
+
 var ShouldComponentUpdate = {
   shouldComponentUpdate: module.exports.shouldComponentUpdate
 };
 
-function component (mixins, render) {
-  if (typeof mixins === 'function') {
+function component (name, mixins, render) {
+  // signature: render
+  if (typeof name === 'function') {
+    render = name;
+    mixins = [];
+  }
+  // signature: name, render
+  if (typeof name === 'string' && typeof mixins === 'function') {
     render = mixins;
     mixins = [];
+  }
+  // signature: mixins, render
+  if (Array.isArray(name) && typeof mixins === 'function') {
+    render = mixins;
+    mixins = name;
   }
 
   if (!Array.isArray(mixins)) {
@@ -24,12 +40,19 @@ function component (mixins, render) {
     mixins = [ShouldComponentUpdate].concat(mixins);
   }
 
-  var Component = React.createClass({
+  var proto = {
     mixins: mixins,
     render: function () {
+      debug('render():', this.name, this.props.key ? "key:"+this.props.key : "");
       return render.call(this, this.props.cursor, this.props.statics);
     }
-  });
+  };
+
+  if (name) {
+    proto.name = name;
+  }
+
+  var Component = React.createClass(proto);
 
   return function (key, cursor, statics) {
     if (typeof key === 'object') {
@@ -52,6 +75,8 @@ function component (mixins, render) {
 }
 
 function shouldComponentUpdate (nextProps, nextState) {
+    debug('shouldComponentUpdate():', this.name, this.props.key ? "key:"+this.props.key : "");
+
   var isEqualState  = module.exports.isEqualState;
 
   var nextCursors    = guaranteeObject(nextProps.cursor),
