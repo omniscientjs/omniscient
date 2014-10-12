@@ -57,8 +57,8 @@ function shouldComponentUpdate (nextProps, nextState) {
   var nextCursors    = guaranteeObject(nextProps.cursor),
       currentCursors = guaranteeObject(this.props.cursor);
 
-  var nextCursorsKeys    = Object.keys(nextCursors);
-  var currentCursorsKeys = Object.keys(currentCursors);
+  var nextCursorsKeys    = Object.keys(nextCursors),
+      currentCursorsKeys = Object.keys(currentCursors);
 
   if (currentCursorsKeys.length !== nextCursorsKeys.length) {
     return true;
