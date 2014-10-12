@@ -209,7 +209,7 @@ To improve logging, give your components a name
 
 ```js
 var MyComponent = component("MyComponent", function () {
-  return d.text({}, "I output loggin information on .shouldComponentUpdate() and .render()");
+  return d.text({}, "I output logging information on .shouldComponentUpdate() and .render()");
 });
 ```
 ---
