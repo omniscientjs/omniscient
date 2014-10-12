@@ -1,5 +1,4 @@
 var React = require('react');
-var shallowEqualImmutable = require('react-immutable-render-mixin/shallowEqualImmutable');
 var deepEqual = require('deep-equal');
 
 var ShouldComponentUpdate = {
@@ -48,7 +47,7 @@ module.exports = function component (mixins, render) {
 };
 
 module.exports.shouldComponentUpdate = shouldComponentUpdate;
-module.exports.isEqualCursor = shallowEqualImmutable;
+module.exports.isEqualCursor = function (a, b) { return a === b; };
 module.exports.isEqualState = deepEqual;
 
 function shouldComponentUpdate (nextProps, nextState) {

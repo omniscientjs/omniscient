@@ -8,8 +8,7 @@
   },
   "dependencies": {
     "deep-equal": "^0.2.1",
-    "react": "^0.11.2",
-    "react-immutable-render-mixin": "^0.5.1"
+    "react": "^0.11.2"
   },
   "devDependencies": {
     "chai": "^1.9.2",
