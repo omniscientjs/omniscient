@@ -75,7 +75,7 @@ function component (name, mixins, render) {
 }
 
 function shouldComponentUpdate (nextProps, nextState) {
-    debug('shouldComponentUpdate():', this.name, this.props.key ? "key:"+this.props.key : "");
+  debug('shouldComponentUpdate():', this.name, this.props.key ? "key:"+this.props.key : "");
 
   var isEqualState  = module.exports.isEqualState;
 
