@@ -83,11 +83,13 @@ function guaranteeArray (prop) {
     return [];
   }
 
-  if (!Array.isArray(prop)) {
+  if (isCursor(prop)) {
     return [prop];
   }
 
-  return prop;
+  var arr = [];
+  for (var key in prop) arr.push(prop[key]);
+  return arr;
 }
 
 function not (fn) {

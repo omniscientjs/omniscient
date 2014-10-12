@@ -16,6 +16,7 @@ describe('shouldComponentUpdate', function () {
                    data.cursor(['bar']), null);
     });
 
+
     it('when there\'s suddenly a cursor', function () {
       var data = Immutable.fromJS({ foo: 'bar', bar: [1, 2, 3] });
 
@@ -35,15 +36,16 @@ describe('shouldComponentUpdate', function () {
       var data2 = Immutable.fromJS({ baz: [1, 2, 3] });
 
       shouldUpdate(
-        [data.cursor(['foo']), data2.cursor()], null,
-        [data.cursor(['foo']).update(function (x) { return 1; }), data2.cursor()], null);
+        { one: data.cursor(['foo']), two: data2.cursor() }, null,
+        { one: data.cursor(['foo']).update(function (x) { return 1; }), two: data2.cursor() }, null);
     });
+
 
     it('when object literal has changed even if the cursor is the same', function () {
       var data = Immutable.fromJS({ foo: 'bar' });
 
-      shouldUpdate([data.cursor(), { foo: 'hello'    }], null,
-                   [data.cursor(), { bar: 'good bye' }], null);
+      shouldUpdate({ one: data.cursor(), two: { foo: 'hello'    }}, null,
+                   { one: data.cursor(), two: { bar: 'good bye' }}, null);
     });
 
     it('when state has changed', function () {
@@ -57,6 +59,7 @@ describe('shouldComponentUpdate', function () {
     });
 
   });
+
 
   describe('should not update', function () {
 
@@ -77,7 +80,6 @@ describe('shouldComponentUpdate', function () {
                       { foo: 'hello' }, { bar: 'bye' });
     });
 
-
     it('when passing same cursors', function () {
       var data = Immutable.fromJS({ foo: 'bar' });
 
@@ -88,8 +90,8 @@ describe('shouldComponentUpdate', function () {
     it('when passing same cursors and same data for multiple values', function () {
       var data = Immutable.fromJS({ foo: 'bar' });
 
-      shouldNotUpdate([data.cursor(), { foo: 'hello' }], null,
-                      [data.cursor(), { foo: 'hello' }], null);
+      shouldNotUpdate({ one: data.cursor(), two: { foo: 'hello' } }, null,
+                      { one: data.cursor(), two: { foo: 'hello' } }, null);
     });
 
     it('when multiple cursors point to the same data', function () {
@@ -97,8 +99,8 @@ describe('shouldComponentUpdate', function () {
       var data2 = Immutable.fromJS({ baz: [1, 2, 3] });
 
       shouldNotUpdate(
-        [data.cursor(['foo']), data2.cursor()], null,
-        [data.cursor(['foo']), data2.cursor()], null);
+        { one: data.cursor(['foo']), two: data2.cursor() }, null,
+        { one: data.cursor(['foo']), two: data2.cursor() }, null);
     });
   });
 });
