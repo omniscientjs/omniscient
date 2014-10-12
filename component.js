@@ -51,11 +51,9 @@ function createDefaultArguments (displayName, mixins, render) {
 
   // (render)
   if (typeof displayName === 'function') {
-    return {
-      displayName: void 0,
-      mixins: [],
-      render: displayName
-    };
+    render      = displayName;
+    mixins      = [];
+    displayName = void 0;
   }
 
   // (mixins, render)
