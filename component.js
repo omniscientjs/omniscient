@@ -104,9 +104,10 @@ function hasChangedProperties (current, next) {
   current = filterKeyValue(current, not(isCursor));
   next    = filterKeyValue(next, not(isCursor));
 
-  for (var key in current)
+  for (var key in current) 
     if (!deepEqual(current[key], next[key]))
       return true;
+  return false;
 }
 
 function guaranteeObject (prop) {
