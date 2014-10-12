@@ -89,6 +89,32 @@ function shouldComponentUpdate (nextProps, nextState) {
   return false;
 }
 
+function hasChangedCursors (current, next) {
+  current = filterKeyValue(current, isCursor);
+  next    = filterKeyValue(next, isCursor);
+
+  var isEqualCursor = module.exports.isEqualCursor;
+
+  for (var key in current)
+    if (!isEqualCursor(current[key].deref(), next[key].deref()))
+      return true;
+<<<<<<< HEAD
+=======
+  }
+  return false;
+>>>>>>> Reorders functions some cleanup
+}
+
+function hasChangedProperties (current, next) {
+  current = filterKeyValue(current, not(isCursor));
+  next    = filterKeyValue(next, not(isCursor));
+
+  for (var key in current) {
+    if (!deepEqual(current[key], next[key]))
+      return true;
+  }
+  return false;
+}
 
 function guaranteeObject (prop) {
   if (!prop) {
@@ -102,6 +128,12 @@ function guaranteeObject (prop) {
   return prop;
 }
 
+function hasShouldComponentUpdate (mixins) {
+  return !!mixins.filter(function (mixin) {
+    return !!mixin.shouldComponentUpdate;
+  }).length;
+}
+
 function not (fn) {
   return function () {
     return !fn.apply(fn, arguments);
@@ -110,32 +142,6 @@ function not (fn) {
 
 function isCursor (potential) {
   return potential && typeof potential.deref === 'function';
-}
-
-function hasChangedCursors (current, next) {
-  current = filterKeyValue(current, isCursor);
-  next    = filterKeyValue(next, isCursor);
-
-  var isEqualCursor = module.exports.isEqualCursor;
-
-  for (var key in current)
-    if (!isEqualCursor(current[key].deref(), next[key].deref()))
-      return true;
-}
-
-function hasChangedProperties (current, next) {
-  current = filterKeyValue(current, not(isCursor));
-  next    = filterKeyValue(next, not(isCursor));
-
-  for (var key in current)
-    if (!deepEqual(current[key], next[key]))
-      return true;
-}
-
-function hasShouldComponentUpdate (mixins) {
-  return !!mixins.filter(function (mixin) {
-    return !!mixin.shouldComponentUpdate;
-  }).length;
 }
 
 function filterKeyValue (object, predicate) {
