@@ -49,4 +49,4 @@ setInterval(function () {
     }
     return state.unshift(number);
   });
-}, 1000);
+}, 30);
