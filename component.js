@@ -98,22 +98,16 @@ function hasChangedCursors (current, next) {
   for (var key in current)
     if (!isEqualCursor(current[key].deref(), next[key].deref()))
       return true;
-<<<<<<< HEAD
-=======
-  }
   return false;
->>>>>>> Reorders functions some cleanup
 }
 
 function hasChangedProperties (current, next) {
   current = filterKeyValue(current, not(isCursor));
   next    = filterKeyValue(next, not(isCursor));
 
-  for (var key in current) {
+  for (var key in current)
     if (!deepEqual(current[key], next[key]))
       return true;
-  }
-  return false;
 }
 
 function guaranteeObject (prop) {
