@@ -118,10 +118,9 @@ function hasChangedCursors (current, next) {
 
   var isEqualCursor = module.exports.isEqualCursor;
 
-  for (var key in current) {
+  for (var key in current)
     if (!isEqualCursor(current[key].deref(), next[key].deref()))
       return true;
-  }
 }
 
 function hasChangedProperties (current, next) {
