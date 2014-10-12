@@ -200,6 +200,18 @@ See [how to use immstruct](https://github.com/mikaelbr/immstruct/blob/master/REA
 [depstat-url]: https://gemnasium.com/torgeir/omniscient
 [depstat-image]: http://img.shields.io/gemnasium/torgeir/omniscient.svg?style=flat
 
+
+### Debugging
+
+For debugging purposes, Omniscient supports calling `component.debug()`. This enables logging on calls to `render` and `shouldComponentUpdate`.
+
+To improve logging, give your components a name
+
+```js
+var MyComponent = component("MyComponent", function () {
+  return d.text({}, "I output loggin information on .shouldComponentUpdate() and .render()");
+});
+```
 ---
 
 *Logo is composed by icons from [Iconmoon](http://www.icomoon.io)
