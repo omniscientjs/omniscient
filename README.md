@@ -110,19 +110,26 @@ Communicating information back to the parent component from a child component ca
 ```js
 var Item = component(function (cursor, statics) {
   var onClick = function () {
-    statics.events.emit('data', cursor);
+    statics.channel.emit('data', cursor);
   };
   return React.DOM.li({ onClick: onClick }, React.DOM.text({}, cursor.get('text')));
 });
 
+
+// In some other file
 var events = new EventEmitter();
-events.on('data', function (item) {
-  console.log('Hello from', item);
-});
+var mixins = {
+  componentDidMount: function () {
+    events.on('data', function (item) {
+      console.log('Hello from', item);
+      // use self.props.cursor if needed (self = bound this)
+    });
+  }
+}
 
 var List = component(function (cursor) {
   return React.DOM.ul({}, cursor.toArray().map(function (item) {
-    return Item(item, { events: events });
+    return Item(item, { channel: events });
   });
 });
 ```
