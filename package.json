@@ -15,8 +15,7 @@
     "immstruct": "^0.8.1",
     "immutable": "^2.3.0",
     "jsdom": "^1.0.1",
-    "mocha": "^1.21.4",
-    "react": "^0.11.2"
+    "mocha": "^1.21.4"
   },
   "scripts": {
     "test": "mocha -R spec tests/**-test.js",
