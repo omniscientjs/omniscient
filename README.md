@@ -204,8 +204,8 @@ See [how to use immstruct](https://github.com/omniscient/immstruct/blob/master/R
 [travis-url]: http://travis-ci.org/omniscientjs/omniscient
 [travis-image]: http://img.shields.io/travis/omniscientjs/omniscient.svg?style=flat
 
-[depstat-url]: https://gemnasium.com/torgeir/omniscient
-[depstat-image]: http://img.shields.io/gemnasium/torgeir/omniscient.svg?style=flat
+[depstat-url]: https://gemnasium.com/omniscientjs/omniscient
+[depstat-image]: http://img.shields.io/gemnasium/omniscientjs/omniscient.svg?style=flat
 
 
 ### Debugging
