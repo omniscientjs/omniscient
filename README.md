@@ -221,5 +221,11 @@ var MyComponent = component("MyComponent", function () {
 ```
 ---
 
+## License
+
+[MIT License](http://en.wikipedia.org/wiki/MIT_License)
+
+
+
 *Logo is composed by icons from [Iconmoon](http://www.icomoon.io)
 and [Picol](http://picol.org). Licensed under [CC BY 3.0](http://creativecommons.org/licenses/by/3.0/)*
