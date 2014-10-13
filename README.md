@@ -2,15 +2,17 @@ Omniscient [![NPM version][npm-image]][npm-url] [![Build Status][travis-image]][
 =========
 
 <img src="https://raw.githubusercontent.com/torgeir/omniscient/master/omniscient_logo.png" align="right" width="150px">
-> A library providing an abstraction for React components that allows for top-down rendering of immutable data. Using cursors into immutable datastructures the nested components does not need knowledge of the entire immutable data structure, but are still capable of swapping out their own piece of data to trigger a re-render of affected components.
+> A library providing an abstraction for React components that allows for fast top-down rendering embracing immutable data. Using cursors into immutable data structures, nested components does not need knowledge of a global data structure, but are still capable of swapping out their own piece of data inside the larger immutable data structure and trigger a re-render. As data is immutable, re-rendering can be fast.
 
 > Omniscient pairs the simplicity of [Quiescent](https://github.com/levand/quiescent) with
 the cursors of [Om](https://github.com/swannodette/om), for js, using
 [Immutable.js](https://github.com/facebook/immutable-js).
 
+A more detailed description of Omniscient's rationale can be found in the [documentation](http://omniscientjs.github.io/documentation)
+
 ### Cursors
 
-Using cursors, child components can have the outer immutable structure swapped when a component's data is changed. A re-render is triggered, but only components referencing the changed piece of state will actually be re-rendered.
+Using cursors, child components can have the outer immutable structure swapped when a component's local data is changed. A re-render is triggered, but only components referencing the changed piece of data will actually be re-rendered. 
 
 ```js
 var React     = require('react'),
