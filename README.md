@@ -22,7 +22,7 @@ A more detailed description of Omniscient's rationale can be found in the [docum
 
 ### Cursors
 
-With cursors, components can have the outer immutable structure swapped when a component's data is changed. A re-render can be triggered, but only components trees with data affected by the change will actually be re-rendered. 
+With cursors, components can have the outer immutable structure swapped when a component's data is changed. A re-render can be triggered, but only component trees referencing data affected by the change will actually be re-rendered. 
 
 ```js
 var React     = require('react'),
