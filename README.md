@@ -17,6 +17,8 @@ the cursors of [Om](https://github.com/swannodette/om), for js, using
 - components can change their data, via cursors (without knowing where their data resides in the outer immutable data structure)
 - easily listen for changes across your data structure and trigger re-render
 - immutable data can give even faster re-renders than with pure React, as React can be prevented from even considering to re-render component trees with unchanged data
+- efficient, centrally defined `shouldComponentUpdate`
+
 
 A more detailed description of Omniscient's rationale can be found in the [documentation](http://omniscientjs.github.io/documentation)
 
