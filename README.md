@@ -22,7 +22,7 @@ A more detailed description of Omniscient's rationale can be found in the [docum
 
 ### Cursors
 
-Using cursors, child components can have the outer immutable structure swapped when a component's local data is changed. A re-render is triggered, but only components referencing the changed piece of data will actually be re-rendered. 
+With cursors, components can have the outer immutable structure swapped when a component's data is changed. A re-render can be triggered, but only components trees with data affected by the change will actually be re-rendered. 
 
 ```js
 var React     = require('react'),
@@ -58,7 +58,7 @@ structure.on('swap', render);
 ```
 *See [the running demo](http://omniscientjs.github.io/examples/#intro) on the examples page*
 
-[`immstruct`](https://github.com/omniscientjs/immstruct) is a simple wrapper for [`Immutable.js`](https://github.com/facebook/immutable-js) that ease handling re-render when an immutable data structure is replaced through the use of cursors. `immstruct` is not a requirement for Omniscient, but makes a great fit.
+[`immstruct`](https://github.com/omniscientjs/immstruct) is a simple wrapper for [`Immutable.js`](https://github.com/facebook/immutable-js) that ease trigger re-renders when the immutable data structure is replaced. `immstruct` is not a requirement for Omniscient, but makes a great fit.
 
 ### Reuseable mixins
 
