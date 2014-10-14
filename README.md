@@ -8,6 +8,16 @@ Omniscient [![NPM version][npm-image]][npm-url] [![Build Status][travis-image]][
 the cursors of [Om](https://github.com/swannodette/om), for js, using
 [Immutable.js](https://github.com/facebook/immutable-js).
 
+### Overview
+
+- top-down rendering of components (one way data flow)
+- favors immutable data (with Immutable.js)
+- encourages small, composable components, and shared functionality through mixins
+- components only deal with their own piece of data
+- components can change their data, via cursors (without knowing where their data resides in the outer immutable data structure)
+- easily listen for changes across your data structure and trigger re-render
+- immutable data can give even faster re-renders than with pure React, as React can be prevented from even considering to re-render component trees with unchanged data
+
 A more detailed description of Omniscient's rationale can be found in the [documentation](http://omniscientjs.github.io/documentation)
 
 ### Cursors
