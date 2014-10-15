@@ -95,9 +95,10 @@ var SaveOnEdit = {
   }
 };
 
-var SavingFocusingInput = component([Props, SaveOnEdit, SelectOnRender], function (cursor) {
-  return React.DOM.input({ value: cursor.get('text'), onChange: onEdit });
-});
+var SavingFocusingInput = component([Props, SaveOnEdit, SelectOnRender], 
+  function (cursor) {
+    return React.DOM.input({ value: cursor.get('text'), onChange: onEdit });
+  });
 ```
 
 ### Statics
@@ -107,13 +108,16 @@ When you need to provide other data for your component than what its rendering i
 Statics can be passed as second argument to your component.
 
 ```js
+var log = console.log.bind(console);
+
 var FocusingInput = component(SelectOnRender, function (cursor, statics) {
   var onChange = statics.onChange || function () {};
   return React.DOM.input({ value: cursor.get('text'), onChange: onChange });
 });
 
 var SomeForm = component(function (cursor) {
-  return React.DOM.form({}, FocusingInput(cursor, { onChange: console.log.bind(console) }));
+  return React.DOM.form({}, 
+                        FocusingInput(cursor, { onChange: log }));
 });
 ```
 
@@ -126,7 +130,8 @@ var Item = component(function (cursor, statics) {
   var onClick = function () {
     statics.channel.emit('data', cursor);
   };
-  return React.DOM.li({ onClick: onClick }, React.DOM.text({}, cursor.get('text')));
+  return React.DOM.li({ onClick: onClick }, 
+                      React.DOM.text({}, cursor.get('text')));
 });
 
 
@@ -142,9 +147,10 @@ var mixins = {
 }
 
 var List = component(function (cursor) {
-  return React.DOM.ul({}, cursor.toArray().map(function (item) {
-    return Item(item, { channel: events });
-  });
+  return React.DOM.ul({}, 
+                      cursor.toArray().map(function (item) {
+                        return Item(item, { channel: events });
+                      });
 });
 ```
 
@@ -162,9 +168,10 @@ var Item = component(function (cursor) {
 });
 
 var List = component(function (cursor) {
-  return React.DOM.ul({}, cursor.toArray().map(function (item, key) {
-    return Item(key, item);
-  });
+  return React.DOM.ul({}, 
+                      cursor.toArray().map(function (item, key) {
+                        return Item(key, item);
+                      });
 });
 ```
 
