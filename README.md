@@ -133,7 +133,7 @@ var Item = component(function (cursor, statics) {
 // In some other file
 var events = new EventEmitter();
 var mixins = {
-  componentDidMount: function () {
+  componentDidMount: function () {
     events.on('data', function (item) {
       console.log('Hello from', item);
       // use self.props.cursor if needed (self = bound this)
