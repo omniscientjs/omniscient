@@ -1,0 +1,16 @@
+{
+  "name": "example-jsx",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "@torgeir",
+  "license": "mit",
+  "dependencies": {
+    "browserify": "^6.1.0",
+    "immstruct": "^0.8.2",
+    "react": "^0.11.2",
+    "reactify": "^0.14.0"
+  },
+  "browserify": {
+    "transform": ["reactify"]
+  }
+}

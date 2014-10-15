@@ -1,0 +1,1 @@
+watchify example-jsx.js -o bundle.js
