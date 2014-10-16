@@ -242,6 +242,12 @@ var MyComponent = component("MyComponent", function () {
 ```
 ---
 
+
+## Authors
+
+- [Mikael Brevik](https://github.com/mikaelbr) ([@mikaelbrevik](https://twitter.com/mikaelbrevik))
+- [Torgeir Thoresen](https://github.com/torgeir) ([@torgeir](https://twitter.com/torgeir))
+
 ## License
 
 [MIT License](http://en.wikipedia.org/wiki/MIT_License)
