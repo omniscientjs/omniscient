@@ -3,8 +3,9 @@ var deepEqual = require('deep-equal');
 
 module.exports = component;
 module.exports.shouldComponentUpdate = shouldComponentUpdate;
-module.exports.isEqualCursor = function (a, b) { return a === b; };
 module.exports.isEqualState = deepEqual;
+module.exports.isEqualCursor = function (a, b) { return unCursor(a) === unCursor(b); };
+module.exports.isCursor = isCursor;
 
 var debug = function () {};
 module.exports.debug = function () {
@@ -131,7 +132,7 @@ function hasChangedCursors (current, next) {
   var isEqualCursor = module.exports.isEqualCursor;
 
   for (var key in current)
-    if (!isEqualCursor(current[key].deref(), next[key].deref()))
+    if (!isEqualCursor(current[key], next[key]))
       return true;
   return false;
 }
@@ -171,7 +172,20 @@ function not (fn) {
 }
 
 function isCursor (potential) {
-  return potential && typeof potential.deref === 'function';
+  return potential &&
+    ((typeof potential.deref === 'function') || (typeof potential.__deref === 'function'));
+}
+
+function unCursor(cursor) {
+  if (!isCursor(cursor)) {
+    return cursor;
+  }
+
+  if (typeof cursor.deref === 'function') {
+    return cursor.deref();
+  }
+
+  return cursor.__deref();
 }
 
 function filterKeyValue (object, predicate) {
