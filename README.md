@@ -24,7 +24,7 @@ A more detailed description of Omniscient's rationale can be found in the [docum
 
 ### Cursors
 
-With cursors, components can have the outer immutable structure swapped when a component's data is changed. A re-render can be triggered, but only component trees referencing data affected by the change will actually be re-rendered. 
+With cursors, components can have the outer immutable structure swapped when a component's data is changed. A re-render can be triggered, but only component trees referencing data affected by the change will actually be re-rendered.
 
 ```js
 var React     = require('react'),
@@ -95,7 +95,7 @@ var SaveOnEdit = {
   }
 };
 
-var SavingFocusingInput = component([Props, SaveOnEdit, SelectOnRender], 
+var SavingFocusingInput = component([Props, SaveOnEdit, SelectOnRender],
   function (cursor) {
     return React.DOM.input({ value: cursor.get('text'), onChange: onEdit });
   });
@@ -116,7 +116,7 @@ var FocusingInput = component(SelectOnRender, function (cursor, statics) {
 });
 
 var SomeForm = component(function (cursor) {
-  return React.DOM.form({}, 
+  return React.DOM.form({},
                         FocusingInput(cursor, { onChange: log }));
 });
 ```
@@ -130,7 +130,7 @@ var Item = component(function (cursor, statics) {
   var onClick = function () {
     statics.channel.emit('data', cursor);
   };
-  return React.DOM.li({ onClick: onClick }, 
+  return React.DOM.li({ onClick: onClick },
                       React.DOM.text({}, cursor.get('text')));
 });
 
@@ -147,7 +147,7 @@ var mixins = {
 }
 
 var List = component(function (cursor) {
-  return React.DOM.ul({}, 
+  return React.DOM.ul({},
                       cursor.toArray().map(function (item) {
                         return Item(item, { channel: events });
                       });
@@ -168,7 +168,7 @@ var Item = component(function (cursor) {
 });
 
 var List = component(function (cursor) {
-  return React.DOM.ul({}, 
+  return React.DOM.ul({},
                       cursor.toArray().map(function (item, key) {
                         return Item(key, item);
                       });
@@ -209,6 +209,35 @@ component.shouldComponentUpdate = function (newProps, newState) {
 var InefficientAlwaysRenderingText = component(function (cursor) {
   return React.DOM.text(cursor.get('text'));
 });
+```
+
+### Using Different Cursors than Immutable.js
+
+[Immutable.js](https://github.com/facebook/immutable-js) is used as an optional dependency per default
+as the cursor-check used in the provided `shouldCompontentUpdate` takes for granted that the cursors
+are Immutable.js cursors. You can easily override this by overriding two methods provided
+by Omniscient; `isCursor` and `isEqualCursor`.
+
+#### Overriding `isCursor` and `isEqualCursor`
+
+`isCursor` should return true if provided object is of cursor type.
+
+```js
+var component = require('omniscient');
+
+component.isCursor = function (potentialCursor) {
+  return potentialCursor instanceof MyCustomCursor;
+};
+```
+
+`isEqualCursor` should return true if two provided cursors are equal.
+
+```js
+var component = require('omniscient');
+
+component.isEqualCursor = function (oldCursor, newCursor) {
+  return oldCursor.unwrap() === newCursor.unwrap();
+};
 ```
 
 ### Immstruct
