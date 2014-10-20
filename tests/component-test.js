@@ -109,7 +109,7 @@ describe('component', function () {
       var styleProps = { style: { background: '#fff' } };
 
       var Component = component(mixins, function (cursor, statics) {
-        statics.style.should.equal(styleProps.style);
+        this.props.style.style.should.equal(styleProps.style);
         return React.DOM.text(null, 'hello');
       });
 
