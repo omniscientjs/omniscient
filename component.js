@@ -19,8 +19,9 @@ function component (displayName, mixins, render) {
     displayName: options.displayName,
     mixins: options.mixins,
     render: function () {
+      var statics = mergeStatics(this.props.statics, this.props);
       debug('render():', this.constructor.displayName, this.props.key ? "key:" + this.props.key : "");
-      return options.render.call(this, this.props.cursor, this.props.statics);
+      return options.render.call(this, this.props.cursor, statics);
     }
   });
 
@@ -194,4 +195,14 @@ function filterKeyValue (object, predicate) {
     if (predicate(object[key]))
       filtered[key] = object[key];
   return filtered;
+}
+
+function mergeStatics (statics, props) {
+  var key, newStatics = new Object(statics);
+  for (key in props)
+    if (props.hasOwnProperty(key) &&
+      key !== 'statics' &&
+      key !== 'cursor')
+      newStatics[key] = props[key];
+  return newStatics;
 }

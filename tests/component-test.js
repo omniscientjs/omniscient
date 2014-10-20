@@ -103,6 +103,24 @@ describe('component', function () {
       });
       render(Component({ one: cursor1, two: cursor2 }, statics));
     });
+
+    it('should pass extra properties to statics from parent', function (done) {
+      var mixins = [{ componentDidMount: done }];
+      var styleProps = { style: { background: '#fff' } };
+
+      var Component = component(mixins, function (cursor, statics) {
+        statics.style.should.equal(styleProps.style);
+        return React.DOM.text(null, 'hello');
+      });
+
+      var ReactParent = React.createClass({
+        render: function() {
+          return React.addons.cloneWithProps(this.props.children, styleProps);
+        }
+      });
+
+      render(ReactParent(null, Component()));
+    });
   });
 
   describe('exposes arguments as props', function () {
