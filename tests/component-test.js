@@ -37,18 +37,6 @@ describe('component', function () {
       render(Component());
     });
 
-    it('should set React key', function (done) {
-      var mixins = [{ componentDidMount: done, myMixin: noop }];
-
-      var Component = component(mixins, function () {
-        this.props.should.have.property('key');
-        this.props.key.should.equal('myKey');
-        return React.DOM.text(null, 'hello');
-      });
-
-      render(Component('myKey'));
-    });
-
     it('should have overridable shouldComponentUpdate in mixin', function (done) {
       var shouldUpdate = function (nextProps) { return true; };
       var mixins = [{ componentDidMount: done, shouldComponentUpdate: shouldUpdate }];
@@ -87,6 +75,18 @@ describe('component', function () {
       });
 
       render(Component(cursor1, statics));
+    });
+
+    it('should set React key', function (done) {
+      var mixins = [{ componentDidMount: done }];
+
+      var Component = component(mixins, function () {
+        this.props.should.have.property('key');
+        this.props.key.should.equal('myKey');
+        return React.DOM.text(null, 'hello');
+      });
+
+      render(Component('myKey'));
     });
 
     it('should pass multiple cursors and statics', function (done) {
