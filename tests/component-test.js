@@ -89,6 +89,116 @@ describe('component', function () {
       render(Component('myKey'));
     });
 
+    it('should get passed key and cursor-objects', function (done) {
+      var mixins = [{ componentDidMount: done }];
+
+      var Component = component(mixins, function (data) {
+        this.props.should.have.property('key');
+        this.props.key.should.equal('myKey');
+
+        data.should.have.property('foo');
+        data.foo.should.equal('hello');
+        return React.DOM.text(null, 'hello');
+      });
+
+      render(Component('myKey', { foo: 'hello' }));
+    });
+
+    it('should get passed key, cursor-objects and statics', function (done) {
+      var mixins = [{ componentDidMount: done }];
+
+      var outerCursor = { foo: 'hello' };
+      var outerStatics = { myStatic: 'foo' };
+
+      var Component = component(mixins, function (cursor, statics) {
+        this.props.should.have.property('key');
+        this.props.key.should.equal('myKey');
+
+        cursor.should.equal(outerCursor);
+        statics.should.equal(outerStatics);
+
+        return React.DOM.text(null, 'hello');
+      });
+
+      render(Component('myKey', outerCursor, outerStatics));
+    });
+
+    it('should get passed cursor-object and children', function (done) {
+      var mixins = [{ componentDidMount: done }];
+
+      var outerCursor = { foo: 'hello' };
+
+      var Component = component(mixins, function (cursor) {
+        cursor.should.equal(outerCursor);
+        this.props.children.should.have.length(1);
+        this.props.children[0]._store.props.children.should.equal('hello');
+
+        return React.DOM.text(null, 'hello');
+      });
+
+      render(Component(outerCursor, React.DOM.text(null, 'hello')));
+    });
+
+    it('should get passed key, cursor-object and children', function (done) {
+      var mixins = [{ componentDidMount: done }];
+
+      var outerCursor = { foo: 'hello' };
+
+      var Component = component(mixins, function (cursor) {
+        this.props.should.have.property('key');
+        this.props.key.should.equal('myKey');
+
+        cursor.should.equal(outerCursor);
+        this.props.children.should.have.length(1);
+        this.props.children[0]._store.props.children.should.equal('hello');
+
+        return React.DOM.text(null, 'hello');
+      });
+
+      render(Component('myKey', outerCursor, React.DOM.text(null, 'hello')));
+    });
+
+    it('should get passed key, cursor-object, statics and children', function (done) {
+      var mixins = [{ componentDidMount: done }];
+
+      var outerCursor = { foo: 'hello' };
+      var outerStatics = { myStatic: 'foo' };
+
+      var Component = component(mixins, function (cursor, statics) {
+        this.props.should.have.property('key');
+        this.props.key.should.equal('myKey');
+
+        cursor.should.equal(outerCursor);
+        this.props.children.should.have.length(1);
+        this.props.children[0]._store.props.children.should.equal('hello');
+
+        statics.should.equal(outerStatics);
+
+        return React.DOM.text(null, 'hello');
+      });
+
+      render(Component('myKey', outerCursor, outerStatics, React.DOM.text(null, 'hello')));
+    });
+
+    it('should get passed cursor-object, statics and children', function (done) {
+      var mixins = [{ componentDidMount: done }];
+
+      var outerCursor = { foo: 'hello' };
+      var outerStatics = { myStatic: 'foo' };
+
+      var Component = component(mixins, function (cursor, statics) {
+        cursor.should.equal(outerCursor);
+        this.props.children.should.have.length(1);
+        this.props.children[0]._store.props.children.should.equal('hello');
+
+        statics.should.equal(outerStatics);
+
+        return React.DOM.text(null, 'hello');
+      });
+
+      render(Component(outerCursor, outerStatics, React.DOM.text(null, 'hello')));
+    });
+
     it('should pass multiple cursors and statics', function (done) {
       var mixins = [{ componentDidMount: done }];
       var cursor1 = {};

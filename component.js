@@ -25,6 +25,8 @@ function component (displayName, mixins, render) {
   });
 
   return function (key, cursor, statics) {
+    var children = toArray(arguments).filter(React.isValidComponent);
+
     if (typeof key === 'object') {
       statics = cursor;
       cursor  = key;
@@ -40,8 +42,16 @@ function component (displayName, mixins, render) {
       props.key = key;
     }
 
+    if (!!children.length) {
+      props.children = children;
+    }
+
     return Component(props);
   };
+}
+
+function toArray (args) {
+  return Array.prototype.slice.call(args);
 }
 
 function createDefaultArguments (displayName, mixins, render) {
