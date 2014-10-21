@@ -128,15 +128,20 @@ describe('component', function () {
 
       var outerCursor = { foo: 'hello' };
 
+      var c1 = React.DOM.text(null, 'hello');
+      var c2 = React.DOM.text(null, 'bar');
+
       var Component = component(mixins, function (cursor) {
         cursor.should.equal(outerCursor);
-        this.props.children.should.have.length(1);
-        this.props.children[0]._store.props.children.should.equal('hello');
+        this.props.children.should.have.length(2);
+
+        this.props.children[0].should.equal(c1);
+        this.props.children[1].should.equal(c2);
 
         return React.DOM.text(null, 'hello');
       });
 
-      render(Component(outerCursor, React.DOM.text(null, 'hello')));
+      render(Component(outerCursor, c1, c2));
     });
 
     it('should get passed key, cursor-object and children', function (done) {
