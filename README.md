@@ -260,15 +260,36 @@ See [how to use immstruct](https://github.com/omniscientjs/immstruct/blob/master
 
 ### Debugging
 
-For debugging purposes, Omniscient supports calling `component.debug()`. This enables logging on calls to `render` and `shouldComponentUpdate`.
+For debugging purposes, Omniscient supports calling `component.debug([regexPattern])`. This enables logging on calls to `render` and `shouldComponentUpdate`.
 
-To improve logging, give your components a name
+When debugging, you should give your component names. This way the output will be better traceable,
+and you can filter on components using regex.
 
 ```js
 var MyComponent = component("MyComponent", function () {
   return React.DOM.text({}, "I output logging information on .shouldComponentUpdate() and .render()");
 });
+
+React.renderComponent(MyComponent('my-key'), document.body);
 ```
+
+#### Filtering Debugging
+
+The `component.debug` method takes an optional argument: `pattern`. This should be a regex
+used for matching a component name or key. This allows you to filter on both component and
+instance of component:
+
+
+```js
+component.debug(/mycomponent/i);
+
+// or by key:
+component.debug(/my\-key/);
+```
+
+Setting debug is a global change. If you want to be able to filter on multiple things and dig down
+for finding errors, you can also use filtering in your browser inspector.
+
 ---
 
 
