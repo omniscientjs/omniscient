@@ -97,7 +97,7 @@ var SaveOnEdit = {
 
 var SavingFocusingInput = component([Props, SaveOnEdit, SelectOnRender],
   function (cursor) {
-    return React.DOM.input({ value: cursor.get('text'), onChange: onEdit });
+    return React.DOM.input({ value: cursor.get('text'), onChange: this.onEdit });
   });
 ```
 
