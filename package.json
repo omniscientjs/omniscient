@@ -18,7 +18,7 @@
     "mocha": "^1.21.4"
   },
   "optionalDependencies": {
-    "immutable": "2.3.0"
+    "immutable": "^2.5.1"
   },
   "scripts": {
     "test": "mocha -R spec tests/**-test.js",
