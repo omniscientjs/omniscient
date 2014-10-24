@@ -13,13 +13,9 @@
   "devDependencies": {
     "chai": "^1.9.2",
     "immstruct": "^0.8.1",
-    "immutable": "^2.5.0",
+    "immutable": "^2.6.0",
     "jsdom": "^1.0.1",
-    "mocha": "^1.21.4",
-    "immutable": "^2.5.1"
-  },
-  "optionalDependencies": {
-    "immutable": "^2.5.1"
+    "mocha": "^2.0.1"
   },
   "scripts": {
     "test": "mocha -R spec tests/**-test.js",
