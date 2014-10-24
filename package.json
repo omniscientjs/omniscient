@@ -15,7 +15,8 @@
     "immstruct": "^0.8.1",
     "immutable": "^2.5.0",
     "jsdom": "^1.0.1",
-    "mocha": "^1.21.4"
+    "mocha": "^1.21.4",
+    "immutable": "^2.5.1"
   },
   "optionalDependencies": {
     "immutable": "^2.5.1"
