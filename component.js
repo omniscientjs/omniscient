@@ -1,5 +1,5 @@
-var React = require('react');
-var deepEqual = require('deep-equal');
+var React     = require('react'),
+    deepEqual = require('deep-equal');
 
 module.exports = component;
 module.exports.shouldComponentUpdate = shouldComponentUpdate;
@@ -11,10 +11,10 @@ var debug;
 module.exports.debug = function (pattern) {
   var regex = new RegExp(pattern || '.*');
   debug = function (str) {
-    var key = this.props && this.props.key ? " key=" + this.props.key : "";
+    var key = this.props && this.props.key ? ' key=' + this.props.key : '';
     var name = this.constructor.displayName;
     var tag = name + key;
-    if ((key || name) && regex.test(tag)) console.debug("<" + tag + ">: " + str);
+    if ((key || name) && regex.test(tag)) console.debug('<' + tag + '>: ' + str);
   };
 }
 
@@ -25,7 +25,7 @@ function component (displayName, mixins, render) {
     displayName: options.displayName,
     mixins: options.mixins,
     render: function render () {
-      if (debug) debug.call(this, "render");
+      if (debug) debug.call(this, 'render');
       return options.render.call(this, this.props.cursor, this.props.statics);
     }
   });
@@ -66,31 +66,31 @@ function shouldComponentUpdate (nextProps, nextState) {
       currentCursorsKeys = Object.keys(currentCursors);
 
   if (currentCursorsKeys.length !== nextCursorsKeys.length) {
-    if (debug) debug.call(this, "shouldComponentUpdate => true (number of cursors differ)");
+    if (debug) debug.call(this, 'shouldComponentUpdate => true (number of cursors differ)');
     return true;
   }
 
   if (hasDifferentKeys(currentCursorsKeys, currentCursors, nextCursors)) {
-    if (debug) debug.call(this, "shouldComponentUpdate => true (cursors have different keys)");
+    if (debug) debug.call(this, 'shouldComponentUpdate => true (cursors have different keys)');
     return true;
   }
 
   if (hasChangedCursors(currentCursors, nextCursors)) {
-    if (debug) debug.call(this, "shouldComponentUpdate => true (cursors have changed)");
+    if (debug) debug.call(this, 'shouldComponentUpdate => true (cursors have changed)');
     return true;
   }
 
   if (!isEqualState(this.state, nextState)) {
-    if (debug) debug.call(this, "shouldComponentUpdate => true (state has changed)");
+    if (debug) debug.call(this, 'shouldComponentUpdate => true (state has changed)');
     return true;
   }
 
   if (hasChangedProperties(currentCursors, nextCursors)) {
-    if (debug) debug.call(this, "shouldComponentUpdate => true (properties have changed)");
+    if (debug) debug.call(this, 'shouldComponentUpdate => true (properties have changed)');
     return true;
   }
 
-  if (debug) debug.call(this, "shouldComponentUpdate => false");
+  if (debug) debug.call(this, 'shouldComponentUpdate => false');
 
   return false;
 }

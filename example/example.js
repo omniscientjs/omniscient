@@ -9,24 +9,24 @@ var d = React.DOM;
 
 var data = immstruct({ numbers: {} });
 
-var Bucket = component("Bucket", function (cursor, statics) {
+var Bucket = component('Bucket', function (cursor, statics) {
   var numbers = cursor.toArray();
   return d.li({},
-              d.b({}, "Bucket #", statics.label, " "),
-              d.span({}, "(", numbers.reduce(function (acc, n) {
+              d.b({}, 'Bucket #', statics.label, ' '),
+              d.span({}, '(', numbers.reduce(function (acc, n) {
                 return acc + 1;
-              }, 0), ")"),
-              ": ",
+              }, 0), ')'),
+              ': ',
               numbers.map(function (number, key) {
                 return number;
               }));
 });
 
-var Buckets = component("Buckets", function (cursor) {
+var Buckets = component('Buckets', function (cursor) {
   var labels = Object.keys(cursor.toJS());
   return d.ul({},
               cursor.toArray().map(function (number, i) {
-                return Bucket("bucket-" + i, number, { label: labels[i] });
+                return Bucket('bucket-' + i, number, { label: labels[i] });
               }));
 });
 

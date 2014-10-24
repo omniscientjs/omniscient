@@ -1,6 +1,8 @@
 var chai = require('chai');
 var jsdom = require('jsdom');
-var React  = require("react/addons"), ReactTestUtils = React.addons.TestUtils;
+
+var React  = require('react/addons'),
+    ReactTestUtils = React.addons.TestUtils;
 
 var should = chai.should();
 
@@ -50,7 +52,7 @@ describe('component', function () {
     });
   });
 
-  describe("render function arguments", function () {
+  describe('render function arguments', function () {
 
     it('should handle no arguments', function (done) {
       var mixins = [{ componentDidMount: done, myMixin: noop }];

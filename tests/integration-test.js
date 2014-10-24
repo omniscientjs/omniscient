@@ -61,16 +61,16 @@ describe('component render test', function () {
       }
     }];
 
-    var Item = component("Item", mixins, function (item) {
+    var Item = component('Item', mixins, function (item) {
       // 2
       // 6
       calls.render[item.toJS().id]++;
-      return d.li({}, "");
+      return d.li({}, '');
     });
 
-    var List = component("List", function (items) {
+    var List = component('List', function (items) {
       return d.ul({}, items.toArray().map(function (item, i) {
-        return Item("component-"+i, item);
+        return Item('component-' + i, item);
       }));
     });
 
