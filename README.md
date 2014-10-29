@@ -8,6 +8,10 @@ Omniscient [![NPM version][npm-image]][npm-url] [![Build Status][travis-image]][
 the cursors of [Om](https://github.com/swannodette/om), for js, using
 [Immutable.js](https://github.com/facebook/immutable-js).
 
+## Pre 0.12 Release
+
+This Omniscient is designed to work with React pre 0.12.0, as this release enforces some breaking changes.
+
 ### Overview
 
 - top-down rendering of components (one way data flow)
