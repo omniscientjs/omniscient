@@ -77,7 +77,10 @@ Before you could do:
 ```
 
 But now you have to do:
+
+```js
 <OmniscientComponent.jsx cursor={someCursor} />
+```
 
 *Notice the `.jsx` after `OmniscientComponent`*
 
