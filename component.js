@@ -31,7 +31,7 @@ function component (displayName, mixins, render) {
   });
 
   return function (key, cursor, statics) {
-    var children = toArray(arguments).filter(React.isValidComponent);
+    var children = toArray(arguments).filter(React.isValidElement);
 
     if (typeof key === 'object') {
       statics = cursor;
@@ -58,7 +58,7 @@ function component (displayName, mixins, render) {
       props.children = children;
     }
 
-    return Component(props);
+    return React.createElement(Component, props);
   };
 };
 

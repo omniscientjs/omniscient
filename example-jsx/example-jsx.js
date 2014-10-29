@@ -26,7 +26,7 @@ render();
 structure.on('swap', render);
 
 function render () {
-  React.renderComponent(
+  React.render(
     <Clock clock={structure.cursor('clock')} />,
     $('.example-jsx'));
 }

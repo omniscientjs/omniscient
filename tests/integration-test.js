@@ -75,10 +75,10 @@ describe('component render test', function () {
     });
 
     var div = document.createElement('div');
-    React.renderComponent(List(structure.cursor('items')), div); // 1
+    React.render(List(structure.cursor('items')), div); // 1
 
     structure.on('swap', function () {
-      React.renderComponent(List(structure.cursor('items')), div); // 4
+      React.render(List(structure.cursor('items')), div); // 4
     });
 
     structure.cursor().update('items', function (items) {

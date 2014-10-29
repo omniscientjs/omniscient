@@ -83,8 +83,7 @@ describe('component', function () {
       var mixins = [{ componentDidMount: done }];
 
       var Component = component(mixins, function () {
-        this.props.should.have.property('key');
-        this.props.key.should.equal('myKey');
+        this._currentElement.key.should.equal('myKey');
         return React.DOM.text(null, 'hello');
       });
 
@@ -95,8 +94,7 @@ describe('component', function () {
       var mixins = [{ componentDidMount: done }];
 
       var Component = component(mixins, function (data) {
-        this.props.should.have.property('key');
-        this.props.key.should.equal('myKey');
+        this._currentElement.key.should.equal('myKey');
 
         data.should.have.property('foo');
         data.foo.should.equal('hello');
@@ -113,8 +111,7 @@ describe('component', function () {
       var outerStatics = { myStatic: 'foo' };
 
       var Component = component(mixins, function (cursor, statics) {
-        this.props.should.have.property('key');
-        this.props.key.should.equal('myKey');
+        this._currentElement.key.should.equal('myKey');
 
         cursor.should.equal(outerCursor);
         statics.should.equal(outerStatics);
@@ -152,8 +149,7 @@ describe('component', function () {
       var outerCursor = { foo: 'hello' };
 
       var Component = component(mixins, function (cursor) {
-        this.props.should.have.property('key');
-        this.props.key.should.equal('myKey');
+        this._currentElement.key.should.equal('myKey');
 
         cursor.should.equal(outerCursor);
         this.props.children.should.have.length(1);
@@ -172,8 +168,7 @@ describe('component', function () {
       var outerStatics = { myStatic: 'foo' };
 
       var Component = component(mixins, function (cursor, statics) {
-        this.props.should.have.property('key');
-        this.props.key.should.equal('myKey');
+        this._currentElement.key.should.equal('myKey');
 
         cursor.should.equal(outerCursor);
         this.props.children.should.have.length(1);

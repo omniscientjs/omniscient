@@ -31,7 +31,7 @@ var Buckets = component('Buckets', function (cursor) {
 });
 
 function render () {
-  React.renderComponent(
+  React.render(
     Buckets(data.cursor('numbers')),
     document.querySelector('.example'));
 }
