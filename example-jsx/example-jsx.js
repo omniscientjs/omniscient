@@ -3,7 +3,7 @@
  */
 
 var React = require('react');
-    immstruct = require('immstruct'),
+    immstruct = require('immstruct');
 
 var component = require('../');
 
