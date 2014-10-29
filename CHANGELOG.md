@@ -83,11 +83,11 @@ But now you have to do:
 
 // or
 OmniscientComponent = OmniscientComponent.jsx;
-<OmniscientComponent.jsx cursor={someCursor} />
+<OmniscientComponent cursor={someCursor} />
 
 // or
 var OmniscientComponent = require('someComponent').jsx;
-<OmniscientComponent.jsx cursor={someCursor} />
+<OmniscientComponent cursor={someCursor} />
 ```
 
 *Notice the `.jsx` after `OmniscientComponent`*
