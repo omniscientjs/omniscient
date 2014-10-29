@@ -22,35 +22,40 @@ the cursors of [Om](https://github.com/swannodette/om), for js, using
 
 A more detailed description of Omniscient's rationale can be found in the [documentation](http://omniscientjs.github.io/documentation)
 
+**Note:** Omniscient `v2.0.0` is for React pre `v0.12.0`. There were some [breaking changes to React](https://github.com/facebook/react/blob/master/CHANGELOG.md#breaking-changes), and the API of Omniscient
+had to change accordingly. See the [v1.3.1 tag](https://github.com/omniscientjs/omniscient/tree/v1.3.1) for Omniscient with React `v0.11.0` support.
+
 ### Cursors
 
 With cursors, components can have the outer immutable structure swapped when a component's data is changed. A re-render can be triggered, but only component trees referencing data affected by the change will actually be re-rendered.
+
+If you pass in a single cursor, this is added to the `props.cursor` property, where `props` is what you get passed to your component.
 
 ```js
 var React     = require('react'),
     immstruct = require('immstruct'),
     component = require('omniscient');
 
-var NameInput = component(function (cursor) {
+var NameInput = component(function (props) {
   var onChange = function (e) {
-    cursor.update('name', function (name) {
+    props.cursor.update('name', function (name) {
       return e.currentTarget.value;
     });
   };
-  return React.DOM.input({ value: cursor.get('name'), onChange: onChange });
+  return React.DOM.input({ value: props.cursor.get('name'), onChange: onChange });
 });
 
-var Welcome = component(function (cursor) {
-  var guest = cursor.get('guest');
+var Welcome = component(function (props) {
+  var guest = props.cursor.get('guest');
   var name = guest.get('name') ? ", " + guest.get('name') : "";
-  return React.DOM.p({}, cursor.get('greeting'), name, "!",
+  return React.DOM.p({}, props.cursor.get('greeting'), name, "!",
                          NameInput(guest));
 });
 
 var structure = immstruct({ greeting: 'Welcome', guest: { name: '' } });
 
 function render () {
-  React.renderComponent(
+  React.render(
     Welcome(structure.cursor()),
     document.querySelector('.app'));
 }
@@ -73,8 +78,8 @@ var SelectOnRender = {
   }
 };
 
-var FocusingInput = component(SelectOnRender, function (cursor) {
-  return React.DOM.input({ value: cursor.get('text') });
+var FocusingInput = component(SelectOnRender, function (props) {
+  return React.DOM.input({ value: props.cursor.get('text') });
 });
 ```
 
@@ -96,8 +101,8 @@ var SaveOnEdit = {
 };
 
 var SavingFocusingInput = component([Props, SaveOnEdit, SelectOnRender],
-  function (cursor) {
-    return React.DOM.input({ value: cursor.get('text'), onChange: this.onEdit });
+  function (props) {
+    return React.DOM.input({ value: props.cursor.get('text'), onChange: this.onEdit });
   });
 ```
 
@@ -105,19 +110,19 @@ var SavingFocusingInput = component([Props, SaveOnEdit, SelectOnRender],
 
 When you need to provide other data for your component than what its rendering is based off of, you pass statics. By default, changing a static's value does not result in a re-rendering of a component.
 
-Statics can be passed as second argument to your component.
+Statics have a special place in your passed properties. To give a component statics, you need to pass an object literal with the statics property defined.
 
 ```js
 var log = console.log.bind(console);
 
-var FocusingInput = component(SelectOnRender, function (cursor, statics) {
+var FocusingInput = component(SelectOnRender, function (props, statics) {
   var onChange = statics.onChange || function () {};
-  return React.DOM.input({ value: cursor.get('text'), onChange: onChange });
+  return React.DOM.input({ value: props.cursor.get('text'), onChange: onChange });
 });
 
-var SomeForm = component(function (cursor) {
+var SomeForm = component(function (props.cursor) {
   return React.DOM.form({},
-                        FocusingInput(cursor, { onChange: log }));
+                        FocusingInput({ cursor: props.cursor, statics: { onChange: log } }));
 });
 ```
 
@@ -126,12 +131,12 @@ var SomeForm = component(function (cursor) {
 Communicating information back to the parent component from a child component can be done by making an event emitter available as a static for your child component.
 
 ```js
-var Item = component(function (cursor, statics) {
+var Item = component(function (props, statics) {
   var onClick = function () {
-    statics.channel.emit('data', cursor);
+    statics.channel.emit('data', props.cursor);
   };
   return React.DOM.li({ onClick: onClick },
-                      React.DOM.text({}, cursor.get('text')));
+                      React.DOM.text({}, props.cursor.get('text')));
 });
 
 
@@ -146,30 +151,67 @@ var mixins = {
   }
 }
 
-var List = component(function (cursor) {
+var List = component(function (props) {
   return React.DOM.ul({},
-                      cursor.toArray().map(function (item) {
-                        return Item(item, { channel: events });
+                      props.cursor.toArray().map(function (item) {
+                        return Item({ cursor: item, statics: { channel: events } });
                       });
 });
 ```
 
-### State
+### Local State
 
-Omniscient allows for component local state. That is, all the usual react component methods are available on `this` for use through mixins. You are free to `this.setState({ .. })` for component local view state.
+Omniscient allows for component local state. That is, all the usual react component methods are available on `this` for use through mixins. You are free to `this.setState({ .. })` for component local view state, but it is encuraged to try to not use local state.
+
+### Omniscient and JSX
+
+Due to the way React works with elements, and the way JSX is compiled, we need to use Omniscient with JSX a bit different, instead of using the component directly, you can use a `.jsx` alternative, by doing:
+
+
+```js
+var React     = require('react'),
+    component = require('omniscient');
+
+var Welcome = component(function (props, statics) {
+  console.log(statics.foo); //=> 'bar'
+
+  return (
+    <h1>Hello, {props.cursor.deref()}</h1>
+  );
+});
+
+var structure = immstruct({ name: 'Doc' });
+
+function render () {
+  var someStatics = { foo: 'bar' };
+
+  // Note the `.jsx` extension
+  React.render(
+    <Welcome.jsx name={structure.cursor('name')} statics={someStatics} />
+    document.body);
+}
+
+render();
+structure.on('swap', render);
+
+structure.cursor('name').update(function () {
+  return 'Doctor';
+});
+```
+
 
 ### Providing component keys
 
 For correct merging of states and components between render cycles, React needs a `key` as part of the props of a component. With Omniscient, such a key can be passed as the first argument to the `component` function.
 
 ```js
-var Item = component(function (cursor) {
-  return React.DOM.li({}, React.DOM.text(cursor.get('text')));
+var Item = component(function (props) {
+  return React.DOM.li({}, React.DOM.text(props.cursor.get('text')));
 });
 
-var List = component(function (cursor) {
+var List = component(function (props) {
   return React.DOM.ul({},
-                      cursor.toArray().map(function (item, key) {
+                      props.cursor.toArray().map(function (item, key) {
                         return Item(key, item);
                       });
 });
@@ -191,8 +233,8 @@ var ShouldComponentUpdateMixin = {
   };
 };
 
-var InefficientAlwaysRenderingText = component(ShouldComponentUpdateMixin, function (cursor) {
-  return React.DOM.text(cursor.get('text'));
+var InefficientAlwaysRenderingText = component(ShouldComponentUpdateMixin, function (props) {
+  return React.DOM.text(props.cursor.get('text'));
 });
 ```
 
@@ -206,8 +248,8 @@ component.shouldComponentUpdate = function (newProps, newState) {
   return true; // don't do do this
 };
 
-var InefficientAlwaysRenderingText = component(function (cursor) {
-  return React.DOM.text(cursor.get('text'));
+var InefficientAlwaysRenderingText = component(function (props) {
+  return React.DOM.text(props.cursor.get('text'));
 });
 ```
 
@@ -248,16 +290,6 @@ If you are using something other than the cursors from Immutable.js, however, ma
 
 See [how to use immstruct](https://github.com/omniscientjs/immstruct/blob/master/README.md) for more information.
 
-[npm-url]: https://npmjs.org/package/omniscient
-[npm-image]: http://img.shields.io/npm/v/omniscient.svg?style=flat
-
-[travis-url]: http://travis-ci.org/omniscientjs/omniscient
-[travis-image]: http://img.shields.io/travis/omniscientjs/omniscient.svg?style=flat
-
-[depstat-url]: https://gemnasium.com/omniscientjs/omniscient
-[depstat-image]: http://img.shields.io/gemnasium/omniscientjs/omniscient.svg?style=flat
-
-
 ### Debugging
 
 For debugging purposes, Omniscient supports calling `component.debug([regexPattern])`. This enables logging on calls to `render` and `shouldComponentUpdate`.
@@ -266,11 +298,11 @@ When debugging, you should give your component names. This way the output will b
 and you can filter on components using regex.
 
 ```js
-var MyComponent = component("MyComponent", function () {
-  return React.DOM.text({}, "I output logging information on .shouldComponentUpdate() and .render()");
+var MyComponent = component('MyComponent', function () {
+  return React.DOM.text({}, 'I output logging information on .shouldComponentUpdate() and .render()');
 });
 
-React.renderComponent(MyComponent('my-key'), document.body);
+React.render(MyComponent('my-key'), document.body);
 ```
 
 #### Filtering Debugging
@@ -284,14 +316,13 @@ instance of component:
 component.debug(/mycomponent/i);
 
 // or by key:
-component.debug(/my\-key/);
+component.debug(/my-key/);
 ```
 
 Setting debug is a global change. If you want to be able to filter on multiple things and dig down
 for finding errors, you can also use filtering in your browser inspector.
 
 ---
-
 
 ## Authors
 
@@ -302,6 +333,14 @@ for finding errors, you can also use filtering in your browser inspector.
 
 [MIT License](http://en.wikipedia.org/wiki/MIT_License)
 
+[npm-url]: https://npmjs.org/package/omniscient
+[npm-image]: http://img.shields.io/npm/v/omniscient.svg?style=flat
+
+[travis-url]: http://travis-ci.org/omniscientjs/omniscient
+[travis-image]: http://img.shields.io/travis/omniscientjs/omniscient.svg?style=flat
+
+[depstat-url]: https://gemnasium.com/omniscientjs/omniscient
+[depstat-image]: http://img.shields.io/gemnasium/omniscientjs/omniscient.svg?style=flat
 
 
 *Logo is composed by icons from [Iconmoon](http://www.icomoon.io)
