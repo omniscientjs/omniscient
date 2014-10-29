@@ -3,9 +3,51 @@ Changelog
 
 Changelog with fixes and additions between each release.
 
+## Version `v2.0.0`
+
+As of `v2.0.0`, Omniscient is dependent of React `v0.12.0`. This React version introduces some changes, and no longer allows components, but elements. With this some changes, not too big but breaks the previous API.
+
+
+### Statics as properties
+
+The most notable change is that the `statics` are moved to be a part of the properties.
+Statics still doesn't effect whether or not the component should update.
+
+Before you could do:
+
+```js
+OmniscientComponent('someKey', cursor, statics);
+```
+But now you have to do:
+
+```js
+OmniscientComponent('someKey', { cursor: cursor, statics: statics });
+```
+
+### With JSX
+
+Also, with the way React now requires elements instead of components, there have to be a change in how we use Omniscient with JSX.
+
+Before you could do:
+
+```js
+<OmniscientComponent cursor={someCursor} />
+```
+
+But now you have to do:
+<OmniscientComponent.jsx cursor={someCursor} />
+
+*Notice the `.jsx` after `OmniscientComponent`*
+
+## Version `v1.3.1`
+
+### Fixes
+1. Locks React dependency to pre 0.12.0.
+2. Fixes usage of statics with JSX.
+
 ## Version `v1.3.0`
 
-## Additions
+### Additions
 1. Custom Omniscient Components can now have children:
 ```js
 var Comp = component(function (cursor) {
@@ -22,7 +64,7 @@ var App = component(function (cursor) {
 
 
 ## Version `v1.2.0`
-## Additions
+### Additions
 1. Adds possibility for overriding `component.isCursor`
 1. Adds possibility for overriding `component.isEqualCursor`
 
