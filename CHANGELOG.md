@@ -18,10 +18,52 @@ Before you could do:
 ```js
 OmniscientComponent('someKey', cursor, statics);
 ```
+
 But now you have to do:
 
 ```js
 OmniscientComponent('someKey', { cursor: cursor, statics: statics });
+```
+
+As a result of this, you now always get passed props to your render function.
+
+Before you could do:
+
+```js
+var OmniscientComponent = component(function (cursor) {
+  return React.DOM.text({}, cursor.deref());
+});
+```
+
+Now you have to do:
+
+```js
+var OmniscientComponent = component(function (props) {
+  return React.DOM.text({}, props.cursor.deref());
+});
+```
+
+
+This:
+
+```js
+OmniscientComponent(cursor);
+```
+
+Is translated to:
+```js
+OmniscientComponent({ cursor: cursor });
+```
+
+You could also name your cursor:
+
+```js
+var OmniscientComponent = component(function (props) {
+  return React.DOM.text({}, props.name.deref());
+});
+
+// Usage
+OmniscientComponent({ name: cursor });
 ```
 
 ### With JSX
