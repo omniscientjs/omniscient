@@ -128,6 +128,20 @@ describe('component', function () {
       render(Component('myKey', { foo: 'hello' }));
     });
 
+    it('should get passed key and immutable cursor-objects', function (done) {
+      var mixins = [{ componentDidMount: done }];
+      var cursorInput = Immutable.fromJS({ foo: 'hello' }).cursor('foo');
+
+      var Component = component(mixins, function (props) {
+        this._currentElement.key.should.equal('myKey');
+
+        props.cursor.should.equal(cursorInput);
+        this.props.cursor.should.equal(cursorInput);
+        return React.DOM.text(null, 'hello');
+      });
+      render(Component('myKey', cursorInput));
+    });
+
     it('should get passed key, cursor-objects and statics', function (done) {
       var mixins = [{ componentDidMount: done }];
 
