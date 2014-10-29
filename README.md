@@ -199,6 +199,17 @@ structure.cursor('name').update(function () {
 });
 ```
 
+You can also do `.jsx` on a component level:
+
+```js
+var Welcome = component(function (props, statics) {
+  /* same implementation */
+}).jsx;
+
+// Or
+
+Welcome = Welcome.jsx;
+```
 
 ### Providing component keys
 
