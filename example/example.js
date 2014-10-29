@@ -3,14 +3,14 @@ var React     = require('react'),
     immstruct = require('immstruct'),
     Immutable = require('immutable');
 
-component.debug();
+component.debug(/bucket-2$/);
 
 var d = React.DOM;
 
 var data = immstruct({ numbers: {} });
 
-var Bucket = component('Bucket', function (cursor, statics) {
-  var numbers = cursor.toArray();
+var Bucket = component('Bucket', function (props, statics) {
+  var numbers = props.number.toArray();
   return d.li({},
               d.b({}, 'Bucket #', statics.label, ' '),
               d.span({}, '(', numbers.reduce(function (acc, n) {
@@ -22,11 +22,11 @@ var Bucket = component('Bucket', function (cursor, statics) {
               }));
 });
 
-var Buckets = component('Buckets', function (cursor) {
-  var labels = Object.keys(cursor.toJS());
+var Buckets = component('Buckets', function (props) {
+  var labels = Object.keys(props.cursor.toJS());
   return d.ul({},
-              cursor.toArray().map(function (number, i) {
-                return Bucket('bucket-' + i, number, { label: labels[i] });
+              props.cursor.toArray().map(function (number, i) {
+                return Bucket('bucket-' + i, { number: number, statics: { label: labels[i] } });
               }));
 });
 

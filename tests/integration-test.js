@@ -61,15 +61,15 @@ describe('component render test', function () {
       }
     }];
 
-    var Item = component('Item', mixins, function (item) {
+    var Item = component('Item', mixins, function (props) {
       // 2
       // 6
-      calls.render[item.toJS().id]++;
+      calls.render[props.cursor.toJS().id]++;
       return d.li({}, '');
     });
 
-    var List = component('List', function (items) {
-      return d.ul({}, items.toArray().map(function (item, i) {
+    var List = component('List', function (props) {
+      return d.ul({}, props.cursor.toArray().map(function (item, i) {
         return Item('component-' + i, item);
       }));
     });

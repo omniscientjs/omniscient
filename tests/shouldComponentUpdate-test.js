@@ -79,7 +79,7 @@ describe('shouldComponentUpdate', function () {
                       null, { foo: { bar : 'hello' } });
     });
 
-    it('when only static has changed', function () {
+    it('when only statics has changed', function () {
       var data = Immutable.fromJS({ foo: 'bar' });
 
       shouldNotUpdate(null, null,
@@ -112,21 +112,21 @@ describe('shouldComponentUpdate', function () {
   });
 });
 
-function shouldNotUpdate (cursor, state, nextCursor, nextState, currentStatic, nextStatic) {
-  callShouldUpdate(cursor, state, nextCursor, nextState, currentStatic, nextStatic).should.equal(false);
+function shouldNotUpdate (cursor, state, nextCursor, nextState, currentStatics, nextStatics) {
+  callShouldUpdate(cursor, state, nextCursor, nextState, currentStatics, nextStatics).should.equal(false);
 }
 
-function shouldUpdate (cursor, state, nextCursor, nextState, currentStatic, nextStatic) {
-  callShouldUpdate(cursor, state, nextCursor, nextState, currentStatic, nextStatic).should.equal(true);
+function shouldUpdate (cursor, state, nextCursor, nextState, currentStatics, nextStatics) {
+  callShouldUpdate(cursor, state, nextCursor, nextState, currentStatics, nextStatics).should.equal(true);
 }
 
-function callShouldUpdate (cursor, state, nextCursor, nextState, currentStatic, nextStatic) {
+function callShouldUpdate (cursor, state, nextCursor, nextState, currentStatics, nextStatics) {
   var props     = { cursor: cursor };
   var nextProps = { cursor: nextCursor };
 
-  if (currentStatic || nextStatic) {
-    props.static     = currentStatic;
-    nextProps.static = nextStatic;
+  if (currentStatics || nextStatics) {
+    props.statics     = currentStatics;
+    nextProps.statics = nextStatics;
   }
 
   return shouldComponentUpdate.call({

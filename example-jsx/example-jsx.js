@@ -7,8 +7,8 @@ var React = require('react');
 
 var component = require('../');
 
-var Clock = component(function (cursors) {
-  var now = cursors.clock.get('now').toString();
+var Clock = component(function (props) {
+  var now = props.clock.get('now').toString();
   return <p>Today is {now}</p>;
 });
 
@@ -27,6 +27,6 @@ structure.on('swap', render);
 
 function render () {
   React.render(
-    <Clock clock={structure.cursor('clock')} />,
+    <Clock.jsx clock={structure.cursor('clock')} />,
     $('.example-jsx'));
 }

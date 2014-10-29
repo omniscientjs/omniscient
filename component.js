@@ -11,7 +11,7 @@ var debug;
 module.exports.debug = function (pattern) {
   var regex = new RegExp(pattern || '.*');
   debug = function (str) {
-    var key = this.props && this.props.key ? ' key=' + this.props.key : '';
+    var key = this._currentElement && this._currentElement.key ? ' key=' + this._currentElement.key : '';
     var name = this.constructor.displayName;
     var tag = name + key;
     if ((key || name) && regex.test(tag)) console.debug('<' + tag + '>: ' + str);
@@ -26,28 +26,24 @@ function component (displayName, mixins, render) {
     mixins: options.mixins,
     render: function render () {
       if (debug) debug.call(this, 'render');
-      return options.render.call(this, this.props.cursor, this.props.statics);
+      return options.render.call(this, this.props, this.props.statics);
     }
   });
 
-  return function (key, cursor, statics) {
+  var create = function (key, props) {
     var children = toArray(arguments).filter(React.isValidElement);
 
     if (typeof key === 'object') {
-      statics = cursor;
-      cursor  = key;
-      key     = void 0;
+      props = key;
+      key   = void 0;
     }
 
-    var props = {
-      cursor: cursor,
-      statics: statics
-    };
+    if (!props) {
+      props = { };
+    }
 
-    // Add statics support for JSX
-    if (cursor && cursor.statics) {
-      props.statics = cursor.statics;
-      delete cursor.statics;
+    if (isCursor(props)) {
+      props = { cursor: props };
     }
 
     if (key) {
@@ -60,13 +56,18 @@ function component (displayName, mixins, render) {
 
     return React.createElement(Component, props);
   };
+
+  create.jsx = Component;
+  return create;
 };
 
 function shouldComponentUpdate (nextProps, nextState) {
   var isEqualState  = module.exports.isEqualState;
 
-  var nextCursors    = guaranteeObject(nextProps.cursor),
-      currentCursors = guaranteeObject(this.props.cursor);
+  var isNotStatics = not(isStatics);
+
+  var nextCursors    = filterKeyValue(guaranteeObject(nextProps), isNotStatics),
+      currentCursors = filterKeyValue(guaranteeObject(this.props), isNotStatics);
 
   var nextCursorsKeys    = Object.keys(nextCursors),
       currentCursorsKeys = Object.keys(currentCursors);
@@ -110,12 +111,16 @@ function guaranteeObject (prop) {
     return { _dummy_key: prop };
   }
 
+  if (typeof prop !== 'object') {
+    return { _dummy_key: prop };
+  }
+
   return prop;
 }
 
 function hasDifferentKeys (currentCursorsKeys, currentCursors, nextCursors) {
   return !currentCursorsKeys.every(function existsInBoth (key) {
-    return currentCursors[key] && nextCursors[key];
+    return typeof currentCursors[key] !== 'undefined' && typeof nextCursors[key] !== 'undefined';
   });
 }
 
@@ -209,7 +214,7 @@ function unCursor(cursor) {
 function filterKeyValue (object, predicate) {
   var key, filtered = {};
   for (key in object)
-    if (predicate(object[key]))
+    if (predicate(object[key], key))
       filtered[key] = object[key];
   return filtered;
 }
@@ -218,6 +223,10 @@ function not (fn) {
   return function () {
     return !fn.apply(fn, arguments);
   };
+}
+
+function isStatics (val, key) {
+  return key === 'statics';
 }
 
 function toArray (args) {
