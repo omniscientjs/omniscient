@@ -44,6 +44,12 @@ function component (displayName, mixins, render) {
       statics: statics
     };
 
+    // Add statics support for JSX
+    if (cursor && cursor.statics) {
+      props.statics = cursor.statics;
+      delete cursor.statics;
+    }
+
     if (key) {
       props.key = key;
     }
