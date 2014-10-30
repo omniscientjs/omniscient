@@ -110,7 +110,7 @@ var SavingFocusingInput = component([Props, SaveOnEdit, SelectOnRender],
 
 When you need to provide other data for your component than what its rendering is based off of, you pass statics. By default, changing a static's value does not result in a re-rendering of a component.
 
-Statics have a special place in your passed properties. To give a component statics, you need to pass an object literal with the statics property defined.
+Statics have a special place in your passed properties. To give a component statics, you need to pass an object literal with the `statics` property defined.
 
 ```js
 var log = console.log.bind(console);
