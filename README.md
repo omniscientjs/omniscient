@@ -165,7 +165,7 @@ Omniscient allows for component local state. That is, all the usual react compon
 
 ### Omniscient and JSX
 
-Due to the way React works with elements, and the way JSX is compiled, we need to use Omniscient with JSX a bit different, instead of using the component directly, you can use a `.jsx` alternative, by doing:
+Due to the way React works with elements, and the way JSX is compiled, the use of Omniscient with JSX slightly differs from the normal use case. Instead of referencing components directly, you will have to reference its `jsx` property, that exposes the the components underlying React class:
 
 
 ```js
@@ -206,9 +206,9 @@ var Welcome = component(function (props, statics) {
   /* same implementation */
 }).jsx;
 
-// Or
+// Or when requiring the component
 
-Welcome = Welcome.jsx;
+var Welcome = require('./welcome').jsx;
 ```
 
 ### Providing component keys
