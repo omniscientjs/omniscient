@@ -65,7 +65,7 @@ structure.on('swap', render);
 ```
 *See [the running demo](http://omniscientjs.github.io/examples/#intro) on the examples page*
 
-[`immstruct`](https://github.com/omniscientjs/immstruct) is a simple wrapper for [`Immutable.js`](https://github.com/facebook/immutable-js) that ease trigger re-renders when the immutable data structure is replaced. `immstruct` is not a requirement for Omniscient, but makes a great fit.
+[`immstruct`](https://github.com/omniscientjs/immstruct) is a simple wrapper for [`Immutable.js`](https://github.com/facebook/immutable-js) that ease triggering re-renders with Omniscient when the immutable data structure is replaced. `immstruct` is not a requirement for Omniscient, but makes a great fit.
 
 ### Reuseable mixins
 
