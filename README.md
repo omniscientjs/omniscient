@@ -161,7 +161,7 @@ var List = component(function (props) {
 
 ### Local State
 
-Omniscient allows for component local state. That is, all the usual react component methods are available on `this` for use through mixins. You are free to `this.setState({ .. })` for component local view state, but it is encuraged to try to not use local state.
+Omniscient allows for component local state. That is, all the usual react component methods are available on `this` for use through mixins. You are free to `this.setState({ .. })` for component local view state. 
 
 ### Omniscient and JSX
 
