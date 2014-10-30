@@ -205,9 +205,11 @@ You can also do `.jsx` on a component level:
 var Welcome = component(function (props, statics) {
   /* same implementation */
 }).jsx;
+```
 
-// Or when requiring the component
+Or, when requiring the component:
 
+```js
 var Welcome = require('./welcome').jsx;
 ```
 
