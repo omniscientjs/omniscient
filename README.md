@@ -165,7 +165,7 @@ Omniscient allows for component local state. That is, all the usual react compon
 
 ### Omniscient and JSX
 
-Due to the way React works with elements, and the way JSX is compiled, the use of Omniscient with JSX slightly differs from the normal use case. Instead of referencing a component directly, you will have to reference its `jsx` property, that exposes the the components underlying React class:
+Due to the way React works with elements, and the way JSX is compiled, the use of Omniscient with JSX slightly differs from the normal use case. Instead of referencing a component directly, you will have to reference its `jsx` property, that exposes the component's underlying React class:
 
 
 ```js
