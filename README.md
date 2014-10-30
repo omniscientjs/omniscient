@@ -22,7 +22,7 @@ the cursors of [Om](https://github.com/swannodette/om), for js, using
 
 A more detailed description of Omniscient's rationale can be found in the [documentation](http://omniscientjs.github.io/documentation)
 
-**Note:** Omniscient pre `v2.0.0` is for React pre `v0.12.0`. `v0.12.0` had [breaking changes to React](https://github.com/facebook/react/blob/master/CHANGELOG.md#breaking-changes), and the API of Omniscient
+**Note:** Omniscient pre `v2.0.0` is for React pre `v0.12.0`. React `v0.12.0` had [breaking changes](https://github.com/facebook/react/blob/master/CHANGELOG.md#breaking-changes), and the API of Omniscient
 had to change accordingly. See the [v1.3.1 tag](https://github.com/omniscientjs/omniscient/tree/v1.3.1) for Omniscient with React `v0.11.0` support.
 
 ### Cursors
