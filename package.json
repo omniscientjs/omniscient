@@ -14,8 +14,8 @@
   },
   "devDependencies": {
     "chai": "^1.9.2",
-    "immstruct": "^0.8.1",
-    "immutable": "^2.6.0",
+    "immstruct": "^1.0.0",
+    "immutable": "^3.0.2",
     "jsdom": "^1.0.1",
     "mocha": "^2.0.1"
   },

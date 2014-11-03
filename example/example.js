@@ -45,7 +45,7 @@ setInterval(function () {
 
   data.cursor(['numbers', bucket]).update(function (state) {
     if (!state) {
-      return Immutable.Vector(number);
+      return Immutable.List.of(number);
     }
     return state.unshift(number);
   });

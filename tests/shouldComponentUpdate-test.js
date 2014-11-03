@@ -2,8 +2,11 @@ var chai = require('chai');
 chai.should();
 
 var Immutable = require('immutable');
+var Cursor = require('immutable/contrib/cursor');
 
-var shouldComponentUpdate = require('../').shouldComponentUpdate;
+var omniscient = require('../');
+var isCursor = omniscient.isCursor;
+var shouldComponentUpdate = omniscient.shouldComponentUpdate;
 
 describe('shouldComponentUpdate', function () {
 
@@ -12,8 +15,8 @@ describe('shouldComponentUpdate', function () {
     it('when cursors are different', function () {
       var data = Immutable.fromJS({ foo: 'bar', bar: [1, 2, 3] });
 
-      shouldUpdate(data.cursor(['foo']), null,
-                   data.cursor(['bar']), null);
+      shouldUpdate(Cursor.from(data, ['foo']), null,
+                   Cursor.from(data, ['bar']), null);
     });
 
 
@@ -21,13 +24,13 @@ describe('shouldComponentUpdate', function () {
       var data = Immutable.fromJS({ foo: 'bar', bar: [1, 2, 3] });
 
       shouldUpdate(null, null,
-                   data.cursor(['bar']), null);
+                   Cursor.from(data, ['bar']), null);
     });
 
     it('when there\'s no longer a cursor', function () {
       var data = Immutable.fromJS({ foo: 'bar', bar: [1, 2, 3] });
 
-      shouldUpdate(data.cursor(['bar']), null,
+      shouldUpdate(Cursor.from(data, ['bar']), null,
                    null, null);
     });
 
@@ -36,23 +39,23 @@ describe('shouldComponentUpdate', function () {
       var data2 = Immutable.fromJS({ baz: [1, 2, 3] });
 
       shouldUpdate(
-        { one: data.cursor(['foo']), two: data2.cursor() }, null,
-        { one: data.cursor(['foo']).update(function (x) { return 1; }), two: data2.cursor() }, null);
+        { one: Cursor.from(data, ['foo']), two: Cursor.from(data2) }, null,
+        { one: Cursor.from(data, ['foo']).update(function (x) { return 1; }), two: Cursor.from(data2) }, null);
     });
 
 
     it('when object literal has changed even if the cursor is the same', function () {
       var data = Immutable.fromJS({ foo: 'bar' });
 
-      shouldUpdate({ one: data.cursor(), two: { foo: 'hello'    }}, null,
-                   { one: data.cursor(), two: { bar: 'good bye' }}, null);
+      shouldUpdate({ one: Cursor.from(data), two: { foo: 'hello'    }}, null,
+                   { one: Cursor.from(data), two: { bar: 'good bye' }}, null);
     });
 
     it('when same cursors change keys', function () {
       var data = Immutable.fromJS({ foo: 'bar', bar: [1, 2, 3] });
 
-      shouldUpdate({ one:     data.cursor(['foo']) }, null,
-                   { changed: data.cursor(['foo']) }, null);
+      shouldUpdate({ one:     Cursor.from(data, ['foo']) }, null,
+                   { changed: Cursor.from(data, ['foo']) }, null);
     });
 
     it('when state has changed', function () {
@@ -90,15 +93,15 @@ describe('shouldComponentUpdate', function () {
     it('when passing same cursors', function () {
       var data = Immutable.fromJS({ foo: 'bar' });
 
-      shouldNotUpdate(data.cursor(), null,
-                      data.cursor(), null);
+      shouldNotUpdate(Cursor.from(data), null,
+                      Cursor.from(data), null);
     });
 
     it('when passing same cursors and same data for multiple values', function () {
       var data = Immutable.fromJS({ foo: 'bar' });
 
-      shouldNotUpdate({ one: data.cursor(), two: { foo: 'hello' } }, null,
-                      { one: data.cursor(), two: { foo: 'hello' } }, null);
+      shouldNotUpdate({ one: Cursor.from(data), two: { foo: 'hello' } }, null,
+                      { one: Cursor.from(data), two: { foo: 'hello' } }, null);
     });
 
     it('when multiple cursors point to the same data', function () {
@@ -106,8 +109,8 @@ describe('shouldComponentUpdate', function () {
       var data2 = Immutable.fromJS({ baz: [1, 2, 3] });
 
       shouldNotUpdate(
-        { one: data.cursor(['foo']), two: data2.cursor() }, null,
-        { one: data.cursor(['foo']), two: data2.cursor() }, null);
+        { one: Cursor.from(data, ['foo']), two: Cursor.from(data2) }, null,
+        { one: Cursor.from(data, ['foo']), two: Cursor.from(data2) }, null);
     });
   });
 });
@@ -121,8 +124,11 @@ function shouldUpdate (cursor, state, nextCursor, nextState, currentStatics, nex
 }
 
 function callShouldUpdate (cursor, state, nextCursor, nextState, currentStatics, nextStatics) {
-  var props     = { cursor: cursor };
-  var nextProps = { cursor: nextCursor };
+  var props     = isCursor(cursor) ? { cursor: cursor } : cursor;
+  var nextProps = isCursor(nextCursor) ? { cursor: nextCursor } : nextCursor;
+
+  props = props || {};
+  nextProps = nextProps || {};
 
   if (currentStatics || nextStatics) {
     props.statics     = currentStatics;

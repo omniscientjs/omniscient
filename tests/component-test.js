@@ -1,6 +1,7 @@
 var chai = require('chai');
 var jsdom = require('jsdom');
 var Immutable = require('immutable');
+var Cursor = require('immutable/contrib/cursor');
 
 var React  = require('react/addons'),
     ReactTestUtils = React.addons.TestUtils;
@@ -81,7 +82,7 @@ describe('component', function () {
 
     it('should pass and expose single immutable cursor', function (done) {
       var mixins = [{ componentDidMount: done }];
-      var cursorInput = Immutable.fromJS({ foo: 'hello' }).cursor('foo');
+      var cursorInput = Cursor.from(Immutable.fromJS({ foo: 'hello' }), 'foo');
 
       var Component = component(mixins, function (props) {
         props.cursor.should.equal(cursorInput);
@@ -130,7 +131,7 @@ describe('component', function () {
 
     it('should get passed key and immutable cursor-objects', function (done) {
       var mixins = [{ componentDidMount: done }];
-      var cursorInput = Immutable.fromJS({ foo: 'hello' }).cursor('foo');
+      var cursorInput = Cursor.from(Immutable.fromJS({ foo: 'hello' }), 'foo');
 
       var Component = component(mixins, function (props) {
         this._currentElement.key.should.equal('myKey');
