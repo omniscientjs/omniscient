@@ -64,14 +64,10 @@ function component (displayName, mixins, render) {
 function shouldComponentUpdate (nextProps, nextState) {
   var isEqualState  = module.exports.isEqualState;
 
-  var isNotStatics = not(isStatics),
-      isNotChildren = not(isChildren);
+  var isNotIgnorable = not(or(isStatics, isChildren));
 
-  var nextCursors    = filterKeyValue(guaranteeObject(nextProps), isNotStatics),
-      currentCursors = filterKeyValue(guaranteeObject(this.props), isNotStatics);
-
-  nextCursors    = filterKeyValue(nextCursors, isNotChildren);
-  currentCursors = filterKeyValue(currentCursors, isNotChildren);
+  var nextCursors    = filterKeyValue(guaranteeObject(nextProps), isNotIgnorable),
+      currentCursors = filterKeyValue(guaranteeObject(this.props), isNotIgnorable);
 
   var nextCursorsKeys    = Object.keys(nextCursors),
       currentCursorsKeys = Object.keys(currentCursors);
@@ -235,6 +231,12 @@ function isStatics (val, key) {
 
 function isChildren (val, key) {
   return key === 'children';
+}
+
+function or (fn1, fn2) {
+  return function () {
+    return fn1.apply(null, arguments) || fn2.apply(null, arguments);
+  };
 }
 
 function toArray (args) {

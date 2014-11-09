@@ -102,6 +102,26 @@ describe('shouldComponentUpdate', function () {
       });
     });
 
+    it('when children has changed', function () {
+      var data = Immutable.fromJS({ foo: 'bar' });
+
+      shouldNotUpdate({
+        children: { foo: 'hello' },
+        nextChildren: { bar: 'bye' }
+      });
+    });
+
+    it('when statics and children has changed', function () {
+      var data = Immutable.fromJS({ foo: 'bar' });
+
+      shouldNotUpdate({
+        statics: { foo: 'hello' },
+        nextStatics: { bar: 'bye' },
+        children: { foo: 'hello' },
+        nextChildren: { bar: 'bye' }
+      });
+    });
+
     it('when passing same cursors', function () {
       var data = Immutable.fromJS({ foo: 'bar' });
 
@@ -136,7 +156,8 @@ function shouldNotUpdate (opts) {
   callShouldUpdate(
     opts.cursor, opts.state,
     opts.nextCursor, opts.nextState,
-    opts.statics, opts.nextStatics
+    opts.statics, opts.nextStatics,
+    opts.children, opts.nextChildren
   ).should.equal(false);
 }
 
@@ -144,11 +165,17 @@ function shouldUpdate (opts) {
   callShouldUpdate(
     opts.cursor, opts.state,
     opts.nextCursor, opts.nextState,
-    opts.statics, opts.nextStatics
+    opts.statics, opts.nextStatics,
+    opts.children, opts.nextChildren
   ).should.equal(true);
 }
 
-function callShouldUpdate (cursor, state, nextCursor, nextState, statics, nextStatics) {
+function callShouldUpdate (
+  cursor, state,
+  nextCursor, nextState,
+  statics, nextStatics,
+  children, nextChildren
+) {
   var props     = isCursor(cursor) ? { cursor: cursor } : cursor;
   var nextProps = isCursor(nextCursor) ? { cursor: nextCursor } : nextCursor;
 
@@ -158,6 +185,11 @@ function callShouldUpdate (cursor, state, nextCursor, nextState, statics, nextSt
   if (statics || nextStatics) {
     props.statics     = statics;
     nextProps.statics = nextStatics;
+  }
+
+  if (children || nextChildren) {
+    props.children     = children;
+    nextProps.children = nextChildren;
   }
 
   return shouldComponentUpdate.call({
