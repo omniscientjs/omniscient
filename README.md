@@ -27,7 +27,7 @@ had to change accordingly. See the [v1.3.1 tag](https://github.com/omniscientjs/
 
 ### Cursors
 
-With cursors, components can have the outer immutable structure swapped when a component's data is changed. A re-render can be triggered, but only component trees referencing data affected by the change will actually be re-rendered. This means that if you don't pass any data (cursor or non-cursor property) to a component, this component won't be re-rendered. This could affect shallow parent components. Such a component could have a [`shouldComponentUpdate` that always return true](https://github.com/omniscientjs/omniscient#overriding-iscursor-and-isequalcursor).
+With cursors, components can have the outer immutable structure swapped when a component's data is changed. A re-render can be triggered, but only component trees referencing data affected by the change will actually be re-rendered. This means that if you don't pass any data (cursor or non-cursor property) to a component, this component won't be re-rendered. This could affect shallow parent components. Such a component could have a [`shouldComponentUpdate` that always return true](https://github.com/omniscientjs/omniscient#overriding-iscursor-and-isequalcursor). This will make the component always re-render.
 
 If you pass in a single cursor, this is added to the `props.cursor` property, where `props` is what you get passed to your component.
 
@@ -161,7 +161,7 @@ var List = component(function (props) {
 
 ### Local State
 
-Omniscient allows for component local state. That is, all the usual react component methods are available on `this` for use through mixins. You are free to `this.setState({ .. })` for component local view state. 
+Omniscient allows for component local state. That is, all the usual react component methods are available on `this` for use through mixins. You are free to `this.setState({ .. })` for component local view state.
 
 ### Omniscient and JSX
 
