@@ -3,6 +3,12 @@ Changelog
 
 Changelog with fixes and additions between each release.
 
+## Version `v2.0.1`
+
+Fixes:
+1. Tests and examples use Immutable.js 3.0.0 and Immstruct 1.0.0.
+2. Fixed bug with `shouldComponentUpdate` and children (#19).
+
 ## Version `v2.0.0`
 
 As of `v2.0.0`, Omniscient is dependent of React `v0.12.0`. This React version introduces some changes, and no longer allows components, but elements. With this some changes, not too big but breaks the previous API.
