@@ -1,4 +1,4 @@
-Omniscient [![NPM version][npm-image]][npm-url] [![Build Status][travis-image]][travis-url] [![Dependency Status][depstat-image]][depstat-url]
+Omniscient [![NPM version][npm-image]][npm-url] [![Build Status][travis-image]][travis-url] [![Dependency Status][depstat-image]][depstat-url] [![Gitter][gitter-image]][gitter-url]
 =========
 
 <img src="https://raw.githubusercontent.com/torgeir/omniscient/master/omniscient_logo.png" align="right" width="150px">
@@ -355,6 +355,8 @@ for finding errors, you can also use filtering in your browser inspector.
 [depstat-url]: https://gemnasium.com/omniscientjs/omniscient
 [depstat-image]: http://img.shields.io/gemnasium/omniscientjs/omniscient.svg?style=flat
 
+[gitter-url]: https://gitter.im/omniscientjs/omniscient?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge
+[gitter-image]: https://badges.gitter.im/Join%20Chat.svg
 
 *Logo is composed by icons from [Iconmoon](http://www.icomoon.io)
 and [Picol](http://picol.org). Licensed under [CC BY 3.0](http://creativecommons.org/licenses/by/3.0/)*
