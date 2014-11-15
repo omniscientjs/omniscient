@@ -28,6 +28,36 @@ describe('component', function () {
 
   });
 
+  describe('statics', function () {
+
+    it('should take static methods', function () {
+      var mixins = [{ statics: { foo: noop, bar: noop } }];
+
+      var Component = component(mixins, function () {
+        return React.DOM.text(null, 'hello');
+      });
+
+      Component.foo.should.be.a('function');
+      Component.jsx.foo.should.be.a('function');
+      Component.bar.should.be.a('function');
+      Component.jsx.bar.should.be.a('function');
+    });
+
+    it('should take static methods from several mixins', function () {
+      var mixins = [{ statics: { foo: noop } }, { statics: { bar: noop } }];
+
+      var Component = component(mixins, function () {
+        return React.DOM.text(null, 'hello');
+      });
+
+      Component.foo.should.be.a('function');
+      Component.jsx.foo.should.be.a('function');
+      Component.bar.should.be.a('function');
+      Component.jsx.bar.should.be.a('function');
+    });
+
+  });
+
   describe('mixins', function () {
 
     it('should take mixins', function (done) {
