@@ -20,15 +20,23 @@ module.exports.debug = function (pattern) {
 
 function component (displayName, mixins, render) {
   var options = createDefaultArguments(displayName, mixins, render);
+  var methodStatics = pickStaticMixins(options.mixins);
 
-  var Component = React.createClass({
+  var componentObject = {
     displayName: options.displayName,
     mixins: options.mixins,
     render: function render () {
       if (debug) debug.call(this, 'render');
       return options.render.call(this, this.props, this.props.statics);
     }
-  });
+  };
+
+  if (methodStatics) {
+    componentObject.statics = methodStatics;
+    removeOldStaticMethods(options.mixins);
+  }
+
+  var Component = React.createClass(componentObject);
 
   var create = function (key, props) {
     var children = toArray(arguments).filter(React.isValidElement);
@@ -58,6 +66,11 @@ function component (displayName, mixins, render) {
   };
 
   create.jsx = Component;
+
+  if (methodStatics) {
+    create = extend(create, methodStatics);
+  }
+
   return create;
 };
 
@@ -186,6 +199,40 @@ function createDefaultArguments (displayName, mixins, render) {
     mixins: mixins,
     render: render
   };
+}
+
+function pickStaticMixins (mixins) {
+  var filtered = mixins.filter(function (obj) {
+    return !!obj.statics;
+  });
+
+  if (!filtered.length) {
+    return void 0;
+  }
+
+  var statics = {};
+  filtered.forEach(function (obj) {
+    statics = extend(statics, obj.statics);
+  });
+
+  return statics;
+}
+
+function removeOldStaticMethods (mixins) {
+  mixins.filter(function (obj) {
+    return !!obj.statics;
+  }).forEach(function (obj) {
+    delete obj.statics;
+  });
+}
+
+function extend (original, extension) {
+  for (key in extension) {
+    if (extension.hasOwnProperty(key) && !original[key]) {
+      original[key] = extension[key];
+    }
+  }
+  return original;
 }
 
 function hasShouldComponentUpdate (mixins) {
