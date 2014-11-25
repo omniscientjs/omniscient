@@ -7,6 +7,7 @@ Changelog with fixes and additions between each release.
 
 Additions:
 1. Adds support for React static methods.
+2. Adds dist files (`./dist/omniscient.js` and `./dist/omniscient.min.js`) and build script.
 
 E.g.
 
