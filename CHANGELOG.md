@@ -3,6 +3,26 @@ Changelog
 
 Changelog with fixes and additions between each release.
 
+## Version `v2.1.0`
+
+Additions:
+1. Adds support for React static methods.
+
+E.g.
+
+```js
+var mixins = [{ statics: { foo: noop } }, { statics: { bar: noop } }];
+
+var Component = component(mixins, function () {
+  return React.DOM.text(null, 'hello');
+});
+
+Component.foo.should.be.a('function');
+Component.jsx.foo.should.be.a('function');
+Component.bar.should.be.a('function');
+Component.jsx.bar.should.be.a('function');
+```
+
 ## Version `v2.0.1`
 
 Fixes:
