@@ -67,6 +67,8 @@ structure.on('swap', render);
 
 [`immstruct`](https://github.com/omniscientjs/immstruct) is a simple wrapper for [`Immutable.js`](https://github.com/facebook/immutable-js) that ease triggering re-renders with Omniscient when the immutable data structure is replaced. `immstruct` is not a requirement for Omniscient, but makes a great fit.
 
+If you are running the distributed file, not browserify, you have to use `omniscient` instead of `component` in all examples.
+
 ### Reuseable mixins
 
 Omniscient is fully compatible with exising react components, and encourages reuse of your existing mixins.
