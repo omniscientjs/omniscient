@@ -207,7 +207,7 @@ function createDefaultArguments (displayName, mixins, render) {
 }
 
 function pickStaticMixins (mixins) {
-  var filtered = mixins.filter(function (obj) {
+  var filtered = mixins.filter(function (obj) {
     return !!obj.statics;
   });
 
@@ -216,7 +216,7 @@ function pickStaticMixins (mixins) {
   }
 
   var statics = {};
-  filtered.forEach(function (obj) {
+  filtered.forEach(function (obj) {
     statics = extend(statics, obj.statics);
   });
 
@@ -224,9 +224,9 @@ function pickStaticMixins (mixins) {
 }
 
 function removeOldStaticMethods (mixins) {
-  mixins.filter(function (obj) {
+  mixins.filter(function (obj) {
     return !!obj.statics;
-  }).forEach(function (obj) {
+  }).forEach(function (obj) {
     delete obj.statics;
   });
 }
