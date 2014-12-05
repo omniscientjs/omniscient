@@ -79,8 +79,8 @@ function shouldComponentUpdate (nextProps, nextState) {
 
   var isNotIgnorable = not(or(isStatics, isChildren));
 
-  var nextCursors    = filterKeyValue(guaranteeObject(nextProps), isNotIgnorable),
-      currentCursors = filterKeyValue(guaranteeObject(this.props), isNotIgnorable);
+  var nextCursors    = filterKeyValue(nextProps, isNotIgnorable),
+      currentCursors = filterKeyValue(this.props, isNotIgnorable);
 
   var nextCursorsKeys    = Object.keys(nextCursors),
       currentCursorsKeys = Object.keys(currentCursors);
@@ -113,22 +113,6 @@ function shouldComponentUpdate (nextProps, nextState) {
   if (debug) debug.call(this, 'shouldComponentUpdate => false');
 
   return false;
-}
-
-function guaranteeObject (prop) {
-  if (!prop) {
-    return {};
-  }
-
-  if (isCursor(prop)) {
-    return { _dummy_key: prop };
-  }
-
-  if (typeof prop !== 'object') {
-    return { _dummy_key: prop };
-  }
-
-  return prop;
 }
 
 function hasDifferentKeys (currentCursorsKeys, currentCursors, nextCursors) {
