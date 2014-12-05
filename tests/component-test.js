@@ -9,6 +9,7 @@ var React  = require('react/addons'),
 var should = chai.should();
 
 var component = require('../');
+var shouldUpdateMixin = require('../updateMixin');
 
 describe('component', function () {
 
@@ -81,6 +82,23 @@ describe('component', function () {
       });
 
       render(Component({ foo: 'hello' }));
+    });
+
+    it('should allow shouldComponentUpdate as mixin to vanilla React', function (done) {
+      var mixins = [{
+        shouldComponentUpdate: shouldUpdateMixin
+      }];
+
+      var Component = React.createClass({
+        mixins: mixins,
+        render: function () {
+          this.shouldComponentUpdate.should.equal(shouldUpdateMixin);
+          done();
+          return React.DOM.text(null, 'hello');
+        }
+      });
+
+      render(React.createElement(Component, { foo: 'hello' }));
     });
   });
 
