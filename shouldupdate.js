@@ -60,20 +60,14 @@ function shouldComponentUpdate (nextProps, nextState) {
 }
 
 function isCursor (potential) {
-  return potential &&
-  ((typeof potential.deref === 'function') || (typeof potential.__deref === 'function'));
+  return potential && typeof potential.deref === 'function';
 }
 
 function unCursor(cursor) {
   if (!module.exports.isCursor(cursor)) {
     return cursor;
   }
-
-  if (typeof cursor.deref === 'function') {
-    return cursor.deref();
-  }
-
-  return cursor.__deref();
+  return cursor.deref();
 }
 
 function hasDifferentKeys (currentCursorsKeys, currentCursors, nextCursors) {
