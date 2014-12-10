@@ -9,7 +9,7 @@ var React  = require('react/addons'),
 var should = chai.should();
 
 var component = require('../');
-var shouldUpdateMixin = require('../updateMixin');
+var shouldUpdateMixin = require('../shouldupdate');
 
 describe('component', function () {
 

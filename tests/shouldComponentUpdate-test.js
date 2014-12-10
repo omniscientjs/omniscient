@@ -5,7 +5,7 @@ var Immutable = require('immutable');
 var Cursor = require('immutable/contrib/cursor');
 
 var component = require('../');
-var shouldComponentUpdate = require('../updateMixin');
+var shouldComponentUpdate = require('../shouldupdate');
 var isCursor = shouldComponentUpdate.isCursor;
 
 describe('shouldComponentUpdate', function () {

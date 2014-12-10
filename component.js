@@ -1,7 +1,7 @@
 var React     = require('react'),
     extend    = require('extend-object');
 
-var shouldComponentUpdate = require('./updateMixin');
+var shouldComponentUpdate = require('./shouldupdate');
 
 module.exports = component;
 module.exports.shouldComponentUpdate = shouldComponentUpdate;
