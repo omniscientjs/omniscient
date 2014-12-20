@@ -1,22 +1,28 @@
 var React     = require('react'),
-    deepEqual = require('deep-equal');
+    extend    = require('extend-object');
+
+var shouldComponentUpdate = require('./shouldupdate');
 
 module.exports = component;
 module.exports.shouldComponentUpdate = shouldComponentUpdate;
-module.exports.isEqualState  = function isEqualState () { return deepEqual.apply(this, arguments); };
-module.exports.isEqualCursor = function isEqualCursor (a, b) { return unCursor(a) === unCursor(b); };
-module.exports.isCursor = isCursor;
 
+// Expose methods and allow for them to override
+['isEqualState', 'isEqualCursor', 'isCursor'].forEach(function expose (method) {
+  var value = shouldComponentUpdate[method];
+  Object.defineProperty(module.exports, method, {
+    get: function () { return value; },
+    set: function (newValue) {
+      value = newValue;
+      shouldComponentUpdate[method] = value;
+    }
+  });
+});
+
+// Expose method for debugging
 var debug;
 module.exports.debug = function (pattern) {
-  var regex = new RegExp(pattern || '.*');
-  debug = function (str) {
-    var key = this._currentElement && this._currentElement.key ? ' key=' + this._currentElement.key : '';
-    var name = this.constructor.displayName;
-    var tag = name + key;
-    if ((key || name) && regex.test(tag)) console.debug('<' + tag + '>: ' + str);
-  };
-}
+  debug = shouldComponentUpdate.debug(pattern);
+};
 
 function component (displayName, mixins, render) {
   var options = createDefaultArguments(displayName, mixins, render);
@@ -50,7 +56,7 @@ function component (displayName, mixins, render) {
       props = { };
     }
 
-    if (isCursor(props)) {
+    if (module.exports.isCursor(props)) {
       props = { cursor: props };
     }
 
@@ -73,75 +79,6 @@ function component (displayName, mixins, render) {
 
   return create;
 };
-
-function shouldComponentUpdate (nextProps, nextState) {
-  var isEqualState  = module.exports.isEqualState;
-
-  var isNotIgnorable = not(or(isStatics, isChildren));
-
-  var nextCursors    = filterKeyValue(nextProps, isNotIgnorable),
-      currentCursors = filterKeyValue(this.props, isNotIgnorable);
-
-  var nextCursorsKeys    = Object.keys(nextCursors),
-      currentCursorsKeys = Object.keys(currentCursors);
-
-  if (currentCursorsKeys.length !== nextCursorsKeys.length) {
-    if (debug) debug.call(this, 'shouldComponentUpdate => true (number of cursors differ)');
-    return true;
-  }
-
-  if (hasDifferentKeys(currentCursorsKeys, currentCursors, nextCursors)) {
-    if (debug) debug.call(this, 'shouldComponentUpdate => true (cursors have different keys)');
-    return true;
-  }
-
-  if (hasChangedCursors(currentCursors, nextCursors)) {
-    if (debug) debug.call(this, 'shouldComponentUpdate => true (cursors have changed)');
-    return true;
-  }
-
-  if (!isEqualState(this.state, nextState)) {
-    if (debug) debug.call(this, 'shouldComponentUpdate => true (state has changed)');
-    return true;
-  }
-
-  if (hasChangedProperties(currentCursors, nextCursors)) {
-    if (debug) debug.call(this, 'shouldComponentUpdate => true (properties have changed)');
-    return true;
-  }
-
-  if (debug) debug.call(this, 'shouldComponentUpdate => false');
-
-  return false;
-}
-
-function hasDifferentKeys (currentCursorsKeys, currentCursors, nextCursors) {
-  return !currentCursorsKeys.every(function existsInBoth (key) {
-    return typeof currentCursors[key] !== 'undefined' && typeof nextCursors[key] !== 'undefined';
-  });
-}
-
-function hasChangedCursors (current, next) {
-  current = filterKeyValue(current, isCursor);
-  next    = filterKeyValue(next, isCursor);
-
-  var isEqualCursor = module.exports.isEqualCursor;
-
-  for (var key in current)
-    if (!isEqualCursor(current[key], next[key]))
-      return true;
-  return false;
-}
-
-function hasChangedProperties (current, next) {
-  current = filterKeyValue(current, not(isCursor));
-  next    = filterKeyValue(next, not(isCursor));
-
-  for (var key in current)
-    if (!deepEqual(current[key], next[key]))
-      return true;
-  return false;
-}
 
 function createDefaultArguments (displayName, mixins, render) {
 
@@ -210,64 +147,10 @@ function removeOldStaticMethods (mixins) {
   });
 }
 
-function extend (original, extension) {
-  for (key in extension) {
-    if (extension.hasOwnProperty(key) && !original[key]) {
-      original[key] = extension[key];
-    }
-  }
-  return original;
-}
-
 function hasShouldComponentUpdate (mixins) {
-  return !!mixins.filter(function (mixin) {
+  return mixins.some(function (mixin) {
     return !!mixin.shouldComponentUpdate;
-  }).length;
-}
-
-function isCursor (potential) {
-  return potential &&
-    ((typeof potential.deref === 'function') || (typeof potential.__deref === 'function'));
-}
-
-function unCursor(cursor) {
-  if (!isCursor(cursor)) {
-    return cursor;
-  }
-
-  if (typeof cursor.deref === 'function') {
-    return cursor.deref();
-  }
-
-  return cursor.__deref();
-}
-
-function filterKeyValue (object, predicate) {
-  var key, filtered = {};
-  for (key in object)
-    if (predicate(object[key], key))
-      filtered[key] = object[key];
-  return filtered;
-}
-
-function not (fn) {
-  return function () {
-    return !fn.apply(fn, arguments);
-  };
-}
-
-function isStatics (val, key) {
-  return key === 'statics';
-}
-
-function isChildren (val, key) {
-  return key === 'children';
-}
-
-function or (fn1, fn2) {
-  return function () {
-    return fn1.apply(null, arguments) || fn2.apply(null, arguments);
-  };
+  });
 }
 
 function toArray (args) {

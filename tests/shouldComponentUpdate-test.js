@@ -4,9 +4,9 @@ chai.should();
 var Immutable = require('immutable');
 var Cursor = require('immutable/contrib/cursor');
 
-var omniscient = require('../');
-var isCursor = omniscient.isCursor;
-var shouldComponentUpdate = omniscient.shouldComponentUpdate;
+var component = require('../');
+var shouldComponentUpdate = require('../shouldupdate');
+var isCursor = shouldComponentUpdate.isCursor;
 
 describe('shouldComponentUpdate', function () {
 
@@ -20,7 +20,6 @@ describe('shouldComponentUpdate', function () {
         nextCursor: Cursor.from(data, ['bar'])
       });
     });
-
 
     it('when there\'s suddenly a cursor', function () {
       var data = Immutable.fromJS({ foo: 'bar', bar: [1, 2, 3] });
@@ -150,50 +149,138 @@ describe('shouldComponentUpdate', function () {
       });
     });
   });
+
+
+  describe('overridables', function () {
+
+    describe('through main component', function () {
+      var isEqualState, isEqualCursor, isCursor;
+
+      before(function () {
+        isEqualState = component.isEqualState;
+        isEqualCursor = component.isEqualCursor;
+        isCursor = component.isCursor;
+      });
+
+      afterEach(function () {
+        component.isEqualState = isEqualState;
+        component.isEqualCursor = isEqualCursor;
+        component.isCursor = isCursor;
+      });
+
+      it('should have overridable isCursor', function (done) {
+        var data = Immutable.fromJS({ foo: 'bar', bar: [1, 2, 3] });
+        var called = 0;
+        component.isCursor = function () { called++; return true; };
+
+        shouldUpdate({
+          cursor: Cursor.from(data, ['foo']),
+          nextCursor: Cursor.from(data, ['bar'])
+        });
+
+        called.should.be.above(1);
+        done();
+      });
+
+      it('should have overridable isEqualCursor', function (done) {
+        var data = Immutable.fromJS({ foo: 'bar', bar: [1, 2, 3] });
+        component.isEqualCursor = function () { done() };
+
+        shouldUpdate({
+          cursor: Cursor.from(data, ['foo']),
+          nextCursor: Cursor.from(data, ['bar'])
+        });
+      });
+
+      it('should have overridable isEqualState', function (done) {
+        component.isEqualState = function () { done() };
+        shouldUpdate({
+          state: { foo: 'hello' },
+          nextState: { foo: 'bar' }
+        });
+      });
+    });
+
+    describe('internal', function () {
+      var isEqualState, isEqualCursor, isCursor;
+
+      before(function () {
+        isEqualState = shouldComponentUpdate.isEqualState;
+        isEqualCursor = shouldComponentUpdate.isEqualCursor;
+        isCursor = shouldComponentUpdate.isCursor;
+      });
+
+      afterEach(function () {
+        shouldComponentUpdate.isEqualState = isEqualState;
+        shouldComponentUpdate.isEqualCursor = isEqualCursor;
+        shouldComponentUpdate.isCursor = isCursor;
+      });
+
+      it('should have overridable isCursor', function (done) {
+        var data = Immutable.fromJS({ foo: 'bar', bar: [1, 2, 3] });
+        var called = 0;
+        shouldComponentUpdate.isCursor = function () { called++; return true; };
+
+        shouldUpdate({
+          cursor: Cursor.from(data, ['foo']),
+          nextCursor: Cursor.from(data, ['bar'])
+        });
+
+        called.should.be.above(1);
+        done();
+      });
+
+      it('should have overridable isEqualCursor', function (done) {
+        var data = Immutable.fromJS({ foo: 'bar', bar: [1, 2, 3] });
+        shouldComponentUpdate.isEqualCursor = function () { done() };
+
+        shouldUpdate({
+          cursor: Cursor.from(data, ['foo']),
+          nextCursor: Cursor.from(data, ['bar'])
+        });
+      });
+
+      it('should have overridable isEqualState', function (done) {
+        shouldComponentUpdate.isEqualState = function () { done() };
+        shouldUpdate({
+          state: { foo: 'hello' },
+          nextState: { foo: 'bar' }
+        });
+      });
+
+    });
+  });
 });
 
-function shouldNotUpdate (opts) {
-  callShouldUpdate(
-    opts.cursor, opts.state,
-    opts.nextCursor, opts.nextState,
-    opts.statics, opts.nextStatics,
-    opts.children, opts.nextChildren
-  ).should.equal(false);
+function shouldNotUpdate (opts, fn) {
+  callShouldUpdate(opts, fn).should.equal(false);
 }
 
-function shouldUpdate (opts) {
-  callShouldUpdate(
-    opts.cursor, opts.state,
-    opts.nextCursor, opts.nextState,
-    opts.statics, opts.nextStatics,
-    opts.children, opts.nextChildren
-  ).should.equal(true);
+function shouldUpdate (opts, fn) {
+  callShouldUpdate(opts, fn).should.equal(true);
 }
 
-function callShouldUpdate (
-  cursor, state,
-  nextCursor, nextState,
-  statics, nextStatics,
-  children, nextChildren
-) {
-  var props     = isCursor(cursor) ? { cursor: cursor } : cursor;
-  var nextProps = isCursor(nextCursor) ? { cursor: nextCursor } : nextCursor;
+function callShouldUpdate (opts, fn) {
+  fn = fn || shouldComponentUpdate;
+
+  var props     = isCursor(opts.cursor) ? { cursor: opts.cursor } : opts.cursor;
+  var nextProps = isCursor(opts.nextCursor) ? { cursor: opts.nextCursor } : opts.nextCursor;
 
   props = props || {};
   nextProps = nextProps || {};
 
-  if (statics || nextStatics) {
-    props.statics     = statics;
-    nextProps.statics = nextStatics;
+  if (opts.statics || opts.nextStatics) {
+    props.statics     = opts.statics;
+    nextProps.statics = opts.nextStatics;
   }
 
-  if (children || nextChildren) {
-    props.children     = children;
-    nextProps.children = nextChildren;
+  if (opts.children || opts.nextChildren) {
+    props.children     = opts.children;
+    nextProps.children = opts.nextChildren;
   }
 
-  return shouldComponentUpdate.call({
+  return fn.call({
     props: props,
-    state: state
-  }, nextProps, nextState);
+    state: opts.state
+  }, nextProps, opts.nextState);
 }
