@@ -344,6 +344,10 @@ for finding errors, you can also use filtering in your browser inspector.
 - [Mikael Brevik](https://github.com/mikaelbr) ([@mikaelbrevik](https://twitter.com/mikaelbrevik))
 - [Torgeir Thoresen](https://github.com/torgeir) ([@torgeir](https://twitter.com/torgeir))
 
+## Omniscient in the wild
+
+- [TodoMVC - Omniscient](https://github.com/jcranendonk/todomvc-omniscient/) by [jeroencranendonk-wf](https://github.com/jeroencranendonk-wf)
+
 ## License
 
 [MIT License](http://en.wikipedia.org/wiki/MIT_License)
