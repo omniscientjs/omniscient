@@ -301,6 +301,51 @@ describe('component', function () {
     });
   });
 
+  describe('overridables', function () {
+
+    it('should have overridable shouldComponentUpdate', function (done) {
+      var shouldUpdate = function () { return true; };
+      var localComponent = component.withDefaults({
+        shouldComponentUpdate: shouldUpdate
+      });
+
+      localComponent.shouldComponentUpdate.should.equal(shouldUpdate);
+      localComponent.name.should.equal('Component');
+
+      var Component = localComponent(function () {
+        this.shouldComponentUpdate.should.equal(shouldUpdate);
+        done();
+        return React.DOM.text(null, 'hello');
+      });
+
+      render(Component({ foo: 'hello' }));
+    });
+
+    it('should have debug on product of withDefaults', function () {
+      var shouldUpdate = function () { return true; };
+      var localComponent = component.withDefaults({
+        shouldComponentUpdate: shouldUpdate
+      });
+
+      localComponent.debug.should.be.a('function');
+    });
+
+    it('should have overridable isCursor', function (done) {
+      var isCursor = function () { return done(); };
+      var localComponent = component.withDefaults({
+        isCursor: isCursor
+      });
+
+      localComponent.shouldComponentUpdate.isCursor.should.equal(isCursor);
+      var Component = localComponent(function () {
+        return React.DOM.text(null, 'hello');
+      });
+
+      render(Component({ foo: 'hello' }));
+    });
+
+  });
+
   describe('exposes arguments as props', function () {
 
     it('should expose single cursor and statics', function (done) {

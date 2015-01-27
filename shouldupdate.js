@@ -1,13 +1,12 @@
 var filterKeyValue = require('object-filter'),
     deepEqual      = require('deep-equal');
 
-module.exports = shouldComponentUpdate;
-module.exports.isEqualState  = function isEqualState () { return deepEqual.apply(this, arguments); };
-module.exports.isEqualCursor = function isEqualCursor (a, b) { return unCursor(a) === unCursor(b); };
-module.exports.isCursor = isCursor;
-
 var debug;
-module.exports.debug = function (pattern) {
+
+module.exports = factory();
+module.exports.withDefaults = factory;
+module.exports.isCursor = isCursor;
+var debugFn = module.exports.debug = function (pattern) {
   var regex = new RegExp(pattern || '.*');
   debug = function (str) {
     var key = this._currentElement && this._currentElement.key ? ' key=' + this._currentElement.key : '';
@@ -18,91 +17,109 @@ module.exports.debug = function (pattern) {
   return debug;
 };
 
-function shouldComponentUpdate (nextProps, nextState) {
-  var isEqualState  = module.exports.isEqualState;
+function factory (methods) {
+  methods = methods || {};
+  var _isCursor = methods.isCursor || isCursor;
+  var _isEqualCursor = methods.isEqualCursor || isEqualCursor;
+  var _isEqualState = methods.isEqualState || isEqualState;
+  var _unCursor = methods.unCursor || unCursor;
 
-  var isNotIgnorable = not(or(isStatics, isChildren));
+  shouldComponentUpdate.isCursor = _isCursor;
+  shouldComponentUpdate.debug = debugFn;
+  return shouldComponentUpdate;
 
-  var nextCursors    = filterKeyValue(nextProps, isNotIgnorable),
-  currentCursors = filterKeyValue(this.props, isNotIgnorable);
+  function shouldComponentUpdate (nextProps, nextState) {
+    var isNotIgnorable = not(or(isStatics, isChildren));
 
-  var nextCursorsKeys    = Object.keys(nextCursors),
-      currentCursorsKeys = Object.keys(currentCursors);
+    var nextCursors    = filterKeyValue(nextProps, isNotIgnorable),
+        currentCursors = filterKeyValue(this.props, isNotIgnorable);
 
-  if (currentCursorsKeys.length !== nextCursorsKeys.length) {
-    if (debug) debug.call(this, 'shouldComponentUpdate => true (number of cursors differ)');
-    return true;
+    var nextCursorsKeys    = Object.keys(nextCursors),
+        currentCursorsKeys = Object.keys(currentCursors);
+
+    if (currentCursorsKeys.length !== nextCursorsKeys.length) {
+      if (debug) debug.call(this, 'shouldComponentUpdate => true (number of cursors differ)');
+      return true;
+    }
+
+    if (hasDifferentKeys(currentCursorsKeys, currentCursors, nextCursors)) {
+      if (debug) debug.call(this, 'shouldComponentUpdate => true (cursors have different keys)');
+      return true;
+    }
+
+    if (hasChangedCursors(currentCursors, nextCursors)) {
+      if (debug) debug.call(this, 'shouldComponentUpdate => true (cursors have changed)');
+      return true;
+    }
+
+    if (!_isEqualState(this.state, nextState)) {
+      if (debug) debug.call(this, 'shouldComponentUpdate => true (state has changed)');
+      return true;
+    }
+
+    if (hasChangedProperties(currentCursors, nextCursors)) {
+      if (debug) debug.call(this, 'shouldComponentUpdate => true (properties have changed)');
+      return true;
+    }
+
+    if (debug) debug.call(this, 'shouldComponentUpdate => false');
+
+    return false;
   }
 
-  if (hasDifferentKeys(currentCursorsKeys, currentCursors, nextCursors)) {
-    if (debug) debug.call(this, 'shouldComponentUpdate => true (cursors have different keys)');
-    return true;
+  function hasChangedCursors (current, next) {
+    var isCursor = _isCursor;
+    var isEqualCursor = _isEqualCursor;
+
+    current = filterKeyValue(current, isCursor);
+    next = filterKeyValue(next, isCursor);
+
+    for (var key in current) {
+      if (!isEqualCursor(current[key], next[key])) {
+        return true;
+      }
+    }
+    return false;
   }
 
-  if (hasChangedCursors(currentCursors, nextCursors)) {
-    if (debug) debug.call(this, 'shouldComponentUpdate => true (cursors have changed)');
-    return true;
+  function hasChangedProperties (current, next) {
+    current = filterKeyValue(current, not(_isCursor));
+    next    = filterKeyValue(next, not(_isCursor));
+
+    for (var key in current) {
+      if (!deepEqual(current[key], next[key])) {
+        return true;
+      }
+    }
+    return false;
   }
 
-  if (!isEqualState(this.state, nextState)) {
-    if (debug) debug.call(this, 'shouldComponentUpdate => true (state has changed)');
-    return true;
+  function isEqualState () {
+    return deepEqual.apply(this, arguments);
   }
 
-  if (hasChangedProperties(currentCursors, nextCursors)) {
-    if (debug) debug.call(this, 'shouldComponentUpdate => true (properties have changed)');
-    return true;
+  function isEqualCursor (a, b) {
+    return unCursor(a) === unCursor(b);
   }
 
-  if (debug) debug.call(this, 'shouldComponentUpdate => false');
-
-  return false;
-}
-
-function isCursor (potential) {
-  return potential && typeof potential.deref === 'function';
 }
 
 function unCursor(cursor) {
-  if (!module.exports.isCursor(cursor)) {
+  if (!isCursor(cursor)) {
     return cursor;
   }
   return cursor.deref();
+}
+
+
+function isCursor (potential) {
+  return potential && typeof potential.deref === 'function';
 }
 
 function hasDifferentKeys (currentCursorsKeys, currentCursors, nextCursors) {
   return !currentCursorsKeys.every(function existsInBoth (key) {
     return typeof currentCursors[key] !== 'undefined' && typeof nextCursors[key] !== 'undefined';
   });
-}
-
-function hasChangedCursors (current, next) {
-  var isCursor = module.exports.isCursor;
-  var isEqualCursor = module.exports.isEqualCursor;
-
-  current = filterKeyValue(current, isCursor);
-  next = filterKeyValue(next, isCursor);
-
-  for (var key in current) {
-    if (!isEqualCursor(current[key], next[key])) {
-      return true;
-    }
-  }
-  return false;
-}
-
-function hasChangedProperties (current, next) {
-  var isCursor = module.exports.isCursor;
-
-  current = filterKeyValue(current, not(isCursor));
-  next    = filterKeyValue(next, not(isCursor));
-
-  for (var key in current) {
-    if (!deepEqual(current[key], next[key])) {
-      return true;
-    }
-  }
-  return false;
 }
 
 function not (fn) {

@@ -154,29 +154,17 @@ describe('shouldComponentUpdate', function () {
   describe('overridables', function () {
 
     describe('through main component', function () {
-      var isEqualState, isEqualCursor, isCursor;
-
-      before(function () {
-        isEqualState = component.isEqualState;
-        isEqualCursor = component.isEqualCursor;
-        isCursor = component.isCursor;
-      });
-
-      afterEach(function () {
-        component.isEqualState = isEqualState;
-        component.isEqualCursor = isEqualCursor;
-        component.isCursor = isCursor;
-      });
-
       it('should have overridable isCursor', function (done) {
         var data = Immutable.fromJS({ foo: 'bar', bar: [1, 2, 3] });
         var called = 0;
-        component.isCursor = function () { called++; return true; };
+        var local = component.withDefaults({
+          isCursor: function () { called++; return true; }
+        }).shouldComponentUpdate;
 
         shouldUpdate({
           cursor: Cursor.from(data, ['foo']),
           nextCursor: Cursor.from(data, ['bar'])
-        });
+        }, local);
 
         called.should.be.above(1);
         done();
@@ -184,68 +172,75 @@ describe('shouldComponentUpdate', function () {
 
       it('should have overridable isEqualCursor', function (done) {
         var data = Immutable.fromJS({ foo: 'bar', bar: [1, 2, 3] });
-        component.isEqualCursor = function () { done() };
+        var local = component.withDefaults({
+          isEqualCursor: function () { done() }
+        }).shouldComponentUpdate;
 
         shouldUpdate({
           cursor: Cursor.from(data, ['foo']),
           nextCursor: Cursor.from(data, ['bar'])
-        });
+        }, local);
       });
 
       it('should have overridable isEqualState', function (done) {
-        component.isEqualState = function () { done() };
+        var local = component.withDefaults({
+          isEqualState: function () { done() }
+        }).shouldComponentUpdate;
+
         shouldUpdate({
           state: { foo: 'hello' },
           nextState: { foo: 'bar' }
-        });
+        }, local);
       });
     });
 
     describe('internal', function () {
-      var isEqualState, isEqualCursor, isCursor;
-
-      before(function () {
-        isEqualState = shouldComponentUpdate.isEqualState;
-        isEqualCursor = shouldComponentUpdate.isEqualCursor;
-        isCursor = shouldComponentUpdate.isCursor;
-      });
-
-      afterEach(function () {
-        shouldComponentUpdate.isEqualState = isEqualState;
-        shouldComponentUpdate.isEqualCursor = isEqualCursor;
-        shouldComponentUpdate.isCursor = isCursor;
-      });
 
       it('should have overridable isCursor', function (done) {
         var data = Immutable.fromJS({ foo: 'bar', bar: [1, 2, 3] });
         var called = 0;
-        shouldComponentUpdate.isCursor = function () { called++; return true; };
+        var local = shouldComponentUpdate.withDefaults({
+          isCursor: function () { called++; return true; }
+        });
 
         shouldUpdate({
           cursor: Cursor.from(data, ['foo']),
           nextCursor: Cursor.from(data, ['bar'])
-        });
+        }, local);
 
         called.should.be.above(1);
         done();
       });
 
+      it('should have debug on product of withDefaults', function () {
+        var localComponent = shouldComponentUpdate.withDefaults({
+          isCursor: function () { }
+        });
+        localComponent.debug.should.be.a('function');
+      });
+
+
       it('should have overridable isEqualCursor', function (done) {
         var data = Immutable.fromJS({ foo: 'bar', bar: [1, 2, 3] });
-        shouldComponentUpdate.isEqualCursor = function () { done() };
+        var local = shouldComponentUpdate.withDefaults({
+          isEqualCursor: function () { done() }
+        });
 
         shouldUpdate({
           cursor: Cursor.from(data, ['foo']),
           nextCursor: Cursor.from(data, ['bar'])
-        });
+        }, local);
       });
 
       it('should have overridable isEqualState', function (done) {
-        shouldComponentUpdate.isEqualState = function () { done() };
+        var local = shouldComponentUpdate.withDefaults({
+          isEqualState: function () { done() }
+        });
+
         shouldUpdate({
           state: { foo: 'hello' },
           nextState: { foo: 'bar' }
-        });
+        }, local);
       });
 
     });
