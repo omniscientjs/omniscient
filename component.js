@@ -12,15 +12,15 @@ var debugFn = module.exports.debug = function (pattern) {
 
 function factory (methods) {
   methods = methods || {};
-  var _isCursor = methods.isCursor || shouldComponentUpdate.isCursor;
   var _shouldComponentUpdate = methods.shouldComponentUpdate;
+  var _isCursor = methods.isCursor || shouldComponentUpdate.isCursor;
 
   if (!_shouldComponentUpdate) {
     _shouldComponentUpdate = shouldComponentUpdate.withDefaults(methods);
   }
 
-  Component.shouldComponentUpdate = _shouldComponentUpdate;
   Component.debug = debugFn;
+  Component.shouldComponentUpdate = _shouldComponentUpdate;
   return Component;
 
   function Component (displayName, mixins, render) {

@@ -19,10 +19,11 @@ var debugFn = module.exports.debug = function (pattern) {
 
 function factory (methods) {
   methods = methods || {};
-  var _isCursor = methods.isCursor || isCursor;
-  var _isEqualCursor = methods.isEqualCursor || isEqualCursor;
-  var _isEqualState = methods.isEqualState || isEqualState;
-  var _unCursor = methods.unCursor || unCursor;
+
+  var _isCursor      = methods.isCursor || isCursor,
+      _isEqualCursor = methods.isEqualCursor || isEqualCursor,
+      _isEqualState  = methods.isEqualState || isEqualState,
+      _unCursor      = methods.unCursor || unCursor;
 
   shouldComponentUpdate.isCursor = _isCursor;
   shouldComponentUpdate.debug = debugFn;
