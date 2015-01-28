@@ -1,5 +1,5 @@
-var filterKeyValue = require('object-filter'),
-    deepEqual      = require('deep-equal');
+var filter  = require('lodash.pick'),
+    isEqual = require('lodash.isequal');
 
 var debug;
 
@@ -31,8 +31,8 @@ function factory (methods) {
   function shouldComponentUpdate (nextProps, nextState) {
     var isNotIgnorable = not(or(isStatics, isChildren));
 
-    var nextCursors    = filterKeyValue(nextProps, isNotIgnorable),
-        currentCursors = filterKeyValue(this.props, isNotIgnorable);
+    var nextCursors    = filter(nextProps, isNotIgnorable),
+        currentCursors = filter(this.props, isNotIgnorable);
 
     var nextCursorsKeys    = Object.keys(nextCursors),
         currentCursorsKeys = Object.keys(currentCursors);
@@ -71,8 +71,8 @@ function factory (methods) {
     var isCursor = _isCursor;
     var isEqualCursor = _isEqualCursor;
 
-    current = filterKeyValue(current, isCursor);
-    next = filterKeyValue(next, isCursor);
+    current = filter(current, isCursor);
+    next = filter(next, isCursor);
 
     for (var key in current) {
       if (!isEqualCursor(current[key], next[key])) {
@@ -83,11 +83,11 @@ function factory (methods) {
   }
 
   function hasChangedProperties (current, next) {
-    current = filterKeyValue(current, not(_isCursor));
-    next    = filterKeyValue(next, not(_isCursor));
+    current = filter(current, not(_isCursor));
+    next    = filter(next, not(_isCursor));
 
     for (var key in current) {
-      if (!deepEqual(current[key], next[key])) {
+      if (!isEqual(current[key], next[key])) {
         return true;
       }
     }
@@ -95,7 +95,7 @@ function factory (methods) {
   }
 
   function isEqualState () {
-    return deepEqual.apply(this, arguments);
+    return isEqual.apply(Object.create(null), arguments);
   }
 
   function isEqualCursor (a, b) {
