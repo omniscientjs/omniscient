@@ -106,12 +106,8 @@ function factory (methods) {
 }
 
 function unCursor(cursor) {
-  if (!isCursor(cursor)) {
-    return cursor;
-  }
   return cursor.deref();
 }
-
 
 function isCursor (potential) {
   return potential && typeof potential.deref === 'function';
