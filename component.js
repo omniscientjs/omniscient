@@ -2,15 +2,11 @@ var React     = require('react'),
     extend    = require('extend-object');
 
 var shouldComponentUpdate = require('./shouldupdate');
-var debug;
 
 module.exports = factory();
 module.exports.withDefaults = factory;
-var debugFn = module.exports.debug = function (pattern) {
-  debug = shouldComponentUpdate.debug(pattern);
-};
-
 function factory (methods) {
+  var debug;
   methods = methods || {};
   var _shouldComponentUpdate = methods.shouldComponentUpdate;
   var _isCursor = methods.isCursor || shouldComponentUpdate.isCursor;
@@ -77,6 +73,10 @@ function factory (methods) {
     }
 
     return create;
+  }
+
+  function debugFn (pattern, logFn) {
+    debug = shouldComponentUpdate.debug(pattern, logFn);
   }
 
   function createDefaultArguments (displayName, mixins, render) {

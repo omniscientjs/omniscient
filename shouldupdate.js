@@ -1,23 +1,11 @@
 var filter  = require('lodash.pick'),
     isEqual = require('lodash.isequal');
 
-var debug;
-
 module.exports = factory();
 module.exports.withDefaults = factory;
 module.exports.isCursor = isCursor;
-var debugFn = module.exports.debug = function (pattern) {
-  var regex = new RegExp(pattern || '.*');
-  debug = function (str) {
-    var key = this._currentElement && this._currentElement.key ? ' key=' + this._currentElement.key : '';
-    var name = this.constructor.displayName;
-    var tag = name + key;
-    if ((key || name) && regex.test(tag)) console.debug('<' + tag + '>: ' + str);
-  };
-  return debug;
-};
-
 function factory (methods) {
+  var debug;
   methods = methods || {};
 
   var _isCursor      = methods.isCursor || isCursor,
@@ -103,6 +91,24 @@ function factory (methods) {
     return unCursor(a) === unCursor(b);
   }
 
+
+  function debugFn (pattern, logFn) {
+    if (typeof pattern === 'function') {
+      logFn   = pattern;
+      pattern = void 0;
+    }
+
+    logFn = logFn || console.debug.bind(console);
+
+    var regex = new RegExp(pattern || '.*');
+    debug = function (str) {
+      var key = this._currentElement && this._currentElement.key ? ' key=' + this._currentElement.key : '';
+      var name = this.constructor.displayName;
+      var tag = name + key;
+      if ((key || name) && regex.test(tag)) logFn('<' + tag + '>: ' + str);
+    };
+    return debug;
+  }
 }
 
 function unCursor(cursor) {
