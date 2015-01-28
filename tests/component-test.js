@@ -72,6 +72,17 @@ describe('component', function () {
       render(Component());
     });
 
+    it('should take single object as mixin', function (done) {
+      var mixins = { componentDidMount: done, myMixin: noop };
+
+      var Component = component(mixins, function () {
+        this.should.have.property('myMixin');
+        return React.DOM.text(null, 'hello');
+      });
+
+      render(Component());
+    });
+
     it('should have overridable shouldComponentUpdate in mixin', function (done) {
       var shouldUpdate = function (nextProps) { return true; };
       var mixins = [{ componentDidMount: done, shouldComponentUpdate: shouldUpdate }];
