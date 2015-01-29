@@ -1,5 +1,6 @@
 var jsdom = require('jsdom');
 
+var assert = require('assert');
 var chai = require('chai');
 chai.should();
 
@@ -70,7 +71,7 @@ describe('debug', function () {
     it('should not log on render no display name or key', function () {
       var localComp = component.withDefaults();
       localComp.debug(function logger () {
-        "foo".should.equal("bar");
+        assert.fail('should not be called');
       });
 
       var Component = localComp(function () {
