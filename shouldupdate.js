@@ -1,3 +1,5 @@
+"use strict";
+
 var filter  = require('lodash.pick'),
     isEqual = require('lodash.isequal');
 
