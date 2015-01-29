@@ -17,11 +17,11 @@ function factory (methods) {
     _shouldComponentUpdate = shouldComponentUpdate.withDefaults(methods);
   }
 
-  Component.debug = debugFn;
-  Component.shouldComponentUpdate = _shouldComponentUpdate;
-  return Component;
+  ComponentCreator.debug = debugFn;
+  ComponentCreator.shouldComponentUpdate = _shouldComponentUpdate;
+  return ComponentCreator;
 
-  function Component (displayName, mixins, render) {
+  function ComponentCreator (displayName, mixins, render) {
     var options = createDefaultArguments(displayName, mixins, render);
     var methodStatics = pickStaticMixins(options.mixins);
 

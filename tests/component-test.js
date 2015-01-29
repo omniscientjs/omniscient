@@ -321,7 +321,7 @@ describe('component', function () {
       });
 
       localComponent.shouldComponentUpdate.should.equal(shouldUpdate);
-      localComponent.name.should.equal('Component');
+      localComponent.name.should.equal('ComponentCreator');
 
       var Component = localComponent(function () {
         this.shouldComponentUpdate.should.equal(shouldUpdate);
