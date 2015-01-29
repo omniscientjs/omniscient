@@ -78,7 +78,7 @@ function factory (methods) {
   }
 
   function debugFn (pattern, logFn) {
-    debug = shouldComponentUpdate.debug(pattern, logFn);
+    debug = shouldComponentUpdate.withDefaults().debug(pattern, logFn);
   }
 
   function createDefaultArguments (displayName, mixins, render) {
