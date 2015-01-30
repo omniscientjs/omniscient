@@ -5,7 +5,7 @@ var filter  = require('lodash.pick'),
 
 module.exports = factory();
 module.exports.withDefaults = factory;
-module.exports.isCursor = isCursor;
+
 function factory (methods) {
   var debug;
   methods = methods || {};
@@ -13,6 +13,7 @@ function factory (methods) {
   var _isCursor      = methods.isCursor || isCursor,
       _isEqualCursor = methods.isEqualCursor || isEqualCursor,
       _isEqualState  = methods.isEqualState || isEqualState,
+      _isEqualProps  = methods.isEqualProps || isEqualProps,
       _unCursor      = methods.unCursor || unCursor;
 
   shouldComponentUpdate.isCursor = _isCursor;
@@ -59,14 +60,11 @@ function factory (methods) {
   }
 
   function hasChangedCursors (current, next) {
-    var isCursor = _isCursor;
-    var isEqualCursor = _isEqualCursor;
-
-    current = filter(current, isCursor);
-    next = filter(next, isCursor);
+    current = filter(current, _isCursor);
+    next = filter(next, _isCursor);
 
     for (var key in current) {
-      if (!isEqualCursor(current[key], next[key])) {
+      if (!_isEqualCursor(current[key], next[key])) {
         return true;
       }
     }
@@ -78,7 +76,7 @@ function factory (methods) {
     next    = filter(next, not(_isCursor));
 
     for (var key in current) {
-      if (!isEqual(current[key], next[key])) {
+      if (!_isEqualProps(current[key], next[key])) {
         return true;
       }
     }
@@ -89,10 +87,21 @@ function factory (methods) {
     return isEqual.apply(Object.create(null), arguments);
   }
 
-  function isEqualCursor (a, b) {
-    return unCursor(a) === unCursor(b);
+  function isEqualProps (value, other) {
+    return isEqual(value, other, function (current, next) {
+      if (_isCursor(current) && _isCursor(next)) {
+        return isEqualCursor(current, next);
+      }
+      if (_isCursor(current) || _isCursor(next)) {
+        return false;
+      }
+      return void 0;
+    });
   }
 
+  function isEqualCursor (a, b) {
+    return _unCursor(a) === _unCursor(b);
+  }
 
   function debugFn (pattern, logFn) {
     if (typeof pattern === 'function') {
@@ -133,11 +142,11 @@ function not (fn) {
   };
 }
 
-function isStatics (val, key) {
+function isStatics (_, key) {
   return key === 'statics';
 }
 
-function isChildren (val, key) {
+function isChildren (_, key) {
   return key === 'children';
 }
 

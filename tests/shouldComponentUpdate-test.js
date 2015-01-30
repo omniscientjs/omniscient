@@ -43,7 +43,6 @@ describe('shouldComponentUpdate', function () {
       });
     });
 
-
     it('when object literal has changed even if the cursor is the same', function () {
       var data = Immutable.fromJS({ foo: 'bar' });
 
@@ -76,6 +75,53 @@ describe('shouldComponentUpdate', function () {
       });
     });
 
+    it('when namespaced cursors changed', function () {
+      var data = Immutable.fromJS({ foo: 'bar', bar: [1, 2, 3] });
+      var one = Cursor.from(data, ['foo']);
+      var two = Cursor.from(data, ['bar']);
+      var three = one.update(function () {
+        return "changed";
+      });
+
+      shouldUpdate({
+        cursor: {
+          ns: {
+            one: one,
+            two: two
+          }
+        },
+        nextCursor: {
+          ns: {
+            one: three,
+            two: two
+          }
+        }
+      });
+    });
+
+    it('when namespaced cursors changed to non cursor', function () {
+      var data = Immutable.fromJS({ foo: 'bar', bar: [1, 2, 3] });
+      var one = Cursor.from(data, ['foo']);
+      var two = Cursor.from(data, ['bar']);
+      var three = one.update(function () {
+        return "changed";
+      });
+
+      shouldUpdate({
+        cursor: {
+          ns: {
+            one: one,
+            two: two
+          }
+        },
+        nextCursor: {
+          ns: {
+            one: 'foo',
+            two: two
+          }
+        }
+      });
+    });
   });
 
 
@@ -148,6 +194,28 @@ describe('shouldComponentUpdate', function () {
         nextCursor: { one: Cursor.from(data, ['foo']), two: Cursor.from(data2) }
       });
     });
+
+    it('when namespaced cursors is unchanged', function () {
+      var data = Immutable.fromJS({ foo: 'bar', bar: [1, 2, 3] });
+      var one = Cursor.from(data, ['foo']);
+      var two = Cursor.from(data, ['bar']);
+
+      shouldNotUpdate({
+        cursor: {
+          ns: {
+            one: one,
+            two: two
+          }
+        },
+        nextCursor: {
+          ns: {
+            one: one,
+            two: two
+          }
+        }
+      });
+    });
+
   });
 
 
@@ -196,7 +264,14 @@ describe('shouldComponentUpdate', function () {
 
     describe('internal', function () {
 
-      it('should have overridable isCursor', function (done) {
+      it('should create different instances', function () {
+        var localOne = shouldComponentUpdate.withDefaults();
+        var localTwo = shouldComponentUpdate.withDefaults();
+
+        localOne.should.not.equal(localTwo);
+      });
+
+      it('should have ble isCursor', function (done) {
         var data = Immutable.fromJS({ foo: 'bar', bar: [1, 2, 3] });
         var called = 0;
         var local = shouldComponentUpdate.withDefaults({
@@ -219,7 +294,6 @@ describe('shouldComponentUpdate', function () {
         localComponent.debug.should.be.a('function');
       });
 
-
       it('should have overridable isEqualCursor', function (done) {
         var data = Immutable.fromJS({ foo: 'bar', bar: [1, 2, 3] });
         var local = shouldComponentUpdate.withDefaults({
@@ -229,6 +303,17 @@ describe('shouldComponentUpdate', function () {
         shouldUpdate({
           cursor: Cursor.from(data, ['foo']),
           nextCursor: Cursor.from(data, ['bar'])
+        }, local);
+      });
+
+      it('should have overridable isEqualProps', function (done) {
+        var local = shouldComponentUpdate.withDefaults({
+          isEqualProps: function foobar () { done() }
+        });
+
+        shouldUpdate({
+          cursor: { foo: 1 },
+          nextCursor: { foo: 2 }
         }, local);
       });
 
@@ -242,7 +327,6 @@ describe('shouldComponentUpdate', function () {
           nextState: { foo: 'bar' }
         }, local);
       });
-
     });
   });
 });
