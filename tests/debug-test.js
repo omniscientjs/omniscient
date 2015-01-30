@@ -34,18 +34,11 @@ describe('debug', function () {
 
   describe('debugger', function () {
 
-    beforeEach(function () {
-      this.original = console.debug;
-    });
-
-    afterEach(function () {
-      console.debug = this.original;
-    });
-
     it('should log on render when debug with displayname', function (done) {
       var localComp = component.withDefaults();
       localComp.debug(function logger (message) {
         message.should.contain('DisplayName');
+        message.should.contain('render');
         done();
       });
 
@@ -59,6 +52,7 @@ describe('debug', function () {
       var localComp = component.withDefaults();
       localComp.debug(function logger (message) {
         message.should.contain('foobar');
+        message.should.contain('render');
         done();
       });
 
@@ -68,10 +62,12 @@ describe('debug', function () {
       render(Component({ key: 'foobar' }));
     });
 
-    it('should not log on render no display name or key', function () {
+    it('should log with unknown on render', function (done) {
       var localComp = component.withDefaults();
-      localComp.debug(function logger () {
-        assert.fail('should not be called');
+      localComp.debug(function logger (message) {
+        message.should.contain('Unknown');
+        message.should.contain('render');
+        done();
       });
 
       var Component = localComp(function () {

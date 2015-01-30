@@ -109,14 +109,24 @@ function factory (methods) {
       pattern = void 0;
     }
 
-    logFn = logFn || console.debug.bind(console);
+    var logger = logFn;
+    if (!logger && console.debug) {
+      logger = console.debug.bind(console);
+    }
+
+    if (!logger && console.log) {
+      logger = console.log.bind(console);
+    }
 
     var regex = new RegExp(pattern || '.*');
     debug = function (str) {
       var key = this._currentElement && this._currentElement.key ? ' key=' + this._currentElement.key : '';
       var name = this.constructor.displayName;
+      if (!key && !name) {
+        name = 'Unknown';
+      }
       var tag = name + key;
-      if ((key || name) && regex.test(tag)) logFn('<' + tag + '>: ' + str);
+      if (regex.test(tag)) logger('<' + tag + '>: ' + str);
     };
     return debug;
   }
