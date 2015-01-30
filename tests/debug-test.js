@@ -35,6 +35,47 @@ describe('debug', function () {
 
   describe('debugger', function () {
 
+    beforeEach(function () {
+      this.debug = console.debug;
+      this.info = console.info;
+    });
+
+    afterEach(function () {
+      console.debug = this.debug;
+      console.info = this.info;
+    });
+
+    it('should use debug when availeble', function (done) {
+      console.debug = function () {
+        done();
+      };
+      console.info = function () {
+        assert.fail('Should not trigger');
+        done();
+      };
+      var localComp = component.withDefaults();
+      localComp.debug();
+
+      var Component = localComp('DisplayName', function () {
+        return React.DOM.text('hello');
+      });
+      render(Component());
+    });
+
+    it('should use console.info if debug not available', function (done) {
+      console.debug = void 0;
+      console.info = function () {
+        done();
+      };
+      var localComp = component.withDefaults();
+      localComp.debug();
+
+      var Component = localComp('DisplayName', function () {
+        return React.DOM.text('hello');
+      });
+      render(Component());
+    });
+
     it('should log on render when debug with displayname', function (done) {
       var localComp = component.withDefaults();
       localComp.debug(function logger (message) {
@@ -61,6 +102,66 @@ describe('debug', function () {
         return React.DOM.text('hello');
       });
       render(Component({ key: 'foobar' }));
+    });
+
+    it('should log when debug with key for React 0.13 beta', function (done) {
+      var localComp = component.withDefaults();
+      localComp.debug(function logger (message) {
+        message.should.contain('foobar');
+        message.should.contain('render');
+        done();
+      });
+
+      var Component = localComp({
+        componentWillMount: function () {
+          this._reactInternalInstance = {
+            _currentElement: {
+              key: 'foobar'
+            }
+          };
+        }
+      }, function () {
+        return React.DOM.text('hello');
+      });
+      render(Component());
+    });
+
+    it('should only log components matching regex passed as parameter', function (done) {
+      var localComp = component.withDefaults();
+      localComp.debug(/My/, function logger (message) {
+        message.should.not.contain('AnotherComponent');
+        message.should.contain('MyComponent');
+        done();
+      });
+
+      var AnotherComponent = localComp(function AnotherComponent () {
+        return React.DOM.text('hello');
+      });
+      render(AnotherComponent());
+
+      var Component = localComp(function MyComponent () {
+        return React.DOM.text('hello');
+      });
+      render(Component());
+    });
+
+    it('should match on key', function (done) {
+      var localComp = component.withDefaults();
+      localComp.debug(/My/i, function logger (message) {
+        message.should.not.contain('anotherKey');
+        message.should.contain('myKey');
+        done();
+      });
+
+      var AnotherComponent = localComp(function () {
+        return React.DOM.text('hello');
+      });
+      render(AnotherComponent({ key: 'anotherKey' }));
+
+      var Component = localComp(function () {
+        return React.DOM.text('hello');
+      });
+      render(Component({ key: 'myKey' }));
     });
 
     it('should log with unknown on render', function (done) {

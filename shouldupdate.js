@@ -113,9 +113,8 @@ function factory (methods) {
     if (!logger && console.debug) {
       logger = console.debug.bind(console);
     }
-
-    if (!logger && console.log) {
-      logger = console.log.bind(console);
+    if (!logger && console.info) {
+      logger = console.info.bind(console);
     }
 
     var regex = new RegExp(pattern || '.*');
