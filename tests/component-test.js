@@ -27,6 +27,18 @@ describe('component', function () {
       render(Component());
     });
 
+    it('should set displayName from render function name', function (done) {
+      var mixins = [{ componentDidMount: done }];
+      var Component = component(mixins, function MyComponentName () {
+        this.constructor.should.have.property('displayName');
+        this.constructor.displayName.should.equal('MyComponentName');
+
+        return React.DOM.text(null, 'hello');
+      });
+
+      render(Component());
+    });
+
   });
 
   describe('statics', function () {

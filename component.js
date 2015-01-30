@@ -26,7 +26,7 @@ function factory (methods) {
     var methodStatics = pickStaticMixins(options.mixins);
 
     var componentObject = {
-      displayName: options.displayName,
+      displayName: options.displayName || options.render.name,
       mixins: options.mixins,
       render: function render () {
         if (debug) debug.call(this, 'render');
