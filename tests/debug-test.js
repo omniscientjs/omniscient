@@ -12,6 +12,7 @@ var Cursor = require('immutable/contrib/cursor');
 
 var component = require('../');
 var shouldComponentUpdate = require('../shouldupdate');
+var isCursor = shouldComponentUpdate.isCursor;
 
 describe('debug', function () {
   describe('api', function () {
@@ -76,6 +77,105 @@ describe('debug', function () {
       render(Component());
     });
 
+    it('should log on number of cursors differ', function (done) {
+      var data = Immutable.fromJS({ foo: 'bar', bar: [1, 2, 3] });
+      var one = Cursor.from(data, ['foo']);
+      var two = Cursor.from(data, ['bar']);
+
+      var localComp = shouldComponentUpdate.withDefaults();
+      localComp.debug(function logger (message) {
+        message.should.contain('true (number of cursors differ)');
+        done();
+      });
+
+      shouldUpdate({
+        cursor: {
+          one: one,
+        },
+        nextCursor: {
+          one: one,
+          two: two
+        }
+      }, localComp);
+    });
+
+    it('should log on cursors have different keys', function (done) {
+      var data = Immutable.fromJS({ foo: 'bar', bar: [1, 2, 3] });
+      var one = Cursor.from(data, ['foo']);
+      var two = Cursor.from(data, ['bar']);
+
+      var localComp = shouldComponentUpdate.withDefaults();
+      localComp.debug(function logger (message) {
+        message.should.contain('true (cursors have different keys)');
+        done();
+      });
+
+      shouldUpdate({
+        cursor: {
+          one: one
+        },
+        nextCursor: {
+          two: two
+        }
+      }, localComp);
+    });
+
+    it('should log on cursors have changed', function (done) {
+      var data = Immutable.fromJS({ foo: 'bar', bar: [1, 2, 3] });
+      var one = Cursor.from(data, ['foo']);
+      var two = Cursor.from(data, ['bar']);
+
+      var localComp = shouldComponentUpdate.withDefaults();
+      localComp.debug(function logger (message) {
+        message.should.contain('true (cursors have changed)');
+        done();
+      });
+
+      shouldUpdate({
+        cursor: one,
+        nextCursor: two
+      }, localComp);
+    });
+
+    it('should log on state has changed', function (done) {
+      var localComp = shouldComponentUpdate.withDefaults();
+      localComp.debug(function logger (message) {
+        message.should.contain('true (state has changed)');
+        done();
+      });
+
+      shouldUpdate({
+        state: { foo: 1 },
+        nextState: { foo: 2 }
+      }, localComp);
+    });
+
+    it('should log on properties have changed', function (done) {
+      var localComp = shouldComponentUpdate.withDefaults();
+      localComp.debug(function logger (message) {
+        message.should.contain('true (properties have changed)');
+        done();
+      });
+
+      shouldUpdate({
+        cursor: { foo: 1 },
+        nextCursor: { foo: 2 }
+      }, localComp);
+    });
+
+    it('should log on unchanged', function (done) {
+      var localComp = shouldComponentUpdate.withDefaults();
+      localComp.debug(function logger (message) {
+        message.should.contain('shouldComponentUpdate => false');
+        done();
+      });
+
+      shouldNotUpdate({
+        cursor: { foo: 1 },
+        nextCursor: { foo: 1 }
+      }, localComp);
+    });
+
   });
 
   beforeEach(function () {
@@ -91,4 +191,37 @@ describe('debug', function () {
 
 function render (component) {
   ReactTestUtils.renderIntoDocument(component);
+}
+
+function shouldNotUpdate (opts, fn) {
+  callShouldUpdate(opts, fn).should.equal(false);
+}
+
+function shouldUpdate (opts, fn) {
+  callShouldUpdate(opts, fn).should.equal(true);
+}
+
+function callShouldUpdate (opts, fn) {
+  fn = fn || shouldComponentUpdate;
+
+  var props     = isCursor(opts.cursor) ? { cursor: opts.cursor } : opts.cursor;
+  var nextProps = isCursor(opts.nextCursor) ? { cursor: opts.nextCursor } : opts.nextCursor;
+
+  props = props || {};
+  nextProps = nextProps || {};
+
+  if (opts.statics || opts.nextStatics) {
+    props.statics     = opts.statics;
+    nextProps.statics = opts.nextStatics;
+  }
+
+  if (opts.children || opts.nextChildren) {
+    props.children     = opts.children;
+    nextProps.children = opts.nextChildren;
+  }
+
+  return fn.call({
+    props: props,
+    state: opts.state
+  }, nextProps, opts.nextState);
 }
