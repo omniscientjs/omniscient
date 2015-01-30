@@ -120,7 +120,11 @@ function factory (methods) {
 
     var regex = new RegExp(pattern || '.*');
     debug = function (str) {
-      var key = this._currentElement && this._currentElement.key ? ' key=' + this._currentElement.key : '';
+      var element = this._currentElement;
+      if (this._reactInternalInstance && this._reactInternalInstance._currentElement) {
+        element = this._reactInternalInstance._currentElement;
+      }
+      var key = element && element.key ? ' key=' + element.key : '';
       var name = this.constructor.displayName;
       if (!key && !name) {
         name = 'Unknown';

@@ -179,7 +179,7 @@ describe('component', function () {
       var mixins = [{ componentDidMount: done }];
 
       var Component = component(mixins, function () {
-        this._currentElement.key.should.equal('myKey');
+        hasKey(this, 'myKey');
         return React.DOM.text(null, 'hello');
       });
 
@@ -190,7 +190,7 @@ describe('component', function () {
       var mixins = [{ componentDidMount: done }];
 
       var Component = component(mixins, function (data) {
-        this._currentElement.key.should.equal('myKey');
+        hasKey(this, 'myKey');
 
         data.should.have.property('foo');
         data.foo.should.equal('hello');
@@ -205,7 +205,7 @@ describe('component', function () {
       var cursorInput = Cursor.from(Immutable.fromJS({ foo: 'hello' }), 'foo');
 
       var Component = component(mixins, function (props) {
-        this._currentElement.key.should.equal('myKey');
+        hasKey(this, 'myKey');
 
         props.cursor.should.equal(cursorInput);
         this.props.cursor.should.equal(cursorInput);
@@ -220,7 +220,7 @@ describe('component', function () {
       var outerCursor = { cursor: 'hello', statics: 'foo' };
 
       var Component = component(mixins, function (props, statics) {
-        this._currentElement.key.should.equal('myKey');
+        hasKey(this, 'myKey');
 
         props.cursor.should.equal(outerCursor.cursor);
         statics.should.equal(outerCursor.statics);
@@ -258,7 +258,7 @@ describe('component', function () {
       var outerCursor = { foo: 'hello' };
 
       var Component = component(mixins, function (cursor) {
-        this._currentElement.key.should.equal('myKey');
+        hasKey(this, 'myKey');
 
         cursor.foo.should.equal(outerCursor.foo);
         this.props.children.should.have.length(1);
@@ -276,8 +276,8 @@ describe('component', function () {
       var outerCursor = { foo: 'hello', statics: 'foo' };
 
       var Component = component(mixins, function (cursor, statics) {
-        this._currentElement.key.should.equal('myKey');
-
+        hasKey(this, 'myKey');
+        
         cursor.foo.should.equal(outerCursor.foo);
         this.props.children.should.have.length(1);
         this.props.children[0]._store.props.children.should.equal('hello');
@@ -415,4 +415,12 @@ function noop () {}
 
 function render (component) {
   ReactTestUtils.renderIntoDocument(component);
+}
+
+function hasKey(component, key) {
+  var element = component._currentElement;
+  if (component._reactInternalInstance && component._reactInternalInstance._currentElement) {
+    element = component._reactInternalInstance._currentElement;
+  }
+  element.key.should.equal(key);
 }
