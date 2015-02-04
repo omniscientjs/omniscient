@@ -155,9 +155,9 @@ describe('component', function () {
       var mixins = [{ componentDidMount: done }];
       var cursorInput = Cursor.from(Immutable.fromJS({ foo: 'hello' }), 'foo');
 
-      var Component = component(mixins, function (props) {
-        props.cursor.should.equal(cursorInput);
-        this.props.cursor.should.equal(cursorInput);
+      var Component = component(mixins, function (cursor) {
+        cursor.should.equal(cursorInput);
+        this.props[component.cursor].should.equal(cursorInput);
         return React.DOM.text(null, 'hello');
       });
       render(Component(cursorInput));
@@ -204,11 +204,11 @@ describe('component', function () {
       var mixins = [{ componentDidMount: done }];
       var cursorInput = Cursor.from(Immutable.fromJS({ foo: 'hello' }), 'foo');
 
-      var Component = component(mixins, function (props) {
+      var Component = component(mixins, function (cursor) {
         hasKey(this, 'myKey');
 
-        props.cursor.should.equal(cursorInput);
-        this.props.cursor.should.equal(cursorInput);
+        cursor.should.equal(cursorInput);
+        this.props[component.cursor].should.equal(cursorInput);
         return React.DOM.text(null, 'hello');
       });
       render(Component('myKey', cursorInput));
@@ -277,7 +277,7 @@ describe('component', function () {
 
       var Component = component(mixins, function (cursor, statics) {
         hasKey(this, 'myKey');
-        
+
         cursor.foo.should.equal(outerCursor.foo);
         this.props.children.should.have.length(1);
         this.props.children[0]._store.props.children.should.equal('hello');
