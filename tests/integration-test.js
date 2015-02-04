@@ -46,7 +46,7 @@ describe('component render test', function () {
     var mixins = [{
       // 5
       shouldComponentUpdate: function () {
-        var id = this.props.cursor.get('id');
+        var id = this.props[component.cursor].get('id');
         calls.shouldComponentUpdate[id]++;
 
         return component.shouldComponentUpdate.apply(this, arguments);
@@ -61,15 +61,15 @@ describe('component render test', function () {
       }
     }];
 
-    var Item = component('Item', mixins, function (props) {
+    var Item = component('Item', mixins, function (cursor) {
       // 2
       // 6
-      calls.render[props.cursor.toJS().id]++;
+      calls.render[cursor.toJS().id]++;
       return d.li({}, '');
     });
 
-    var List = component('List', function (props) {
-      return d.ul({}, props.cursor.toArray().map(function (item, i) {
+    var List = component('List', function (cursor) {
+      return d.ul({}, cursor.toArray().map(function (item, i) {
         return Item('component-' + i, item);
       }));
     });
