@@ -16,6 +16,7 @@
   },
   "devDependencies": {
     "browserify": "^8.1.1",
+    "browserify-shim": "^3.8.2",
     "chai": "^1.9.2",
     "derequire": "^1.2.0",
     "immstruct": "^1.0.0",
@@ -38,6 +39,9 @@
     "react",
     "immutable"
   ],
+  "browserify-shim": {
+    "react": "global:React"
+  },
   "author": "@torgeir,@mikaelbr",
   "license": "mit",
   "bugs": {

@@ -1,8 +1,10 @@
 #!/usr/bin/env node
 var derequire = require('derequire');
 var browserify = require('browserify');
+var shim = require('browserify-shim');
+
 var fs = require('fs');
-var UglifyJS = require("uglify-js");
+var UglifyJS = require('uglify-js');
 var pack = require('./package.json');
 
 var inputFile = './component.js';
@@ -15,12 +17,10 @@ var b = browserify({
   standalone: 'omniscient'
 });
 b.add(inputFile);
-b.exclude('react');
+b.transform(shim);
 b.bundle(function(err, buf){
   var code = buf.toString();
-  code = code.replace("require('react')", 'window.React');
   code = header + derequire(code);
-
   fs.writeFileSync(outputFile, code);
 
   var minfied = UglifyJS.minify(outputFile);
