@@ -46,7 +46,7 @@ describe('component render test', function () {
     var mixins = [{
       // 5
       shouldComponentUpdate: function () {
-        var id = this.props[component.cursor].get('id');
+        var id = this.props.cursor.get('id');
         calls.shouldComponentUpdate[id]++;
 
         return component.shouldComponentUpdate.apply(this, arguments);
@@ -61,24 +61,24 @@ describe('component render test', function () {
       }
     }];
 
-    var Item = component('Item', mixins, function (cursor) {
+    var Item = component('Item', mixins, function (props) {
       // 2
       // 6
-      calls.render[cursor.toJS().id]++;
+      calls.render[props.cursor.toJS().id]++;
       return d.li({}, '');
     });
 
-    var List = component('List', function (cursor) {
-      return d.ul({}, cursor.toArray().map(function (item, i) {
-        return Item('component-' + i, item);
+    var List = component('List', function (props) {
+      return d.ul({}, props.cursor.toArray().map(function (item, i) {
+        return Item('component-' + i, { cursor: item });
       }));
     });
 
     var div = document.createElement('div');
-    React.render(List(structure.cursor('items')), div); // 1
+    React.render(List({ cursor: structure.cursor('items') }), div); // 1
 
     structure.on('swap', function () {
-      React.render(List(structure.cursor('items')), div); // 4
+      React.render(List({ cursor: structure.cursor('items') }), div); // 4
     });
 
     structure.cursor().update('items', function (items) {

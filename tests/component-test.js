@@ -143,12 +143,25 @@ describe('component', function () {
       var cursor1 = { cursor: {} };
       var statics = {};
 
-      var Component = component(mixins, function (props) {
-        props.should.eql(cursor1);
+      var Component = component(mixins, function (cursor) {
+        cursor.should.eql(cursor1);
         return React.DOM.text(null, 'hello');
       });
 
       render(Component(cursor1));
+    });
+
+    it('should pass objected cursor', function (done) {
+      var mixins = [{ componentDidMount: done, myMixin: noop }];
+      var cursor1 = { cursor: {} };
+      var statics = {};
+
+      var Component = component(mixins, function (props) {
+        props.cursor.should.eql(cursor1);
+        return React.DOM.text(null, 'hello');
+      });
+
+      render(Component({ cursor: cursor1 }));
     });
 
     it('should pass and expose single immutable cursor', function (done) {
@@ -157,7 +170,6 @@ describe('component', function () {
 
       var Component = component(mixins, function (cursor) {
         cursor.should.equal(cursorInput);
-        this.props[component.cursor].should.equal(cursorInput);
         return React.DOM.text(null, 'hello');
       });
       render(Component(cursorInput));
@@ -208,7 +220,6 @@ describe('component', function () {
         hasKey(this, 'myKey');
 
         cursor.should.equal(cursorInput);
-        this.props[component.cursor].should.equal(cursorInput);
         return React.DOM.text(null, 'hello');
       });
       render(Component('myKey', cursorInput));

@@ -4,11 +4,10 @@ var React     = require('react'),
     extend    = require('extend-object');
 
 var shouldComponentUpdate = require('./shouldupdate');
-var cursor = "{{private:cursor@omniscient}}";
+var hiddenCursorField = "__singleCursor";
 
 module.exports = factory();
 module.exports.withDefaults = factory;
-module.exports.cursor = cursor;
 function factory (methods) {
   var debug;
   methods = methods || {};
@@ -34,7 +33,7 @@ function factory (methods) {
         if (debug) debug.call(this, 'render');
         // If `props[cursor]` is defined than it's just boxed cursor
         // in which case we unbox it.
-        var input = this.props[cursor] || this.props;
+        var input = this.props[hiddenCursorField] || this.props;
         return options.render.call(this, input, this.props.statics);
       }
     };
@@ -47,6 +46,7 @@ function factory (methods) {
     var Component = React.createClass(componentObject);
 
     var create = function (key, props) {
+      var inputCursor;
       var children = toArray(arguments).filter(React.isValidElement);
 
       if (typeof key === 'object') {
@@ -59,15 +59,15 @@ function factory (methods) {
       }
 
       // If passed props is just a cursor we box it by making
-      // props with `props[cursor]` set to given `props` so that
+      // props with `props[hiddenCursorField]` set to given `props` so that
       // render will know how to unbox it. Note that non trivial
       // "{{private:cursor@omniscient}}" proprety name is used
       // to make sure that render won't unbox props in case user
       // passed on with conflicting proprety name.
       if (_isCursor(props)) {
-        var input = props;
+        inputCursor = props;
         props = {};
-        props[cursor] = input;
+        props[hiddenCursorField] = inputCursor;
       }
 
       if (key) {
