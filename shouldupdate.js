@@ -17,6 +17,9 @@ function factory (methods) {
       _unCursor      = methods.unCursor || unCursor;
 
   shouldComponentUpdate.isCursor = _isCursor;
+  shouldComponentUpdate.isEqualState = _isEqualState;
+  shouldComponentUpdate.isEqualProps = _isEqualProps;
+  shouldComponentUpdate.isEqualCursor = _isEqualCursor;
   shouldComponentUpdate.debug = debugFn;
   return shouldComponentUpdate;
 

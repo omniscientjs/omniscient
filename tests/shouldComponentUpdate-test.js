@@ -317,6 +317,21 @@ describe('shouldComponentUpdate', function () {
         }, local);
       });
 
+      it('should have accessible helpers (isCursor, isEqualState, isEqualProps, isEqualCursor) to use externally', function () {
+        var local = shouldComponentUpdate.withDefaults();
+
+        shouldComponentUpdate.should.have.property('isEqualState');
+        shouldComponentUpdate.should.have.property('isCursor');
+        shouldComponentUpdate.should.have.property('isEqualProps');
+        shouldComponentUpdate.should.have.property('isEqualCursor');
+
+        local.should.have.property('isEqualState');
+        local.should.have.property('isCursor');
+        local.should.have.property('isEqualProps');
+        local.should.have.property('isEqualCursor');
+
+      });
+
       it('should have overridable isEqualState', function (done) {
         var local = shouldComponentUpdate.withDefaults({
           isEqualState: function () { done() }
