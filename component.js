@@ -8,14 +8,15 @@ var hiddenCursorField = "__singleCursor";
 
 module.exports = factory();
 module.exports.withDefaults = factory;
-function factory (methods) {
+function factory (options) {
   var debug;
-  methods = methods || {};
-  var _shouldComponentUpdate = methods.shouldComponentUpdate;
-  var _isCursor = methods.isCursor || shouldComponentUpdate.isCursor;
+  options = options || {};
+  var _shouldComponentUpdate = options.shouldComponentUpdate;
+  var _isCursor = options.isCursor || shouldComponentUpdate.isCursor;
+  var _isJsx = !!options.jsx;
 
   if (!_shouldComponentUpdate) {
-    _shouldComponentUpdate = shouldComponentUpdate.withDefaults(methods);
+    _shouldComponentUpdate = shouldComponentUpdate.withDefaults(options);
   }
 
   ComponentCreator.debug = debugFn;
@@ -44,6 +45,9 @@ function factory (methods) {
     }
 
     var Component = React.createClass(componentObject);
+    if (_isJsx) {
+      return Component;
+    }
 
     var create = function (key, props) {
       var inputCursor;
