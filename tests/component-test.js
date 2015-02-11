@@ -71,6 +71,36 @@ describe('component', function () {
 
   });
 
+  describe('default jsx', function () {
+
+    it('should return jsx element if jsx set as default', function (done) {
+      var localComponent = component.withDefaults({
+        jsx: true
+      });
+      var mixins = [{ componentDidMount: done, myMixin: noop }];
+
+      var Element = localComponent(mixins, function (props) {
+        this.should.have.property('myMixin');
+        props.name.should.equal('The Doctor');
+        return React.DOM.text(null, 'hello');
+      });
+
+      render(React.createElement(Element, { name: 'The Doctor' }));
+    });
+
+    it('should return created element per default', function (done) {
+      var mixins = [{ componentDidMount: done, myMixin: noop }];
+
+      var Component = component(mixins, function (props) {
+        this.should.have.property('myMixin');
+        props.name.should.equal('The Doctor');
+        return React.DOM.text(null, 'hello');
+      });
+
+      render(Component({ name: 'The Doctor' }));
+    });
+  });
+
   describe('mixins', function () {
 
     it('should take mixins', function (done) {
