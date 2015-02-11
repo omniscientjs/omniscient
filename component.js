@@ -60,9 +60,8 @@ function factory (methods) {
 
       // If passed props is just a cursor we box it by making
       // props with `props[hiddenCursorField]` set to given `props` so that
-      // render will know how to unbox it. Note that non trivial
-      // "{{private:cursor@omniscient}}" proprety name is used
-      // to make sure that render won't unbox props in case user
+      // render will know how to unbox it. Note that __singleCursor proprety
+      // name is used to make sure that render won't unbox props in case user
       // passed on with conflicting proprety name.
       if (_isCursor(props)) {
         inputCursor = props;
