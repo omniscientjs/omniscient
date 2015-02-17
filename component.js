@@ -49,11 +49,12 @@ function factory (options) {
       return Component;
     }
 
-    var create = function (key, props) {
+    var create = function (key, props, statics) {
       var inputCursor;
       var children = toArray(arguments).filter(React.isValidElement);
 
       if (typeof key === 'object') {
+        statics = props;
         props = key;
         key   = void 0;
       }
@@ -71,6 +72,10 @@ function factory (options) {
         inputCursor = props;
         props = {};
         props[hiddenCursorField] = inputCursor;
+      }
+
+      if (!!statics && !props.statics) {
+        props.statics = statics;
       }
 
       if (key) {

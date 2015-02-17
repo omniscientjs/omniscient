@@ -217,6 +217,18 @@ describe('component', function () {
       render(Component(input));
     });
 
+    it('should pass cursor and with statics as second argument', function (done) {
+      var mixins = [{ componentDidMount: done, myMixin: noop }];
+      var input = { cursor: 'foo', statics: 'Hello' };
+      var Component = component(mixins, function (props, staticsarg) {
+        props.cursor.should.equal(input.cursor);
+        staticsarg.value.should.equal(input.statics);
+        return React.DOM.text(null, 'hello');
+      });
+
+      render(Component({cursor: 'foo'}, { value: 'Hello' }));
+    });
+
     it('should set React key', function (done) {
       var mixins = [{ componentDidMount: done }];
 
