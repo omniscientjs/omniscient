@@ -75,6 +75,20 @@ describe('shouldComponentUpdate', function () {
       });
     });
 
+    it('when state have immutable structures', function () {
+      shouldUpdate({
+        state: { foo: Immutable.List.of(1) },
+        nextState: { foo: Immutable.List.of(1) },
+      });
+    });
+
+    it('when props have immutable structures', function () {
+      shouldUpdate({
+        cursor: { foo: Immutable.List.of(1) },
+        nextCursor: { foo: Immutable.List.of(1) },
+      });
+    });
+
     it('when namespaced cursors changed', function () {
       var data = Immutable.fromJS({ foo: 'bar', bar: [1, 2, 3] });
       var one = Cursor.from(data, ['foo']);
@@ -135,6 +149,22 @@ describe('shouldComponentUpdate', function () {
       shouldNotUpdate({
         state: { foo: { bar : 'hello' } },
         nextState: { foo: { bar : 'hello' } }
+      });
+    });
+
+    it('when state have same immutable structures', function () {
+      var map = Immutable.List.of(1);
+      shouldNotUpdate({
+        state: { foo: map },
+        nextState: { foo: map },
+      });
+    });
+
+    it('when props have same immutable structures', function () {
+      var map = Immutable.List.of(1);
+      shouldNotUpdate({
+        props: { foo: map },
+        nextProps: { foo: map },
       });
     });
 
@@ -218,7 +248,6 @@ describe('shouldComponentUpdate', function () {
 
   });
 
-
   describe('overridables', function () {
 
     describe('through main component', function () {
@@ -271,7 +300,7 @@ describe('shouldComponentUpdate', function () {
         localOne.should.not.equal(localTwo);
       });
 
-      it('should have ble isCursor', function (done) {
+      it('should have overridable isCursor', function (done) {
         var data = Immutable.fromJS({ foo: 'bar', bar: [1, 2, 3] });
         var called = 0;
         var local = shouldComponentUpdate.withDefaults({
@@ -306,6 +335,25 @@ describe('shouldComponentUpdate', function () {
         }, local);
       });
 
+      it('should have overridable isImmutable', function (done) {
+        var data = Immutable.fromJS({ foo: 'bar', bar: [1, 2, 3] });
+        var map = Immutable.List.of(1);
+
+        var i = 0;
+        var local = shouldComponentUpdate.withDefaults({
+          isImmutable: function () {
+            if (i++ === 1) {
+              done();
+            }
+          }
+        });
+
+        shouldNotUpdate({
+          cursor: { foo: map },
+          nextCursor: { foo: map }
+        }, local);
+      });
+
       it('should have overridable isEqualProps', function (done) {
         var local = shouldComponentUpdate.withDefaults({
           isEqualProps: function foobar () { done() }
@@ -324,12 +372,13 @@ describe('shouldComponentUpdate', function () {
         shouldComponentUpdate.should.have.property('isCursor');
         shouldComponentUpdate.should.have.property('isEqualProps');
         shouldComponentUpdate.should.have.property('isEqualCursor');
+        shouldComponentUpdate.should.have.property('isImmutable');
 
         local.should.have.property('isEqualState');
         local.should.have.property('isCursor');
         local.should.have.property('isEqualProps');
         local.should.have.property('isEqualCursor');
-
+        local.should.have.property('isImmutable');
       });
 
       it('should have overridable isEqualState', function (done) {

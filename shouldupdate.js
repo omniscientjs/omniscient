@@ -14,13 +14,16 @@ function factory (methods) {
       _isEqualCursor = methods.isEqualCursor || isEqualCursor,
       _isEqualState  = methods.isEqualState || isEqualState,
       _isEqualProps  = methods.isEqualProps || isEqualProps,
+      _isImmutable   = methods.isImmutable || isImmutable,
       _unCursor      = methods.unCursor || unCursor;
 
   shouldComponentUpdate.isCursor = _isCursor;
   shouldComponentUpdate.isEqualState = _isEqualState;
   shouldComponentUpdate.isEqualProps = _isEqualProps;
   shouldComponentUpdate.isEqualCursor = _isEqualCursor;
+  shouldComponentUpdate.isImmutable = _isImmutable;
   shouldComponentUpdate.debug = debugFn;
+
   return shouldComponentUpdate;
 
   function shouldComponentUpdate (nextProps, nextState) {
@@ -86,8 +89,16 @@ function factory (methods) {
     return false;
   }
 
-  function isEqualState () {
-    return isEqual.apply(Object.create(null), arguments);
+  function isEqualState (value, other) {
+    return isEqual(value, other, function (current, next) {
+      if (_isImmutable(current) && _isImmutable(next)) {
+        return current === next;
+      }
+      if (_isImmutable(current) || _isImmutable(next)) {
+        return false;
+      }
+      return void 0;
+    });
   }
 
   function isEqualProps (value, other) {
@@ -96,6 +107,12 @@ function factory (methods) {
         return isEqualCursor(current, next);
       }
       if (_isCursor(current) || _isCursor(next)) {
+        return false;
+      }
+      if (_isImmutable(current) && _isImmutable(next)) {
+        return current === next;
+      }
+      if (_isImmutable(current) || _isImmutable(next)) {
         return false;
       }
       return void 0;
@@ -136,6 +153,12 @@ function factory (methods) {
     };
     return debug;
   }
+}
+
+
+var IS_ITERABLE_SENTINEL = '@@__IMMUTABLE_ITERABLE__@@';
+function isImmutable(maybeIterable) {
+  return !!(maybeIterable && maybeIterable[IS_ITERABLE_SENTINEL]);
 }
 
 function unCursor(cursor) {
