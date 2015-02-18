@@ -5,9 +5,8 @@ Changelog with fixes and additions between each release.
 
 ## Version `v3.0.0`
 
-### Changes
-
-1. `shouldComponentUpdate` is now accessible on its own. This means that you
+### Addition
+* `shouldComponentUpdate` is now accessible on its own. This means that you
 can include the mixin into your code base without including unused code from
 the Omniscient core. #33
 
@@ -21,20 +20,18 @@ var MyComponent = React.createClass({
   render: function () { /* ...* / }
 });
 ```
-2. Changes to use `lodash.isEqual` and `lodash.pick` interanally. Can override it's functionality.
 
-### Addition
-1. Following 2. from Changes (changes to use `lodash.isEqual`), cursors can now be anywhere in the props three. See #39
+* Following 2. from Changes (changes to use `lodash.isEqual`), cursors can now be anywhere in the props three. See #39
 ```js
 React.render(MyComponent({ some: { path: { to: cursor }}}), document.body);
 ```
 
-2. You can now have immutable structures as a part of your props/state #55
+* You can now have immutable structures as a part of your props/state #55
 ```js
 React.render(MyComponent({ obj: Immutable.List.of(1, 2, 3) }), document.body);
 ```
 
-3. You can now pass on cursors directly to non-JSX components #43
+* You can now pass on cursors directly to non-JSX components #43
 ```js
 var MyComponent = component(function (cursor) {
   // do something with cursor
@@ -43,12 +40,12 @@ var MyComponent = component(function (cursor) {
 React.render(MyComponent(myCursor), document.body);
 ```
 
-4. You can now pass on immutable structure as single argument (as with cursor) #58
+* You can now pass on immutable structure as single argument (as with cursor) #58
 ```js
 React.render(MyComponent(Immutable.List.of(1, 2, 3)), document.body);
 ```
 
-5. You can now define component name through named render function 22bdf8804f84da77f2baa997d287f3d75f2cfb42
+* You can now define component name through named render function 22bdf8804f84da77f2baa997d287f3d75f2cfb42
 ```jsx
 var Component = component(function DisplayName() {
   return <div>Hello!</div>;
@@ -63,7 +60,7 @@ var Component = component('DisplayName', function () {
 });
 ```
 
-6. You can now set to always use JSX component (see Breaking Changes) 53e5318617628697e65e912b44e42cf6ec72fd6f
+* You can now set to always use JSX component (see Breaking Changes) 53e5318617628697e65e912b44e42cf6ec72fd6f
 ```jsx
 var component = require('omniscient');
 
@@ -79,7 +76,7 @@ var Component = localComponent(function MyJsxComponent() {
 React.render(<Component />, document.body);
 ```
 
-7. You can now pass on statics as argument to non-JSX a523e595a0b34807ce6b0d068287362267bfc476
+* You can now pass on statics as argument to non-JSX a523e595a0b34807ce6b0d068287362267bfc476
 ```js
 var MyComponent = component(function (cursor, statics) {
   // do something with statics
@@ -89,9 +86,8 @@ React.render(MyComponent(myCursor, myStatic), document.body);
 ```
 
 
-
 ### Breaking Changes
-1. Can't longer override helper functions directly. Now you can create local component factories
+* Can't longer override helper functions directly. Now you can create local component factories
 which doesn't alter global state. #36
 
 Overview of all overridables:
