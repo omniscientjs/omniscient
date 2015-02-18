@@ -13,6 +13,7 @@ function factory (options) {
   options = options || {};
   var _shouldComponentUpdate = options.shouldComponentUpdate;
   var _isCursor = options.isCursor || shouldComponentUpdate.isCursor;
+  var _isImmutable = options.isImmutable || shouldComponentUpdate.isImmutable;
   var _isJsx = !!options.jsx;
 
   if (!_shouldComponentUpdate) {
@@ -68,7 +69,7 @@ function factory (options) {
       // render will know how to unbox it. Note that __singleCursor proprety
       // name is used to make sure that render won't unbox props in case user
       // passed on with conflicting proprety name.
-      if (_isCursor(props)) {
+      if (_isCursor(props) || _isImmutable(props)) {
         inputCursor = props;
         props = {};
         props[hiddenCursorField] = inputCursor;

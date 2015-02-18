@@ -171,7 +171,6 @@ describe('component', function () {
     it('should pass single cursor', function (done) {
       var mixins = [{ componentDidMount: done, myMixin: noop }];
       var cursor1 = { cursor: {} };
-      var statics = {};
 
       var Component = component(mixins, function (cursor) {
         cursor.should.eql(cursor1);
@@ -184,7 +183,6 @@ describe('component', function () {
     it('should pass objected cursor', function (done) {
       var mixins = [{ componentDidMount: done, myMixin: noop }];
       var cursor1 = { cursor: {} };
-      var statics = {};
 
       var Component = component(mixins, function (props) {
         props.cursor.should.eql(cursor1);
@@ -215,6 +213,18 @@ describe('component', function () {
       });
 
       render(Component(input));
+    });
+
+    it('should pass single immutable structure', function (done) {
+      var mixins = [{ componentDidMount: done, myMixin: noop }];
+      var imm = Immutable.List.of(1);
+
+      var Component = component(mixins, function (immutableStructure) {
+        immutableStructure.should.eql(imm);
+        return React.DOM.text(null, 'hello');
+      });
+
+      render(Component(imm));
     });
 
     it('should pass cursor and with statics as second argument', function (done) {
@@ -413,6 +423,20 @@ describe('component', function () {
       });
 
       localComponent.shouldComponentUpdate.isCursor.should.equal(isCursor);
+      var Component = localComponent(function () {
+        return React.DOM.text(null, 'hello');
+      });
+
+      render(Component({ foo: 'hello' }));
+    });
+
+    it('should have overridable isImmutable', function (done) {
+      var isImmutable = function () { return done(); };
+      var localComponent = component.withDefaults({
+        isImmutable: isImmutable
+      });
+
+      localComponent.shouldComponentUpdate.isImmutable.should.equal(isImmutable);
       var Component = localComponent(function () {
         return React.DOM.text(null, 'hello');
       });
