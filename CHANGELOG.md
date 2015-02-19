@@ -13,7 +13,7 @@ the Omniscient core. #33
 ```js
 var shouldupdate = require('omniscient/shouldupdate');
 
-var mixins = { shouldComponentUpdate: shouldupdate };
+var mixins = [{ shouldComponentUpdate: shouldupdate }];
 var MyComponent = React.createClass({
   mixins: mixins,
 
