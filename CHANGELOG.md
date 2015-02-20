@@ -3,6 +3,27 @@ Changelog
 
 Changelog with fixes and additions between each release.
 
+## Version `v3.1.0` (unreleased)
+
+Changes for the new up-comming release of Omniscient (`v3.1.0`), to allow users to track comming changes.
+
+### Additions
+1. Now allows for automatic "unwrapping" of single cursors (and define what field to unwrap) #60. Example:
+```jsx
+var localComponent = component.withDefaults({
+  cursorField: 'foobar'
+});
+
+var Component = component(function(myPassedCursor) {
+  // Now you have myPassedCursor instead of having to do props.foobar
+});
+
+React.render(<Component foobar={myCursor} />, document.body)
+```
+
+### Internal changes
+1. Now uses `lodash.assign` internally, for potential de-duping. #61
+
 ## Version `v3.0.1`
 
 Obligatory mess-up patch. Updates `dist` files to latest version
