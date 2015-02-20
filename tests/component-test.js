@@ -444,6 +444,22 @@ describe('component', function () {
       render(Component({ foo: 'hello' }));
     });
 
+    it('should have overridable cursorField', function () {
+      var localComponent = component.withDefaults({
+        jsx: true,
+        cursorField: 'cursor'
+      });
+
+      var cursor1 = {};
+
+      var Component = localComponent(function (cursor) {
+        cursor.should.equal(cursor1);
+        return React.DOM.text(null, 'hello');
+      });
+
+      render(React.createElement(Component, { cursor: cursor1 }));
+    });
+
   });
 
   describe('exposes arguments as props', function () {
