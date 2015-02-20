@@ -1,7 +1,7 @@
 "use strict";
 
 var React     = require('react'),
-    extend    = require('extend-object');
+    assign    = require('lodash.assign');
 
 var shouldComponentUpdate = require('./shouldupdate');
 var hiddenCursorField = "__singleCursor";
@@ -93,7 +93,7 @@ function factory (options) {
     create.jsx = Component;
 
     if (methodStatics) {
-      create = extend(create, methodStatics);
+      create = assign(create, methodStatics);
     }
 
     return create;
@@ -156,7 +156,7 @@ function pickStaticMixins (mixins) {
 
   var statics = {};
   filtered.forEach(function (obj) {
-    statics = extend(statics, obj.statics);
+    statics = assign(statics, obj.statics);
   });
 
   return statics;

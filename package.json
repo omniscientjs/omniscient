@@ -7,7 +7,7 @@
     "example": "example"
   },
   "dependencies": {
-    "extend-object": "^1.0.0",
+    "lodash.assign": "^3.0.0",
     "lodash.isequal": "^3.0.0",
     "lodash.pick": "^3.0.0"
   },
