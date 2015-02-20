@@ -4,7 +4,6 @@ var React     = require('react'),
     extend    = require('extend-object');
 
 var shouldComponentUpdate = require('./shouldupdate');
-var hiddenCursorField = "__singleCursor";
 
 module.exports = factory();
 module.exports.withDefaults = factory;
@@ -15,6 +14,7 @@ function factory (options) {
   var _isCursor = options.isCursor || shouldComponentUpdate.isCursor;
   var _isImmutable = options.isImmutable || shouldComponentUpdate.isImmutable;
   var _isJsx = !!options.jsx;
+  var _hiddenCursorField = options.cursorField || '__singleCursor';
 
   if (!_shouldComponentUpdate) {
     _shouldComponentUpdate = shouldComponentUpdate.withDefaults(options);
@@ -35,7 +35,7 @@ function factory (options) {
         if (debug) debug.call(this, 'render');
         // If `props[cursor]` is defined than it's just boxed cursor
         // in which case we unbox it.
-        var input = this.props[hiddenCursorField] || this.props;
+        var input = this.props[_hiddenCursorField] || this.props;
         return options.render.call(this, input, this.props.statics);
       }
     };
@@ -65,14 +65,14 @@ function factory (options) {
       }
 
       // If passed props is just a cursor we box it by making
-      // props with `props[hiddenCursorField]` set to given `props` so that
+      // props with `props[_hiddenCursorField]` set to given `props` so that
       // render will know how to unbox it. Note that __singleCursor proprety
       // name is used to make sure that render won't unbox props in case user
       // passed on with conflicting proprety name.
       if (_isCursor(props) || _isImmutable(props)) {
         inputCursor = props;
         props = {};
-        props[hiddenCursorField] = inputCursor;
+        props[_hiddenCursorField] = inputCursor;
       }
 
       if (!!statics && !props.statics) {
