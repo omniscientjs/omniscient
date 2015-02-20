@@ -3,6 +3,11 @@ Changelog
 
 Changelog with fixes and additions between each release.
 
+## Version `v3.0.1`
+
+Obligatory mess-up patch. Updates `dist` files to latest version
+of Omniscient.
+
 ## Version `v3.0.0`
 
 ### Addition
