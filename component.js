@@ -1,24 +1,26 @@
 "use strict";
 
-var React     = require('react'),
-    assign    = require('lodash.assign');
+var React  = require('react'),
+    assign = require('lodash.assign');
 
 var shouldComponentUpdate = require('./shouldupdate');
 
 /**
- * Create componets for functional views.
+ * Create components for functional views.
  *
  * The API of Omniscient is pretty simple, you create a component
- * with a render function, and mixins if you need them. When using
- * the created component, you can pass a cursor or an object as data
- * to the component. If you simply pass a cursor, the cursor will be
- * accessible on the props.cursor accessor. This data will be accessible
- * in the render function of the component (as props). In the passed data
- * object, if it’s within the statics property, the changes won’t get
- * tracker (see below).
+ * with a render function and the mixins you need. 
+ * 
+ * When using the created component, you can pass a cursor or an object
+ * as data to it. This data will be the render function's first argument,
+ * and it will also be available on `this.props`.
+ * 
+ * If you simply pass one cursor, the cursor will be accessible on the 
+ * `props.cursor` accessor. Data placed on the property `statics` of the
+ * component's arguments will not be tracked for changes.
  *
- * @param {String} [displayName] Component display name. Used in debug and by React
- * @param {Array|Object} [mixins] Mixins. Object literals with function, or array of object literals.
+ * @param {String} displayName Component's display name. Used when debug()'ing and by React
+ * @param {Array|Object} mixins React mixins. Object literals with functions, or array of object literals with functions.
  * @param {Function} render Properties that do not trigger update when changed. Can be cursors, object and immutable structures
  *
  * @property {Function} shouldComponentUpdate Get default shouldComponentUpdate
@@ -31,8 +33,8 @@ module.exports = factory();
 
 /**
  * Create a “local” instance of the Omniscient component creator by using the `.withDefaults` method.
- * This also allows you to override any defaults that Omniscient uses to check equality of objects,
- * unwrap cursors, etc. See below on section about defaults for what to override.
+ * This also allows you to override any defaults that Omniscient use to check equality of objects,
+ * unwrap cursors, etc.
  *
  * ### Options
  * ```js
@@ -40,15 +42,15 @@ module.exports = factory();
  *   // Goes directly to component
  *   shouldComponentUpdate: function(nextProps, nextState), // check update
  *   jsx: false, // whether or not to default to jsx components
- *   cursorField: '__singleCursor', // cursor property name to "unwrap" before passing in to render (see note)
+ *   cursorField: '__singleCursor', // cursor property name to "unwrap" before passing in to render
  *
- *   // Is passed on to `shouldComponentUpdate`
- *   isCursor: function(cursor), // check if is props
- *   isEqualCursor: function (oneCursor, otherCursor), // check cursor
- *   isEqualState: function (currentState, nextState), // check state
- *   isImmutable: function (currentState, nextState), // check if object is immutable
- *   isEqualProps: function (currentProps, nextProps), // check props
- *   unCursor: function (cursor) // convert from cursor to object
+ *   // Passed on to `shouldComponentUpdate`
+ *   isCursor: function(cursor), // check if prop is cursor
+ *   unCursor: function (cursor), // convert cursor to object
+ *   isEqualCursor: function (oneCursor, otherCursor), // compares cursor
+ *   isEqualState: function (currentState, nextState), // compares state
+ *   isEqualProps: function (currentProps, nextProps), // compares props
+ *   isImmutable: function (maybeImmutable) // check if object is immutable
  * }
  * ```
  *
@@ -60,10 +62,10 @@ module.exports = factory();
  *   jsx: true
  * });
  *
- * var MyComponent = jsxComponent(function () {
+ * var Greeting = jsxComponent(function () {
  *   return <h1>Hello!</h1>
  * });
- * React.render(<MyComponent />, document.body);
+ * React.render(<Greeting />, document.body);
  * ```
  *
  * #### Un-wrapping curors
@@ -72,14 +74,14 @@ module.exports = factory();
  *   cursorField: 'foobar'
  * });
  *
- * var Component = component(function(myPassedCursor) {
- *   // Now you have myPassedCursor instead of having to do props.foobar
+ * var Component = localComponent(function (myCursor) {
+ *   // Now you have myCursor directly instead of having to do props.foobar
  * });
  *
  * React.render(<Component foobar={myCursor} />, document.body);
  * ```
  *
- * @param {Object} [Options] Options with defaults to override
+ * @param {Object} Options Options with defaults to override
  *
  * @property {Function} shouldComponentUpdate Get default shouldComponentUpdate
 
@@ -104,8 +106,8 @@ function factory (options) {
   }
 
   /**
-   * Activate debugging for components. Will log when components renders, and
-   * outcome of `shouldComponentUpdate` (and why).
+   * Activate debugging for components. Will log when a component renders, 
+   * the outcome of `shouldComponentUpdate`, and why the component re-renders.
    *
    * ### Example
    * ```js
@@ -117,7 +119,7 @@ function factory (options) {
    *
    * @example omniscient.debug(/Search/i);
    *
-   * @param {RegExp} [pattern] Filter pattern. Do only show messages matching pattern
+   * @param {RegExp} pattern Filter pattern. Only show messages matching pattern
    *
    * @property {Object} jsx Get component for use in JSX
    *
@@ -138,8 +140,8 @@ function factory (options) {
       mixins: options.mixins,
       render: function render () {
         if (debug) debug.call(this, 'render');
-        // If `props[cursor]` is defined than it's just boxed cursor
-        // in which case we unbox it.
+        // If `props['__singleCursor']` is set a single cursor was passed
+        // to the component, pick it out and pass it.
         var input = this.props[_hiddenCursorField] || this.props;
         return options.render.call(this, input, this.props.statics);
       }
@@ -158,10 +160,10 @@ function factory (options) {
     /**
      * Invoke component (rendering it)
      *
-     * @param {String} [displayName] Component display name. Used in debug and by React
-     * @param {Object} [props] Properties that **do** trigger update when changed. Can be cursors, object and immutable structures
-     * @param {Object} [statics] Properties that do not trigger update when changed. Can be cursors, object and immutable structures
-     * @param {Object} [..rest] Children of components (React elements, scalar values)
+     * @param {String} displayName Component display name. Used in debug and by React
+     * @param {Object} props Properties that **do** trigger update when changed. Can be cursors, object and immutable structures
+     * @param {Object} statics Properties that do not trigger update when changed. Can be cursors, object and immutable structuress
+     * @param {Object} ..rest Child components (React elements, scalar values)
      *
      * @property {Object} jsx Get component for use in JSX
 
@@ -182,11 +184,9 @@ function factory (options) {
 
       children = flatten(sliceFrom(arguments, statics).filter(_isNode));
 
-      // If passed props is just a cursor we box it by making
-      // props with `props[_hiddenCursorField]` set to given `props` so that
-      // render will know how to unbox it. Note that __singleCursor proprety
-      // name is used to make sure that render won't unbox props in case user
-      // passed on with conflicting proprety name.
+      // If passed props is a signle cursor we move it to `props[_hiddenCursorField]`
+      // to simplify should component update. The render function will move it back.
+      // The name '__singleCursor' is used to not clash with names of user passed properties
       if (_isCursor(props) || _isImmutable(props)) {
         inputCursor = props;
         _props = {};
@@ -312,7 +312,7 @@ function flatten (array) {
 }
 
 /**
- * Predicate showing whether or not argument value is a valid React Node
+ * Predicate showing whether or not the argument is a valid React Node
  * or not. Can be numbers, strings, bools, and React Elements.
  *
  * React's isNode check from ReactPropTypes validator
@@ -322,8 +322,8 @@ function flatten (array) {
  * @returns {Boolean}
  * @api private
  */
-function isNode(propValue) {
-  switch(typeof propValue) {
+function isNode (propValue) {
+  switch (typeof propValue) {
     case 'number':
     case 'string':
       return true;
