@@ -3,6 +3,24 @@
 var filter  = require('lodash.pick'),
     isEqual = require('lodash.isequal');
 
+/**
+ * Directly fetch `shouldComponentUpdate` mixin to use outside of Omniscient.
+ * You can do this if you don't want to use Omniscients syntactic sugar.
+ *
+ * @param {Object} nextProps Next props. Can be objects of cursors, values or immutable structures
+ * @param {Object} nextState Next state. Can be objects of values or immutable structures
+ *
+ * @property {Function} isCursor Get default isCursor
+ * @property {Function} isEqualState Get default isEqualState
+ * @property {Function} isEqualProps Get default isEqualProps
+ * @property {Function} isEqualCursor Get default isEqualCursor
+ * @property {Function} isImmutable Get default isImmutable
+ * @property {Function} debug Get default debug
+ *
+ * @module shouldComponentUpdate
+ * @returns {Component}
+ * @api public
+ */
 module.exports = factory();
 module.exports.withDefaults = factory;
 
