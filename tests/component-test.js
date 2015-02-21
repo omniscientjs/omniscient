@@ -264,6 +264,22 @@ describe('component', function () {
       render(Component('myKey', { foo: 'hello' }));
     });
 
+    it('should not mutate the props passed', function (done) {
+      var mixins = [{ componentDidMount: done }];
+
+      var props = { foo: 'hello' };
+      var statics = { bar: 'world' };
+
+      var Component = component(mixins, function (data) {
+        data.should.have.property('foo');
+        data.foo.should.equal('hello');
+        props.should.not.have.property('statics');
+        return React.DOM.text(null, 'hello');
+      });
+
+      render(Component(props, statics));
+    });
+
     it('should get passed key and immutable cursor-objects', function (done) {
       var mixins = [{ componentDidMount: done }];
       var cursorInput = Cursor.from(Immutable.fromJS({ foo: 'hello' }), 'foo');

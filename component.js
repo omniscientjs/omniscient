@@ -51,6 +51,7 @@ function factory (options) {
     }
 
     var create = function (key, props, statics) {
+      var _props;
       var inputCursor;
       var children = toArray(arguments).filter(React.isValidElement);
 
@@ -60,10 +61,6 @@ function factory (options) {
         key   = void 0;
       }
 
-      if (!props) {
-        props = { };
-      }
-
       // If passed props is just a cursor we box it by making
       // props with `props[_hiddenCursorField]` set to given `props` so that
       // render will know how to unbox it. Note that __singleCursor proprety
@@ -71,23 +68,25 @@ function factory (options) {
       // passed on with conflicting proprety name.
       if (_isCursor(props) || _isImmutable(props)) {
         inputCursor = props;
-        props = {};
-        props[_hiddenCursorField] = inputCursor;
+        _props = {};
+        _props[_hiddenCursorField] = inputCursor;
+      } else {
+        _props = assign({}, props);
       }
 
       if (!!statics && !props.statics) {
-        props.statics = statics;
+        _props.statics = statics;
       }
 
       if (key) {
-        props.key = key;
+        _props.key = key;
       }
 
       if (!!children.length) {
-        props.children = children;
+        _props.children = children;
       }
 
-      return React.createElement(Component, props);
+      return React.createElement(Component, _props);
     };
 
     create.jsx = Component;
