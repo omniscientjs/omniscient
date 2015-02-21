@@ -15,6 +15,7 @@ function factory (options) {
   var _isImmutable = options.isImmutable || shouldComponentUpdate.isImmutable;
   var _isJsx = !!options.jsx;
   var _hiddenCursorField = options.cursorField || '__singleCursor';
+  var _isNode = options.isNode || isNode;
 
   if (!_shouldComponentUpdate) {
     _shouldComponentUpdate = shouldComponentUpdate.withDefaults(options);
@@ -53,13 +54,15 @@ function factory (options) {
     var create = function (key, props, statics) {
       var _props;
       var inputCursor;
-      var children = toArray(arguments).filter(React.isValidElement);
+      var children;
 
       if (typeof key === 'object') {
         statics = props;
         props = key;
         key   = void 0;
       }
+
+      children = flatten(sliceFrom(arguments, statics).filter(_isNode));
 
       // If passed props is just a cursor we box it by making
       // props with `props[_hiddenCursorField]` set to given `props` so that
@@ -177,4 +180,41 @@ function hasShouldComponentUpdate (mixins) {
 
 function toArray (args) {
   return Array.prototype.slice.call(args);
+}
+
+function sliceFrom (args, value) {
+  var array = toArray(args);
+  var index = Math.max(array.indexOf(value), 0);
+  return array.slice(index);
+}
+
+// Just a shallow flatten
+function flatten (array) {
+  return Array.prototype.concat.apply([], array);
+}
+
+// React's isNode check from ReactPropTypes validator
+function isNode(propValue) {
+  switch(typeof propValue) {
+    case 'number':
+    case 'string':
+      return true;
+    case 'boolean':
+      return !propValue;
+    case 'object':
+      if (Array.isArray(propValue)) {
+        return propValue.every(isNode);
+      }
+      if (React.isValidElement(propValue)) {
+        return true;
+      }
+      for (var k in propValue) {
+        if (!isNode(propValue[k])) {
+          return false;
+        }
+      }
+      return false;
+    default:
+      return false;
+  }
 }
