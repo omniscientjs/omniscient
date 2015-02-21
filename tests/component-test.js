@@ -401,6 +401,47 @@ describe('component', function () {
       });
       render(Component({ one: cursor1, two: cursor2, statics: statics }));
     });
+
+    it('can take strings as children', function (done) {
+      var mixins = [{ componentDidMount: done }];
+
+      var outerCursor = { foo: 'hello' };
+
+      var c1 = 'hello';
+      var c2 = 'world';
+
+      var Component = component(mixins, function (cursor) {
+        cursor.foo.should.equal(cursor.foo);
+        this.props.children.should.have.length(2);
+
+        this.props.children[0].should.equal(c1);
+        this.props.children[1].should.equal(c2);
+
+        return React.DOM.text(null, this.props.children);
+      });
+
+      render(Component(outerCursor, c1, c2));
+    });
+
+    it('can take arrays as children', function (done) {
+      var mixins = [{ componentDidMount: done }];
+
+      var outerCursor = { foo: 'hello' };
+
+      var c1 = ['hello', 'world'];
+
+      var Component = component(mixins, function (cursor) {
+        cursor.foo.should.equal(cursor.foo);
+        this.props.children.should.have.length(2);
+
+        this.props.children[0].should.equal(c1[0]);
+        this.props.children[1].should.equal(c1[1]);
+
+        return React.DOM.text(null, this.props.children);
+      });
+
+      render(Component(outerCursor, c1));
+    });
   });
 
   describe('overridables', function () {
