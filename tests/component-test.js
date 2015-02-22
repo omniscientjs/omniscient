@@ -442,6 +442,69 @@ describe('component', function () {
 
       render(Component(outerCursor, c1));
     });
+
+    it('can take props, statics & children', function (done) {
+      var mixins = [{ componentDidMount: done }];
+
+      var statics = { foo: 'bar' };
+
+      var c1 = ['hello', 'world'];
+
+      var Component = component(mixins, function (cursor) {
+        this.props.children.should.have.length(2);
+
+        this.props.children[0].should.equal(c1[0]);
+        this.props.children[1].should.equal(c1[1]);
+
+        return React.DOM.text(null, this.props.children);
+      });
+
+      render(Component({}, statics, c1));
+    });
+
+    it('can take key, props, statics & children', function (done) {
+      var mixins = [{ componentDidMount: done }];
+
+      var outerStatics = { foo: 'bar' };
+
+      var c1 = ['hello', 'world'];
+
+      var Component = component(mixins, function (cursor, statics) {
+        hasKey(this, 'myKey');
+
+        statics.should.deep.equal(outerStatics);
+
+        this.props.children.should.have.length(2);
+
+        this.props.children[0].should.equal(c1[0]);
+        this.props.children[1].should.equal(c1[1]);
+
+        return React.DOM.text(null, this.props.children);
+      });
+
+      render(Component('myKey', {}, outerStatics, c1));
+    });
+
+    it('does not attach a node as props.statics', function (done) {
+      var mixins = [{ componentDidMount: done }];
+
+      var statics = { foo: 'bar' };
+
+      var c1 = ['hello', 'world'];
+
+      var Component = component(mixins, function (cursor) {
+        this.props.should.not.have.property('statics');
+
+        this.props.children.should.have.length(2);
+
+        this.props.children[0].should.equal(c1[0]);
+        this.props.children[1].should.equal(c1[1]);
+
+        return React.DOM.text(null, this.props.children);
+      });
+
+      render(Component({}, c1));
+    });
   });
 
   describe('overridables', function () {
