@@ -22,6 +22,28 @@ var filter  = require('lodash.pick'),
  * @api public
  */
 module.exports = factory();
+
+/**
+ * Create a “local” instance of the shouldComponentUpdate with overriden defaults.
+ *
+ * ### Options
+ * ```js
+ * {
+ *   isCursor: function(cursor), // check if is props
+ *   isEqualCursor: function (oneCursor, otherCursor), // check cursor
+ *   isEqualState: function (currentState, nextState), // check state
+ *   isImmutable: function (currentState, nextState), // check if object is immutable
+ *   isEqualProps: function (currentProps, nextProps), // check props
+ *   unCursor: function (cursor) // convert from cursor to object
+ * }
+ * ```
+ *
+ * @param {Object} [Options] Options with defaults to override
+ *
+ * @module shouldComponentUpdate.withDefaults
+ * @returns {Function} shouldComponentUpdate with overriden defaults
+ * @api public
+ */
 module.exports.withDefaults = factory;
 
 function factory (methods) {
@@ -107,6 +129,20 @@ function factory (methods) {
     return false;
   }
 
+
+  /**
+   * Predicate to check if state is equal. Checks in the tree for immutable structures
+   * and if it is, check by reference. Does not support cursors.
+   *
+   * Override through `shouldComponentUpdate.withDefaults`.
+   *
+   * @param {Object} value
+   * @param {Object} other
+   *
+   * @module shouldComponentUpdate.isEqualState
+   * @returns {Boolean}
+   * @api public
+   */
   function isEqualState (value, other) {
     return isEqual(value, other, function (current, next) {
       if (_isImmutable(current) && _isImmutable(next)) {
@@ -119,6 +155,19 @@ function factory (methods) {
     });
   }
 
+  /**
+   * Predicate to check if props are equal. Checks in the tree for cursors and immutable structures
+   * and if it is, check by reference.
+   *
+   * Override through `shouldComponentUpdate.withDefaults`.
+   *
+   * @param {Object} value
+   * @param {Object} other
+   *
+   * @module shouldComponentUpdate.isEqualProps
+   * @returns {Boolean}
+   * @api public
+   */
   function isEqualProps (value, other) {
     return isEqual(value, other, function (current, next) {
       if (_isCursor(current) && _isCursor(next)) {
@@ -137,6 +186,18 @@ function factory (methods) {
     });
   }
 
+  /**
+   * Predicate to check if cursors are equal through reference checks. Uses `unCursor`.
+   * Override through `shouldComponentUpdate.withDefaults` to support different cursor
+   * implementations.
+   *
+   * @param {Cursor} a
+   * @param {Cursor} b
+   *
+   * @module shouldComponentUpdate.isEqualCursor
+   * @returns {Boolean}
+   * @api public
+   */
   function isEqualCursor (a, b) {
     return _unCursor(a) === _unCursor(b);
   }
@@ -174,15 +235,48 @@ function factory (methods) {
 }
 
 
+/**
+ * Predicate to check if a potential is an immutable structure or not.
+ * Override through `shouldComponentUpdate.withDefaults` to support different cursor
+ * implementations.
+ *
+ * @param {maybeImmutable} value to check if it is immutable.
+ *
+ * @module shouldComponentUpdate.isImmutable
+ * @returns {Object|Number|String|Boolean}
+ * @api public
+ */
 var IS_ITERABLE_SENTINEL = '@@__IMMUTABLE_ITERABLE__@@';
-function isImmutable(maybeIterable) {
-  return !!(maybeIterable && maybeIterable[IS_ITERABLE_SENTINEL]);
+function isImmutable(maybeImmutable) {
+  return !!(maybeImmutable && maybeImmutable[IS_ITERABLE_SENTINEL]);
 }
 
+/**
+ * Transforming function to take in cursor and return a non-cursor.
+ * Override through `shouldComponentUpdate.withDefaults` to support different cursor
+ * implementations.
+ *
+ * @param {cursor} cursor to transform
+ *
+ * @module shouldComponentUpdate.unCursor
+ * @returns {Object|Number|String|Boolean}
+ * @api public
+ */
 function unCursor(cursor) {
   return cursor.deref();
 }
 
+
+/**
+ * Predicate to check if `potential` is Immutable cursor or not (defaults to duck testing
+ * Immutable.js cursors). Can override through `.withDefaults()`.
+ *
+ * @param {potential} potential to check if is cursor
+ *
+ * @module shouldComponentUpdate.isCursor
+ * @returns {Boolean}
+ * @api public
+ */
 function isCursor (potential) {
   return potential && typeof potential.deref === 'function';
 }

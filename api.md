@@ -17,11 +17,18 @@ component's arguments will not be tracked for changes.
 
 ### Parameters
 
-| parameter     | type         | description                                                                                          |
+| param         | type         | description                                                                                          |
 | ------------- | ------------ | ---------------------------------------------------------------------------------------------------- |
 | `displayName` | String       | Component's display name. Used when debug()'ing and by React                                         |
 | `mixins`      | Array,Object | React mixins. Object literals with functions, or array of object literals with functions.            |
 | `render`      | Function     | Properties that do not trigger update when changed. Can be cursors, object and immutable structures  |
+
+
+### Properties
+
+| property                | type     | description                        |
+| ----------------------- | -------- | ---------------------------------- |
+| `shouldComponentUpdate` | Function | Get default shouldComponentUpdate  |
 
 
 
@@ -82,9 +89,16 @@ React.render(, document.body);
 
 ### Parameters
 
-| parameter | type   | description                        |
+| param     | type   | description                        |
 | --------- | ------ | ---------------------------------- |
 | `Options` | Object | Options with defaults to override  |
+
+
+### Properties
+
+| property                | type     | description                        |
+| ----------------------- | -------- | ---------------------------------- |
+| `shouldComponentUpdate` | Function | Get default shouldComponentUpdate  |
 
 
 
@@ -107,9 +121,16 @@ SearchBox>: render
 
 ### Parameters
 
-| parameter | type   | description                                          |
+| param     | type   | description                                          |
 | --------- | ------ | ---------------------------------------------------- |
 | `pattern` | RegExp | Filter pattern. Only show messages matching pattern  |
+
+
+### Properties
+
+| property | type   | description                   |
+| -------- | ------ | ----------------------------- |
+| `jsx`    | Object | Get component for use in JSX  |
 
 
 ### Example
@@ -129,7 +150,7 @@ Invoke component (rendering it)
 
 ### Parameters
 
-| parameter     | type   | description                                                                                          |
+| param         | type   | description                                                                                          |
 | ------------- | ------ | ---------------------------------------------------------------------------------------------------- |
 | `displayName` | String | Component display name. Used in debug and by React                                                   |
 | `props`       | Object | Properties that **do** trigger update when changed. Can be cursors, object and immutable structures  |
@@ -137,8 +158,187 @@ Invoke component (rendering it)
 | `..rest`      | Object | Child components (React elements, scalar values)                                                     |
 
 
+### Properties
+
+| property | type   | description                   |
+| -------- | ------ | ----------------------------- |
+| `jsx`    | Object | Get component for use in JSX  |
+
+
 
 **Returns** `ReactElement`, 
+
+
+### `shouldComponentUpdate(nextProps, nextState)`
+
+Directly fetch `shouldComponentUpdate` mixin to use outside of Omniscient.
+You can do this if you don't want to use Omniscients syntactic sugar.
+
+
+### Parameters
+
+| param       | type   | description                                                           |
+| ----------- | ------ | --------------------------------------------------------------------- |
+| `nextProps` | Object | Next props. Can be objects of cursors, values or immutable structures |
+| `nextState` | Object | Next state. Can be objects of values or immutable structures          |
+
+
+### Properties
+
+| property        | type     | description               |
+| --------------- | -------- | ------------------------- |
+| `isCursor`      | Function | Get default isCursor      |
+| `isEqualState`  | Function | Get default isEqualState  |
+| `isEqualProps`  | Function | Get default isEqualProps  |
+| `isEqualCursor` | Function | Get default isEqualCursor |
+| `isImmutable`   | Function | Get default isImmutable   |
+| `debug`         | Function | Get default debug         |
+
+
+
+**Returns** `Component`, 
+
+
+### `shouldComponentUpdate.withDefaults([Options])`
+
+Create a “local” instance of the shouldComponentUpdate with overriden defaults.
+
+### Options
+```js
+{
+  isCursor: function(cursor), // check if is props
+  isEqualCursor: function (oneCursor, otherCursor), // check cursor
+  isEqualState: function (currentState, nextState), // check state
+  isImmutable: function (currentState, nextState), // check if object is immutable
+  isEqualProps: function (currentProps, nextProps), // check props
+  unCursor: function (cursor) // convert from cursor to object
+}
+```
+
+
+### Parameters
+
+| param       | type   | description                                    |
+| ----------- | ------ | ---------------------------------------------- |
+| `[Options]` | Object | _optional:_ Options with defaults to override  |
+
+
+
+**Returns** `Function`, shouldComponentUpdate with overriden defaults
+
+
+### `shouldComponentUpdate.isEqualState(value, other)`
+
+Predicate to check if state is equal. Checks in the tree for immutable structures
+and if it is, check by reference. Does not support cursors.
+
+Override through `shouldComponentUpdate.withDefaults`.
+
+
+### Parameters
+
+| param   | type   | description |
+| ------- | ------ | ----------- |
+| `value` | Object |             |
+| `other` | Object |             |
+
+
+
+**Returns** `Boolean`, 
+
+
+### `shouldComponentUpdate.isEqualProps(value, other)`
+
+Predicate to check if props are equal. Checks in the tree for cursors and immutable structures
+and if it is, check by reference.
+
+Override through `shouldComponentUpdate.withDefaults`.
+
+
+### Parameters
+
+| param   | type   | description |
+| ------- | ------ | ----------- |
+| `value` | Object |             |
+| `other` | Object |             |
+
+
+
+**Returns** `Boolean`, 
+
+
+### `shouldComponentUpdate.isEqualCursor(a, b)`
+
+Predicate to check if cursors are equal through reference checks. Uses `unCursor`.
+Override through `shouldComponentUpdate.withDefaults` to support different cursor
+implementations.
+
+
+### Parameters
+
+| param | type   | description |
+| ----- | ------ | ----------- |
+| `a`   | Cursor |             |
+| `b`   | Cursor |             |
+
+
+
+**Returns** `Boolean`, 
+
+
+### `shouldComponentUpdate.isImmutable(value)`
+
+Predicate to check if a potential is an immutable structure or not.
+Override through `shouldComponentUpdate.withDefaults` to support different cursor
+implementations.
+
+
+### Parameters
+
+| param   | type           | description                   |
+| ------- | -------------- | ----------------------------- |
+| `value` | maybeImmutable | to check if it is immutable.  |
+
+
+
+**Returns** `Object,Number,String,Boolean`, 
+
+
+### `shouldComponentUpdate.unCursor(cursor)`
+
+Transforming function to take in cursor and return a non-cursor.
+Override through `shouldComponentUpdate.withDefaults` to support different cursor
+implementations.
+
+
+### Parameters
+
+| param    | type   | description   |
+| -------- | ------ | ------------- |
+| `cursor` | cursor | to transform  |
+
+
+
+**Returns** `Object,Number,String,Boolean`, 
+
+
+### `shouldComponentUpdate.isCursor(potential)`
+
+Predicate to check if `potential` is Immutable cursor or not (defaults to duck testing
+Immutable.js cursors). Can override through `.withDefaults()`.
+
+
+### Parameters
+
+| param       | type      | description            |
+| ----------- | --------- | ---------------------- |
+| `potential` | potential | to check if is cursor  |
+
+
+
+**Returns** `Boolean`, 
+
+## Private members 
 
 
 ### `isNode(propValue)`
@@ -151,30 +351,12 @@ React's isNode check from ReactPropTypes validator
 
 ### Parameters
 
-| parameter   | type   | description                                     |
+| param       | type   | description                                     |
 | ----------- | ------ | ----------------------------------------------- |
 | `propValue` | String | Property value to check if is valid React Node  |
 
 
 
 **Returns** `Boolean`, 
-
-
-### `shouldComponentUpdate(nextProps, nextState)`
-
-Directly fetch `shouldComponentUpdate` mixin to use outside of Omniscient.
-You can do this if you don't want to use Omniscients syntactic sugar.
-
-
-### Parameters
-
-| parameter   | type   | description                                                           |
-| ----------- | ------ | --------------------------------------------------------------------- |
-| `nextProps` | Object | Next props. Can be objects of cursors, values or immutable structures |
-| `nextState` | Object | Next state. Can be objects of values or immutable structures          |
-
-
-
-**Returns** `Component`, 
 
 
