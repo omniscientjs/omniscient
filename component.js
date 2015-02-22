@@ -43,6 +43,7 @@ module.exports = factory();
  *   shouldComponentUpdate: function(nextProps, nextState), // check update
  *   jsx: false, // whether or not to default to jsx components
  *   cursorField: '__singleCursor', // cursor property name to "unwrap" before passing in to render
+ *   isNode: function(propValue), // determines if propValue is a valid React node
  *
  *   // Passed on to `shouldComponentUpdate`
  *   isCursor: function(cursor), // check if prop is cursor
@@ -316,6 +317,7 @@ function flatten (array) {
  * or not. Can be numbers, strings, bools, and React Elements.
  *
  * React's isNode check from ReactPropTypes validator
+ * but adjusted to not accept objects to avoid collision with props & statics.
  *
  * @param {String} propValue Property value to check if is valid React Node
  *
@@ -335,11 +337,6 @@ function isNode (propValue) {
       }
       if (React.isValidElement(propValue)) {
         return true;
-      }
-      for (var k in propValue) {
-        if (!isNode(propValue[k])) {
-          return false;
-        }
       }
       return false;
     default:
