@@ -196,7 +196,9 @@ function factory (options) {
         _props = assign({}, props);
       }
 
-      if (!!statics && !props.statics) {
+      // If statics is a node (due to it being optional)
+      // don't attach the node to the statics prop
+      if (!!statics && !props.statics && !_isNode(statics)) {
         _props.statics = statics;
       }
 
