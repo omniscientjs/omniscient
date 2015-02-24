@@ -1,7 +1,6 @@
 Omniscient [![NPM version][npm-image]][npm-url] [![Build Status][travis-image]][travis-url] [![Dependency Status][depstat-image]][depstat-url] [![Gitter][gitter-image]][gitter-url]
 =========
 
-<img src="https://raw.githubusercontent.com/torgeir/omniscient/master/omniscient_logo.png" align="right" width="150px">
 > A library providing an abstraction for React components that allows for fast top-down rendering embracing immutable data. Using cursors into immutable data structures, components can easily swap their own piece of data inside the larger immutable data structure. As data is immutable, re-rendering can be fast.
 
 > Omniscient pairs the simplicity of [Quiescent](https://github.com/levand/quiescent) with
