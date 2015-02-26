@@ -109,8 +109,17 @@ function factory (methods) {
     current = filter(current, _isCursor);
     next = filter(next, _isCursor);
 
+    var currentObj, nextObj;
     for (var key in current) {
-      if (!_isEqualCursor(current[key], next[key])) {
+      currentObj = current[key];
+      nextObj = next[key];
+      // filtering for cursors could cause a
+      // property to become undefined
+      if (typeof currentObj === 'undefined' ||
+          typeof nextObj === 'undefined') {
+        return true;
+      }
+      if (!_isEqualCursor(currentObj, nextObj)) {
         return true;
       }
     }
