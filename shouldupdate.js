@@ -180,7 +180,7 @@ function factory (methods) {
   function isEqualProps (value, other) {
     return isEqual(value, other, function (current, next) {
       if (_isCursor(current) && _isCursor(next)) {
-        return isEqualCursor(current, next);
+        return _isEqualCursor(current, next);
       }
       if (_isCursor(current) || _isCursor(next)) {
         return false;
