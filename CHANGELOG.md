@@ -14,7 +14,7 @@ var localComponent = component.withDefaults({
   cursorField: 'foobar'
 });
 
-var Component = component(function(myPassedCursor) {
+var Component = localComponent(function(myPassedCursor) {
   // Now you have myPassedCursor instead of having to do props.foobar
 });
 
