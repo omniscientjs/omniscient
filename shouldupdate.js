@@ -109,8 +109,17 @@ function factory (methods) {
     current = filter(current, _isCursor);
     next = filter(next, _isCursor);
 
-    for (var key in current) {
-      if (!_isEqualCursor(current[key], next[key])) {
+    var nextKeys    = Object.keys(current),
+        currentKeys = Object.keys(next);
+
+    var nextLength = nextKeys.length;
+
+    if (nextLength !== currentKeys.length) {
+      return true;
+    }
+
+    for (var i = 0; i < nextLength; i++) {
+      if (!_isEqualCursor(current[nextKeys[i]], next[currentKeys[i]])) {
         return true;
       }
     }
@@ -263,6 +272,7 @@ function isImmutable(maybeImmutable) {
  * @api public
  */
 function unCursor(cursor) {
+  if (!cursor || !cursor.deref) return cursor;
   return cursor.deref();
 }
 
