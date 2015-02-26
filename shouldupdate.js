@@ -129,15 +129,8 @@ function factory (methods) {
   function hasChangedProperties (current, next) {
     current = filter(current, not(_isCursor));
     next    = filter(next, not(_isCursor));
-
-    for (var key in current) {
-      if (!_isEqualProps(current[key], next[key])) {
-        return true;
-      }
-    }
-    return false;
+    return !_isEqualProps(current, next);
   }
-
 
   /**
    * Predicate to check if state is equal. Checks in the tree for immutable structures
