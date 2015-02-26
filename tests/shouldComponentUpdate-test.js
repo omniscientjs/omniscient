@@ -21,6 +21,16 @@ describe('shouldComponentUpdate', function () {
       });
     });
 
+    it('when a cursor changes to a non-cursor', function () {
+      var data = Immutable.fromJS({ foo: 'bar', bar: [1, 2, 3] });
+      var data2 = Immutable.fromJS({ foo: 'cat', bar: [1, 2, 3] });
+
+      shouldUpdate({
+        cursor: { 'one': Cursor.from(data, ['foo']) },
+        nextCursor: { 'one': data2 }
+      });
+    });
+
     it('when there\'s suddenly a cursor', function () {
       var data = Immutable.fromJS({ foo: 'bar', bar: [1, 2, 3] });
 
