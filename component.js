@@ -221,7 +221,9 @@ function factory (options) {
   }
 
   function debugFn (pattern, logFn) {
-    debug = _shouldComponentUpdate.debug(pattern, logFn);
+    if (_shouldComponentUpdate.debug) {
+      debug = _shouldComponentUpdate.debug(pattern, logFn);
+    }
   }
 
   function createDefaultArguments (displayName, mixins, render) {
