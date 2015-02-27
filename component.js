@@ -9,13 +9,13 @@ var shouldComponentUpdate = require('./shouldupdate');
  * Create components for functional views.
  *
  * The API of Omniscient is pretty simple, you create a component
- * with a render function and the mixins you need. 
- * 
+ * with a render function and the mixins you need.
+ *
  * When using the created component, you can pass a cursor or an object
  * as data to it. This data will be the render function's first argument,
  * and it will also be available on `this.props`.
- * 
- * If you simply pass one cursor, the cursor will be accessible on the 
+ *
+ * If you simply pass one cursor, the cursor will be accessible on the
  * `props.cursor` accessor. Data placed on the property `statics` of the
  * component's arguments will not be tracked for changes.
  *
@@ -95,19 +95,17 @@ module.exports.withDefaults = factory;
 function factory (options) {
   var debug;
   options = options || {};
-  var _shouldComponentUpdate = options.shouldComponentUpdate;
+  var _shouldComponentUpdate = options.shouldComponentUpdate ||
+                               shouldComponentUpdate.withDefaults(options);
   var _isCursor = options.isCursor || shouldComponentUpdate.isCursor;
   var _isImmutable = options.isImmutable || shouldComponentUpdate.isImmutable;
   var _isJsx = !!options.jsx;
   var _hiddenCursorField = options.cursorField || '__singleCursor';
   var _isNode = options.isNode || isNode;
 
-  if (!_shouldComponentUpdate) {
-    _shouldComponentUpdate = shouldComponentUpdate.withDefaults(options);
-  }
 
   /**
-   * Activate debugging for components. Will log when a component renders, 
+   * Activate debugging for components. Will log when a component renders,
    * the outcome of `shouldComponentUpdate`, and why the component re-renders.
    *
    * ### Example
@@ -254,10 +252,14 @@ function factory (options) {
       mixins = [mixins];
     }
 
+    // Add built-in lifetime methods to keep `statics` up to date.
+    mixins.unshift(componentWillMount.asMixin,
+                   componentWillReceiveProps.asMixin);
+
     if (!hasShouldComponentUpdate(mixins)) {
-      mixins = [{
+      mixins.unshift({
         shouldComponentUpdate: _shouldComponentUpdate
-      }].concat(mixins);
+      });
     }
 
     return {
@@ -345,3 +347,62 @@ function isNode (propValue) {
       return false;
   }
 }
+
+function delegate(delegee) {
+  var delegate = function() {
+    return delegate.delegee.apply(this, arguments);
+  }
+  delegate.delegee = delegee;
+  delegate.isDelegate = true;
+  return delegate;
+}
+
+function wrapWithDelegate (key) {
+  var statics = this;
+  var delegee = statics[key];
+  if (typeof delegee === 'function') {
+    statics[key] = delegate(delegee);
+  }
+}
+
+function isDelegate (value) {
+  return value && value.isDelegate;
+}
+
+function componentWillMount () {
+  var statics = this.props.statics;
+  if (statics && typeof statics === 'object') {
+    Object.keys(statics).forEach(wrapWithDelegate, statics);
+  }
+}
+// `asMixin` will let us reuse same objcet instead of re-creating
+// it per each component.
+componentWillMount.asMixin = {
+  componentWillMount: componentWillMount
+};
+
+function componentWillReceiveProps (newProps) {
+  var currentProps = this.props;
+  var currentStatics = currentProps.statics;
+  var newStatics = newProps.statics;
+
+  if (newStatics && typeof newStatics === 'object') {
+    Object.keys(newStatics).forEach(function(key) {
+      var newMember = newStatics[key];
+      if (typeof(newMember) == 'function') {
+        var currentMember = currentStatics && currentStatics[key];
+        if (isDelegate(currentMember)) {
+          currentMember.delegee = newMember;
+          newStatics[key] = currentMember;
+        } else {
+          newStatics[key] = delegee(newMember);
+        }
+      }
+    });
+  }
+}
+// `asMixin` will let us reuse same objcet instead of re-creating
+// it per each component.
+componentWillReceiveProps.asMixin = {
+  componentWillReceiveProps: componentWillReceiveProps
+};

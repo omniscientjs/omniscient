@@ -85,4 +85,69 @@ describe('component render test', function () {
       return items.set(FIRST, Immutable.Map({ id: FIRST, changed: true })); // 3
     });
   });
+
+  it('should handle updates that mutate owners state', function (done) {
+    var click = function(node) {
+      var event = document.createEvent('click');
+      event.initEvent('click', true, false);
+      node.dispatchEvent(event);
+    };
+
+    var structure = immstruct({
+      items: [{ id: 0}, { id: 1},
+              { id: 2}, { id: 3}]
+    });
+
+    var List = component('List', function (props) {
+      var onRemove = function(item) {
+        props.items.remove(props.items.indexOf(item));
+      };
+
+      return d.ul({}, props.items.toArray().map(function (item) {
+        return Item({item: item,
+                     key: 'item-' + item.get('id'),
+                     statics: {onRemove: onRemove}});
+      }));
+    });
+
+    var Item = component('Item', function (props) {
+      return d.li({
+        id: 'item-' + props.item.get('id'),
+        className: props.item.get('isSelected') ? 'selected' : '',
+        onClick: function() {
+          props.statics.onRemove(props.item);
+        }
+      }, props.item.get('id'));
+    });
+
+    var render = function() {
+      React.render(List({ items: structure.cursor('items') }), document.body);
+    };
+
+    structure.on('swap', render);
+    render();
+
+    var ul = document.body.firstChild;
+
+    should.equal(ul.children.length, 4,
+                 'should contain 4 list items');
+
+    click(document.getElementById('item-1'));
+
+    should.equal(ul.children.length, 3,
+                 'item should have being removed');
+    should.equal(document.getElementById('item-1'), null,
+                 'item was removed');
+
+    click(document.getElementById('item-0'));
+
+    should.equal(ul.children.length, 2,
+                 'item should have being removed');
+    should.equal(document.getElementById('item-1'), null,
+                 'item-1 is still removed');
+    should.equal(document.getElementById('item-0'), null,
+                 'item-0 was removed');
+
+    done();
+  });
 });
