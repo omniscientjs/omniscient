@@ -613,6 +613,184 @@ describe('component', function () {
     });
   });
 
+  describe('should not re-render', function () {
+    it('should not rerender on equivalent input', function () {
+      var rendered = 0;
+      var Component = component(function (input) {
+        rendered = rendered + 1;
+        return React.DOM.text(null, 'Rendered ' + rendered + ' times');
+      });
+
+      render(Component({}));
+
+      rendered.should.equal(1);
+
+      render(Component({}));
+
+      rendered.should.equal(1);
+    });
+  });
+
+  describe('passing changed statics', function () {
+    it('statics handlers get updated', function (done) {
+      var renders = 0;
+      var onChange = null;
+      var statics = statics;
+      var Component = component(function (input, output) {
+        onChange = output.onChange;
+        statics = output;
+        renders = renders + 1;
+        return React.DOM.text(null, 'hello');
+      });
+
+      render(Component({}, {
+        onChange: function () {
+          return 1;
+        }
+      }));
+
+      renders.should.equal(1);
+      onChange.should.be.a('function');
+      statics.should.be.a('object');
+      statics.onChange.should.equal(onChange);
+
+      var original = onChange;
+
+      onChange().should.equal(1);
+      statics.onChange().should.equal(1);
+
+      render(Component({}, {
+        onChange: function () {
+          return 2;
+        }
+      }));
+
+      renders.should.equal(1);
+      onChange.should.be.a('function');
+      statics.should.be.a('object');
+      statics.onChange.should.equal(onChange);
+      onChange.should.equal(original);
+
+      onChange().should.equal(2);
+      statics.onChange().should.equal(2);
+
+      var onChange2 = onChange;
+
+      render(Component({a: 1}, {
+        onChange: function () {
+          return 3;
+        }
+      }));
+
+      renders.should.equal(2);
+      onChange.should.be.a('function');
+      statics.should.be.a('object');
+      statics.onChange.should.equal(onChange);
+      onChange.should.equal(original);
+
+      onChange().should.equal(3);
+      statics.onChange().should.equal(3);
+
+      render(Component({a: 1}, {
+        onChange: function () {
+          return 4;
+        }
+      }));
+
+      renders.should.equal(2);
+      onChange.should.be.a('function');
+      statics.should.be.a('object');
+      statics.onChange.should.equal(onChange);
+      onChange.should.equal(original);
+
+      onChange().should.equal(4);
+      statics.onChange().should.equal(4);
+
+      done();
+    });
+  });
+
+  it('passing componentWillReceiveProps as mixin', function (done) {
+    var onChange = null;
+    var willReceivePropsCalled = 0;
+    var renderCalled = 0;
+    var mixin = {
+      componentWillReceiveProps: function (props) {
+        props.statics.onChange.should.equal(this.props.statics.onChange);
+        onChange.should.equal(this.props.statics.onChange);
+        willReceivePropsCalled = willReceivePropsCalled + 1;
+      }
+    };
+
+    var Component = component([mixin], function (input, output) {
+      renderCalled = renderCalled + 1;
+      onChange = output.onChange;
+      return React.DOM.text(null, 'hello');
+    });
+
+    render(Component({}, {onChange: function() { return 1 } }));
+    renderCalled.should.equal(1);
+    onChange().should.equal(1);
+
+    render(Component({}, {onChange: function() { return 2 } }));
+    renderCalled.should.equal(1);
+    onChange().should.equal(2);
+    willReceivePropsCalled.should.equal(1);
+
+    render(Component({}, {onChange: function() { return 3 } }));
+    renderCalled.should.equal(1);
+    onChange().should.equal(3);
+    willReceivePropsCalled.should.equal(2);
+
+    render(Component({a: 1}, {onChange: function() { return 4 } }));
+    renderCalled.should.equal(2);
+    onChange().should.equal(4);
+    willReceivePropsCalled.should.equal(3);
+
+    done();
+  });
+
+  it('passing componentWillMount as mixin', function (done) {
+    var onChange = null;
+    var willMountCalled = 0;
+    var renderCalled = 0;
+    var mixin = {
+      componentWillMount: function () {
+        onChange = this.props.statics.onChange;
+        willMountCalled = willMountCalled + 1;
+      }
+    };
+
+    var Component = component([mixin], function (input, output) {
+      renderCalled = renderCalled + 1;
+      onChange.should.equal(output.onChange);
+      return React.DOM.text(null, 'hello');
+    });
+
+    render(Component({}, {onChange: function() { return 1 } }));
+    renderCalled.should.equal(1);
+    willMountCalled.should.equal(1);
+    onChange().should.equal(1);
+
+
+    render(Component({}, {onChange: function() { return 2 } }));
+    renderCalled.should.equal(1);
+    willMountCalled.should.equal(1);
+    onChange().should.equal(2);
+
+    render(Component({a: 1}, {onChange: function() { return 3 } }));
+    renderCalled.should.equal(2);
+    willMountCalled.should.equal(1);
+    onChange().should.equal(3);
+
+    render(Component({a: 1}, {onChange: function() { return 4 } }));
+    renderCalled.should.equal(2);
+    willMountCalled.should.equal(1);
+    onChange().should.equal(4);
+
+    done();
+  });
+
   beforeEach(function () {
     global.document = jsdom.jsdom('<html><body></body></html>');
     global.window = global.document.parentWindow;
