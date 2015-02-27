@@ -627,7 +627,7 @@ describe('component', function () {
 function noop () {}
 
 function render (component) {
-  ReactTestUtils.renderIntoDocument(component);
+  React.render(component, global.document.body);
 }
 
 function hasKey(component, key) {
