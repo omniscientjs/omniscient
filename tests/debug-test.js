@@ -185,7 +185,7 @@ describe('debug', function () {
 
       var localComp = shouldComponentUpdate.withDefaults();
       localComp.debug(function logger (message) {
-        message.should.contain('true (number of cursors differ)');
+        message.should.contain('true (props have changed)');
         done();
       });
 
@@ -207,7 +207,7 @@ describe('debug', function () {
 
       var localComp = shouldComponentUpdate.withDefaults();
       localComp.debug(function logger (message) {
-        message.should.contain('true (cursors have different keys)');
+        message.should.contain('true (props have changed)');
         done();
       });
 
@@ -228,7 +228,7 @@ describe('debug', function () {
 
       var localComp = shouldComponentUpdate.withDefaults();
       localComp.debug(function logger (message) {
-        message.should.contain('true (cursors have changed)');
+        message.should.contain('true (props have changed)');
         done();
       });
 
@@ -254,7 +254,7 @@ describe('debug', function () {
     it('should log on properties have changed', function (done) {
       var localComp = shouldComponentUpdate.withDefaults();
       localComp.debug(function logger (message) {
-        message.should.contain('true (properties have changed)');
+        message.should.contain('true (props have changed)');
         done();
       });
 
