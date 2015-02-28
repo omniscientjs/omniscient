@@ -184,9 +184,9 @@ function factory (methods) {
   }
 }
 
-function compare (current, next, comparator, equalCheck) {
-  var isCurrent = comparator(current);
-  var isNext = comparator(next);
+function compare (current, next, typeCheck, equalCheck) {
+  var isCurrent = typeCheck(current);
+  var isNext = typeCheck(next);
 
   if (isCurrent && isNext) {
     return equalCheck(current, next);
