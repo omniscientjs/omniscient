@@ -3,6 +3,8 @@
 var filter  = require('lodash.pick'),
     isEqual = require('lodash.isequal');
 
+var isNotIgnorable = not(or(isStatics, isChildren));
+
 /**
  * Directly fetch `shouldComponentUpdate` mixin to use outside of Omniscient.
  * You can do this if you don't want to use Omniscients syntactic sugar.
@@ -72,7 +74,6 @@ function factory (methods) {
       return false;
     }
 
-    var isNotIgnorable = not(or(isStatics, isChildren));
     var nextProps    = filter(nextProps, isNotIgnorable),
         currentProps = filter(this.props, isNotIgnorable);
 
@@ -106,20 +107,8 @@ function factory (methods) {
    */
   function isEqualState (value, other) {
     return isEqual(value, other, function (current, next) {
-      if (current == next) {
-        return true;
-      }
-
-      var isCurrentImmutable = _isImmutable(current);
-      var isNextImmutable = _isImmutable(next);
-
-      if (isCurrentImmutable && isNextImmutable) {
-        return current === next;
-      }
-      if (isCurrentImmutable || isCurrentImmutable) {
-        return false;
-      }
-      return void 0;
+      if (current == next) return true;
+      return compare(current, next, _isImmutable);
     });
   }
 
@@ -138,31 +127,12 @@ function factory (methods) {
    */
   function isEqualProps (value, other) {
     return isEqual(value, other, function (current, next) {
-      if (current == next) {
-        return true;
-      }
+      if (current == next) return true;
 
-      var isCurrentCursor = _isCursor(current);
-      var isNextCursor = _isCursor(next);
+      var cursorsEqual = compare(current, next, _isCursor);
+      if (cursorsEqual !== void 0) return cursorsEqual;
 
-      if (isCurrentCursor && isNextCursor) {
-        return _isEqualCursor(current, next);
-      }
-      if (isCurrentCursor || isNextCursor) {
-        return false;
-      }
-
-      var isCurrentImmutable = _isImmutable(current);
-      var isNextImmutable = _isImmutable(next);
-
-      if (isCurrentImmutable && isNextImmutable) {
-        return current === next;
-      }
-      if (isCurrentImmutable || isCurrentImmutable) {
-        return false;
-      }
-
-      return void 0;
+      return compare(current, next, _isImmutable);
     });
   }
 
@@ -212,6 +182,19 @@ function factory (methods) {
     };
     return debug;
   }
+}
+
+function compare (current, next, comparator) {
+  var isCurrentImmutable = comparator(current);
+  var isNextImmutable = comparator(next);
+
+  if (isCurrentImmutable && isNextImmutable) {
+    return current === next;
+  }
+  if (isCurrentImmutable || isCurrentImmutable) {
+    return false;
+  }
+  return void 0;
 }
 
 /**
