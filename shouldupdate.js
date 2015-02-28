@@ -74,13 +74,13 @@ function factory (methods) {
       return false;
     }
 
-    var nextProps    = filter(nextProps, isNotIgnorable),
-        currentProps = filter(this.props, isNotIgnorable);
-
     if (!_isEqualState(this.state, nextState)) {
       if (debug) debug.call(this, 'shouldComponentUpdate => true (state has changed)');
       return true;
     }
+
+    var nextProps    = filter(nextProps, isNotIgnorable),
+        currentProps = filter(this.props, isNotIgnorable);
 
     if (!_isEqualProps(currentProps, nextProps)) {
       if (debug) debug.call(this, 'shouldComponentUpdate => true (props have changed)');
