@@ -69,7 +69,7 @@ function factory (methods) {
   return shouldComponentUpdate;
 
   function shouldComponentUpdate (nextProps, nextState) {
-    if (nextProps === this.props) {
+    if (nextProps === this.props && nextState === this.state) {
       if (debug) debug.call(this, 'shouldComponentUpdate => false (equal input)');
       return false;
     }
