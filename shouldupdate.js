@@ -107,8 +107,8 @@ function factory (methods) {
    */
   function isEqualState (value, other) {
     return isEqual(value, other, function (current, next) {
-      if (current == next) return true;
-      return compare(current, next, _isImmutable);
+      if (current === next) return true;
+      return compare(current, next, _isImmutable, isEqualImmutable);
     });
   }
 
@@ -127,12 +127,12 @@ function factory (methods) {
    */
   function isEqualProps (value, other) {
     return isEqual(value, other, function (current, next) {
-      if (current == next) return true;
+      if (current === next) return true;
 
-      var cursorsEqual = compare(current, next, _isCursor);
+      var cursorsEqual = compare(current, next, _isCursor, _isEqualCursor);
       if (cursorsEqual !== void 0) return cursorsEqual;
 
-      return compare(current, next, _isImmutable);
+      return compare(current, next, _isImmutable, isEqualImmutable);
     });
   }
 
@@ -184,17 +184,21 @@ function factory (methods) {
   }
 }
 
-function compare (current, next, comparator) {
-  var isCurrentImmutable = comparator(current);
-  var isNextImmutable = comparator(next);
+function compare (current, next, comparator, equalCheck) {
+  var isCurrent = comparator(current);
+  var isNext = comparator(next);
 
-  if (isCurrentImmutable && isNextImmutable) {
-    return current === next;
+  if (isCurrent && isNext) {
+    return equalCheck(current, next);
   }
-  if (isCurrentImmutable || isCurrentImmutable) {
+  if (isCurrent || isCurrent) {
     return false;
   }
   return void 0;
+}
+
+function isEqualImmutable (a, b) {
+  return a === b;
 }
 
 /**
