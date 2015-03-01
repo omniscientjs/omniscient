@@ -71,6 +71,28 @@ describe('shouldComponentUpdate', function () {
       });
     });
 
+    it('when props has changed but not state', function () {
+      var data = Immutable.fromJS({ foo: 'bar', bar: [1, 2, 3] });
+      var state = { foo: 'hello' };
+      shouldUpdate({
+        cursor: { one: Cursor.from(data, ['foo']) },
+        nextCursor: { two: Cursor.from(data, ['foo']) },
+        state: state,
+        nextState: state
+      });
+    });
+
+    it('when state has changed but not props', function () {
+      var data = Immutable.fromJS({ foo: 'bar', bar: [1, 2, 3] });
+      var props = { one: Cursor.from(data, ['foo']) };
+      shouldUpdate({
+        cursor: props,
+        nextCursor: props,
+        state: { foo: 'hello' },
+        nextState: { foo: 'bar' }
+      });
+    });
+
     it('when state has changed', function () {
       shouldUpdate({
         state: { foo: 'hello' },
@@ -206,6 +228,19 @@ describe('shouldComponentUpdate', function () {
         nextChildren: { bar: 'bye' }
       });
     });
+
+    it('when neither props nor state has changed', function () {
+      var data = Immutable.fromJS({ foo: 'bar', bar: [1, 2, 3] });
+      var props = { one: Cursor.from(data, ['foo']) };
+      var state = { foo: 'hello' };
+      shouldNotUpdate({
+        cursor: props,
+        nextCursor: props,
+        state: state,
+        nextState: state
+      });
+    });
+
 
     it('when passing same cursors', function () {
       var data = Immutable.fromJS({ foo: 'bar' });
