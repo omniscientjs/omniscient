@@ -1,33 +1,35 @@
 Omniscient [![NPM version][npm-image]][npm-url] [![Build Status][travis-image]][travis-url] [![Dependency Status][depstat-image]][depstat-url] [![Gitter][gitter-image]][gitter-url]
 =========
 
-> A library providing an abstraction for React components that allows for fast top-down rendering embracing immutable data. Using cursors into immutable data structures, components can easily swap their own piece of data inside the larger immutable data structure. As data is immutable, re-rendering can be fast.
+> Do fast top-down rendering embracing immutable data and functional programming. With cursors into immutable data structures, components can easily swap their own piece of data inside the larger immutable data structure and only to render components that have changed their data layer.
 
 > Omniscient pairs the simplicity of [Quiescent](https://github.com/levand/quiescent) with
 the cursors of [Om](https://github.com/swannodette/om), for js, using
 [Immutable.js](https://github.com/facebook/immutable-js).
 
-### Overview
+### Rationale
 
-- top-down rendering of components (one way data flow)
-- favors immutable data (with Immutable.js)
-- encourages small, composable components, and shared functionality through mixins
-- components only deal with their own piece of data
-- components can change their data, via cursors (without knowing where their data resides in the outer immutable data structure)
-- easily listen for changes across your data structure and trigger re-render
-- immutable data can give even faster re-renders than with pure React, as React can be prevented from even considering to re-render component trees with unchanged data
-- efficient, centrally defined `shouldComponentUpdate`
+ - Functional programming for UIs
+ - top-down rendering of components (unidirectional data flow)
+ - favors immutable data (with Immutable.js)
+ - encourages small, composable components, and shared functionality through mixins
+ - Seperation of concern. Components only deal with their own piece of data
+ - components can only change their own data, via cursors (without knowing where their data resides in the outer immutable data structure)
+ - easily listen for changes across your data structure and trigger re-render
+ - immutable data can give even faster re-renders than with pure React, as React can be prevented from even considering to re-render component trees with unchanged data
+ - efficient, centrally defined shouldComponentUpdate
 
+Omniscient is all about making composable UIs in a functional manner. Having pure, referentially transparent components that gives a simpler static mental model, much like the static HTML - but bringing the views in a more powerful context in a programming language. Views will still be declarative and expressive, but without having to work with clunky and weird DSLs/template engines.
 
-A more detailed description of Omniscient's rationale can be found in the [documentation](http://omniscientjs.github.io/documentation). An introductory article can be found in the [wiki](https://github.com/omniscientjs/omniscient/wiki/Simpler-UI-Reasoning-with-Unidirectional-Dataflow-and-Immutable-Data).
+See more about Omniscient on it's [website](http://omniscientjs.github.io/), where you can also play around with it on the [playground](http://omniscientjs.github.io/playground/). If you find all of these concepts foraign, you can read this introductory article explaining many of the constructs: [Simpler UI Reasoning with Unidirectional Dataflow and Immutable Data](http://omniscientjs.github.io/guides/01-simpler-ui-reasoning-with-unidirectional/)
 
-**Note:** Omniscient pre `v2.0.0` is for React pre `v0.12.0`. React `v0.12.0` had [breaking changes](https://github.com/facebook/react/blob/master/CHANGELOG.md#breaking-changes), and the API of Omniscient
-had to change accordingly. See the [v1.3.1 tag](https://github.com/omniscientjs/omniscient/tree/v1.3.1) for Omniscient with React `v0.11.0` support.
 
 ### Cursors
 
-With cursors, components can have the outer immutable structure swapped when a component's data is changed. A re-render can be triggered, but only component trees referencing data affected by the change will actually be re-rendered. This means that if you don't pass any data (cursor or non-cursor property) to a component, this component won't be re-rendered. This could affect shallow parent components. Such a component could have a [`shouldComponentUpdate` that always return true](https://github.com/omniscientjs/omniscient#overriding-iscursor-and-isequalcursor). This will make the component always re-render.
+With cursors, components can have the outer immutable structure swapped when a component's data is changed. A re-render can be triggered, but only component trees referencing data affected by the change will actually be re-rendered. This means that if you don't pass any data (cursor or non-cursor property) to a component, this component won't be re-rendered. This could affect shallow parent components. Such a component could have a [`shouldComponentUpdate` that always return true](http://omniscientjs.github.io/api/01-omniscient-api-reference/#shouldcomponentupdatewithdefaultsoptions). This will make the component always re-render.
 
+
+The example below is using non-JSX.
 If you pass in a single cursor, this is added to the `props.cursor` property, where `props` is what you get passed to your component.
 
 ```js
@@ -35,47 +37,100 @@ var React     = require('react'),
     immstruct = require('immstruct'),
     component = require('omniscient');
 
-var NameInput = component(function (props) {
-  var onChange = function (e) {
-    props.cursor.update('name', function (name) {
-      return e.currentTarget.value;
-    });
-  };
-  return React.DOM.input({ value: props.cursor.get('name'), onChange: onChange });
-});
+var structure = immstruct({ guest: { name: 'omniscent' } });
 
-var Welcome = component(function (props) {
-  var guest = props.cursor.get('guest');
-  var name = guest.get('name') ? ", " + guest.get('name') : "";
-  return React.DOM.p({}, props.cursor.get('greeting'), name, "!",
-                         NameInput(guest));
+// Composable component, gets passed a cursor
+var Greet = component(function (guestCursor){
+  return React.DOM.div({}, 'Hello from ' + guestCursor.get('name'));
 });
-
-var structure = immstruct({ greeting: 'Welcome', guest: { name: '' } });
 
 function render () {
+  // Render Greet component and pass on cursor.
   React.render(
-    Welcome(structure.cursor()),
-    document.querySelector('.app'));
+    Greet(structure.cursor('guest')), document.body);
 }
 
+// Render on initial load
 render();
+
+// Will trigger when cursor on structure updates
 structure.on('swap', render);
+
+// Update cursor to correct typo
+setTimeout(function () {
+  structure.cursor('guest').set('name', 'Omniscient');
+}, 1000);
+
 ```
-*See [the running demo](http://omniscientjs.github.io/examples/#intro) on the examples page*
+
+*See [more demos in the playground](http://omniscientjs.github.io/playground/) on the homepage*
 
 [`immstruct`](https://github.com/omniscientjs/immstruct) is a simple wrapper for [`Immutable.js`](https://github.com/facebook/immutable-js) that ease triggering re-renders with Omniscient when the immutable data structure is replaced. `immstruct` is not a requirement for Omniscient, but makes a great fit.
 
 If you are running the distributed file, not browserify, you have to use `omniscient` instead of `component` in all examples.
 
+#### Example with JSX
+Omniscient also works with JSX, and really shines with latest ES2015 features. Here's the example
+from before, with JSX and ES2015 features.
+
+```jsx
+// Same structure as before
+var structure = immstruct({ guest: { name: 'omniscent' } });
+
+// Now, as we pass in guestCursor as a property on props from
+// JSX, we'll have to use destructuring to get cursor
+var GreetComponent = component(({guestCursor}) =>
+  <div>Hello from {guestCursor.get('name')}</div>);
+
+// As we get a component not element from component, we need to get
+// element to use with react. Access the element through `.jsx`
+var Greet = GreetComponent.jsx;
+
+function render () {
+  // Render Greet component and pass on cursor.
+  // Note: Now we pass on cursor on the property `guestCursor`
+  React.render(
+    <Greet guestCursor={structure.cursor('guest')} />,
+    document.body);
+  }
+}
+
+render();
+// Will trigger when cursor on structure updates
+structure.on('swap', render);
+
+// Update cursor to correct typo
+setTimeout(function () {
+  structure.cursor('guest').set('name', 'Omniscient');
+}, 1000);
+
+```
+
+Note: The `.jsx` will get an element which you can use with JSX. If you
+use JSX all the way, you can make Omniscient always return JSX-elements:
+
+```js
+var component = require('omniscient').withDefaults({
+  jsx: true
+});
+
+// Now, as we pass in guestCursor as a property on props from
+// JSX, we'll have to use destructuring to get cursor
+var Greet = component(({name}) => <div>Hello from {name}</div>);
+
+React.render(<Greet name="Omniscient" />, document.body);
+```
+
+See more on overriding defaults in the [API Reference](http://omniscientjs.github.io/api/01-omniscient-api-reference/#omniscientwithdefaultsoptions)
+
 ### Reuseable mixins
 
-Omniscient is fully compatible with exising react components, and encourages reuse of your existing mixins.
+Omniscient is fully compatible with exising react components, and encourages re-use of your existing mixins.
 
 ```js
 var SelectOnRender = {
   componentDidMount: function () {
-    this.getDOMNode().select();
+    React.findDOMNode(this).select();
   }
 };
 
@@ -107,37 +162,24 @@ var SavingFocusingInput = component([Props, SaveOnEdit, SelectOnRender],
   });
 ```
 
-### Statics
-
-When you need to provide other data for your component than what its rendering is based off of, you pass statics. By default, changing a static's value does not result in a re-rendering of a component.
-
-Statics have a special place in your passed properties. To give a component statics, you need to pass an object literal with the `statics` property defined.
-
-```js
-var log = console.log.bind(console);
-
-var FocusingInput = component(SelectOnRender, function (props, statics) {
-  var onChange = statics.onChange || function () {};
-  return React.DOM.input({ value: props.cursor.get('text'), onChange: onChange });
-});
-
-var SomeForm = component(function (props.cursor) {
-  return React.DOM.form({},
-                        FocusingInput({ cursor: props.cursor, statics: { onChange: log } }));
-});
-```
-
 #### Talking back from child to parent
 
-Communicating information back to the parent component from a child component can be done by making an event emitter available as a static for your child component.
+Communicating information back to the parent component from a child component can be done by
+passing down constructs as EventEmitters or simply event handler functions. These can
+be passed down as a part of a field called statics. **Statics won't trigger a re-render**,
+so you cannot pass data or functions that will alter the output. This will break the
+component transparancy and is thought of as an anti-pattern.
+
+You can also pass more advanced constructus as CSP channels or FRP streams as a part
+of statics.
 
 ```js
-var Item = component(function (props, statics) {
+var Item = component(function (cursor, statics) {
   var onClick = function () {
-    statics.channel.emit('data', props.cursor);
+    statics.channel.emit('data', cursor);
   };
   return React.DOM.li({ onClick: onClick },
-                      React.DOM.text({}, props.cursor.get('text')));
+                      React.DOM.text({}, cursor.get('text')));
 });
 
 
@@ -152,67 +194,19 @@ var mixins = {
   }
 }
 
-var List = component(function (props) {
+var List = component(function (cursor) {
   return React.DOM.ul({},
-                      props.cursor.toArray().map(function (item) {
-                        return Item({ cursor: item, statics: { channel: events } });
-                      });
+                      cursor.map(function (item) {
+                        // pass on item cursor and statics as second arg
+                        return Item(item, { channel: events });
+                      }).toArray();
 });
 ```
 
 ### Local State
 
-Omniscient allows for component local state. That is, all the usual react component methods are available on `this` for use through mixins. You are free to `this.setState({ .. })` for component local view state.
+Omniscient allows for component local state. That is, all the usual react component methods are available on `this` for use through mixins. You are free to `this.setState({ .. })` for component local view state, but it is highly encouraged to avoid using local state where this is possible. Local state breaks component transparency and predictability.
 
-### Omniscient and JSX
-
-Due to the way React works with elements, and the way JSX is compiled, the use of Omniscient with JSX slightly differs from the normal use case. Instead of referencing a component directly, you will have to reference its `jsx` property, that exposes the component's underlying React class:
-
-
-```js
-var React     = require('react'),
-    component = require('omniscient');
-
-var Welcome = component(function (props, statics) {
-  console.log(statics.foo); //=> 'bar'
-
-  return (
-    <h1>Hello, {props.cursor.deref()}</h1>
-  );
-});
-
-var structure = immstruct({ name: 'Doc' });
-
-function render () {
-  var someStatics = { foo: 'bar' };
-
-  // Note the `.jsx` extension
-  React.render(
-    <Welcome.jsx name={structure.cursor('name')} statics={someStatics} />
-    document.body);
-}
-
-render();
-structure.on('swap', render);
-
-structure.cursor('name').update(function () {
-  return 'Doctor';
-});
-```
-
-You can also do `.jsx` on a component level:
-
-```js
-var Welcome = component(function (props, statics) {
-  /* same implementation */
-}).jsx;
-```
-
-Or, when requiring the component:
-
-```js
-var Welcome = require('./welcome').jsx;
-```
 
 ### Providing component keys
 
@@ -231,13 +225,29 @@ var List = component(function (props) {
 });
 ```
 
-### Efficient shouldComponentUpdate
+### Efficient `shouldComponentUpdate`
 
-Omniscient provides an [efficient default](https://github.com/omniscientjs/omniscient/blob/master/component.js) `shouldComponentUpdate` that works well with the immutable data structures of Immutable.js.
+Omniscient works by implementing a `shouldComponentUpdate` mixin optimized for usage with immutable cursors and immutable structures. You can also use `shouldComponentUpdate` without the syntactic sugar that Omniscient brings.
+
+```js
+var shouldComponentUpdateMixin = {
+  shouldComponentUpdate: require('omniscient/shouldupdate')
+};
+
+var ReactComponent = React.createClass({
+  mixins: [shouldComponentUpdateMixin],
+  render: function () {
+    // Normal react usage
+  }
+})
+```
+
+This way you'd get to do smart top-down, unidirectional dataflow, with vanilla React as well.
 
 #### Overriding shouldCompontentUpdate
 
-However, an individual component's `shouldComponentUpdate` can easily be changed through the use of mixins:
+You can also provide your own `shouldComponentUpdate` to Omniscient components. For instance
+if you'd like to always re-render a component, no matter what the input is.
 
 ```js
 var ShouldComponentUpdateMixin = {
@@ -254,13 +264,17 @@ var InefficientAlwaysRenderingText = component(ShouldComponentUpdateMixin, funct
 
 #### Overriding the default shouldCompontentUpdate globally
 
-If you want to override `shouldCompontentUpdate` across your entire project, you can do this by setting the `shouldCompontentUpdate` method from Omniscient.
+If you want to override `shouldCompontentUpdate` across multiple components, you can do this by creating a local component factory with setting the `shouldCompontentUpdate` defaults.
 
 ```js
-component.shouldComponentUpdate = function (newProps, newState) {
-  // your custom implementation
-  return true; // don't do do this
-};
+
+var omniscient = require('omniscient');
+var component = omniscient.withDefaults({
+  shouldComponentUpdate: function (newProps, newState) {
+    // your custom implementation
+    return true; // don't do do this
+  }
+});
 
 var InefficientAlwaysRenderingText = component(function (props) {
   return React.DOM.text(props.cursor.get('text'));
@@ -279,22 +293,21 @@ by Omniscient; `isCursor` and `isEqualCursor`.
 `isCursor` should return true if provided object is of cursor type.
 
 ```js
-var component = require('omniscient');
-
-component.isCursor = function (potentialCursor) {
-  return potentialCursor instanceof MyCustomCursor;
-};
+var omniscient = require('omniscient');
+var component = omniscient.withDefaults({
+  isCursor: function (potentialCursor) {
+    return potentialCursor instanceof MyCustomCursor;
+  },
+  isEqualCursor: function (oldCursor, newCursor) {
+    return oldCursor.unwrap() === newCursor.unwrap();
+  }
+});
 ```
 
 `isEqualCursor` should return true if two provided cursors are equal.
+`isCursor` should return true if provided potential is a cursor.
 
-```js
-var component = require('omniscient');
-
-component.isEqualCursor = function (oldCursor, newCursor) {
-  return oldCursor.unwrap() === newCursor.unwrap();
-};
-```
+See more on overriding defaults in the [API Reference](http://omniscientjs.github.io/api/01-omniscient-api-reference/#omniscientwithdefaultsoptions)
 
 ### Immstruct
 
@@ -302,7 +315,7 @@ Immstruct is not a requirement for Omniscient, and you are free to choose any ot
 
 If you are using something other than the cursors from Immutable.js, however, make sure to provide a custom implementation of `shouldComponentUpdate` for efficient rendering.
 
-See [how to use immstruct](https://github.com/omniscientjs/immstruct/blob/master/README.md) for more information.
+See [how to use immstruct](https://github.com/omniscientjs/immstruct/blob/master/README.md) for more information. Or the [API Reference](http://omniscientjs.github.io/api/02-immstruct-api-reference/).
 
 ### Debugging
 
