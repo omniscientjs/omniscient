@@ -11,7 +11,7 @@ the cursors of [Om](https://github.com/swannodette/om), for js, using
 
  - Functional programming for UIs
  - top-down rendering of components (unidirectional data flow)
- - favors immutable data (with Immutable.js)
+ - favours immutable data (with Immutable.js)
  - encourages small, composable components, and shared functionality through mixins
  - Seperation of concern. Components only deal with their own piece of data
  - components can only change their own data, via cursors (without knowing where their data resides in the outer immutable data structure)
@@ -21,7 +21,7 @@ the cursors of [Om](https://github.com/swannodette/om), for js, using
 
 Omniscient is all about making composable UIs in a functional manner. Having pure, referentially transparent components that gives a simpler static mental model, much like the static HTML - but bringing the views in a more powerful context in a programming language. Views will still be declarative and expressive, but without having to work with clunky and weird DSLs/template engines.
 
-See more about Omniscient on it's [website](http://omniscientjs.github.io/), where you can also play around with it on the [playground](http://omniscientjs.github.io/playground/). If you find all of these concepts foraign, you can read this introductory article explaining many of the constructs: [Simpler UI Reasoning with Unidirectional Dataflow and Immutable Data](http://omniscientjs.github.io/guides/01-simpler-ui-reasoning-with-unidirectional/)
+See more about Omniscient on it's [website](http://omniscientjs.github.io/), where you can also play around with it on the [playground](http://omniscientjs.github.io/playground/). If you find all of these concepts foreign, you can read this introductory article explaining many of the constructs: [Simpler UI Reasoning with Unidirectional Dataflow and Immutable Data](http://omniscientjs.github.io/guides/01-simpler-ui-reasoning-with-unidirectional/)
 
 
 ### Cursors
@@ -125,7 +125,7 @@ See more on overriding defaults in the [API Reference](http://omniscientjs.githu
 
 ### Reuseable mixins
 
-Omniscient is fully compatible with exising react components, and encourages re-use of your existing mixins.
+Omniscient is fully compatible with existing react components, and encourages re-use of your existing mixins.
 
 ```js
 var SelectOnRender = {
@@ -168,9 +168,9 @@ Communicating information back to the parent component from a child component ca
 passing down constructs as EventEmitters or simply event handler functions. These can
 be passed down as a part of a field called statics. **Statics won't trigger a re-render**,
 so you cannot pass data or functions that will alter the output. This will break the
-component transparancy and is thought of as an anti-pattern.
+component transparency and is thought of as an anti-pattern.
 
-You can also pass more advanced constructus as CSP channels or FRP streams as a part
+You can also pass more advanced constructs as CSP channels or FRP streams as a part
 of statics.
 
 ```js
@@ -358,7 +358,7 @@ for finding errors, you can also use filtering in your browser inspector.
 
 ## Omniscient in the wild
 
-- [TodoMVC - Omniscient](https://github.com/jcranendonk/todomvc-omniscient/) by [jeroencranendonk-wf](https://github.com/jeroencranendonk-wf)
+- [TodoMVC - Omniscient](https://github.com/jcranendonk/todomvc-omniscient/) by [jcranendonk](https://github.com/jcranendonk)
 
 ## License
 
