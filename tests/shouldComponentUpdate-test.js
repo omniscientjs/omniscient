@@ -13,11 +13,16 @@ describe('shouldComponentUpdate', function () {
   describe('should update', function () {
 
     it('when cursors are different', function () {
-      var data = Immutable.fromJS({ foo: 'bar', bar: [1, 2, 3] });
+      var data = Immutable.Map({ foo: {}, bar: [1, 2, 3] });
 
       shouldUpdate({
         cursor: Cursor.from(data, ['foo']),
         nextCursor: Cursor.from(data, ['bar'])
+      });
+
+      shouldUpdate({
+        cursor: { foo: Cursor.from(data, ['foo'])},
+        nextCursor: {foo: { 'a': 32}}
       });
     });
 

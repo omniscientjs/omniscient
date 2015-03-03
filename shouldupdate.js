@@ -159,19 +159,20 @@ function compareValueOf (current, next) {
   var currentValue = current.valueOf();
   var nextValue = next.valueOf();
 
-  if(currentValue === nextValue) {
-    return true;
-  }
+  if (currentValue === nextValue) return true;
 
-  if(current !== currentValue || next !== nextValue) {
+  // bail early on primitive types
+  if (typeof currentValue !== 'object' || typeof nextValue !== 'object') {
     return false;
   }
 
-  if(typeof currentValue !== 'object' || typeof nextValue !== 'object') {
+  // If condition is true, then current or next may be cursors.
+  // So we bail early here.
+  if (current !== currentValue || next !== nextValue) {
     return false;
   }
 
-  if(this.isImmutable(currentValue) || this.isImmutable(nextValue)) {
+  if (this.isImmutable(currentValue) || this.isImmutable(nextValue)) {
     return false;
   }
 
