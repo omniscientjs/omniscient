@@ -6,7 +6,7 @@ var Cursor = require('immutable/contrib/cursor');
 
 var component = require('../');
 var shouldComponentUpdate = require('../shouldupdate');
-var isCursor = shouldComponentUpdate.isCursor;
+var isCursor = component.isCursor;
 
 describe('shouldComponentUpdate', function () {
 
@@ -28,6 +28,15 @@ describe('shouldComponentUpdate', function () {
       shouldUpdate({
         cursor: { 'one': Cursor.from(data, ['foo']) },
         nextCursor: { 'one': data2 }
+      });
+    });
+
+    it('when passing cursor and non-cursor that do have the same value', function () {
+      var data = Immutable.fromJS({ foo: 'bar' });
+
+      shouldUpdate({
+        cursor: { one: Cursor.from(data, ['foo']) },
+        nextCursor: { one: 'foo' }
       });
     });
 
@@ -97,6 +106,11 @@ describe('shouldComponentUpdate', function () {
       shouldUpdate({
         state: { foo: 'hello' },
         nextState: { foo: 'bar' }
+      });
+
+      shouldUpdate({
+        state: { foo: 'hello' },
+        nextState: { foo: {} }
       });
     });
 
@@ -260,6 +274,15 @@ describe('shouldComponentUpdate', function () {
       });
     });
 
+    it('when passing cursor and non-cursor that have the same value', function () {
+      var data = Immutable.fromJS({ foo: 'bar' });
+
+      shouldNotUpdate({
+        cursor: { one: Cursor.from(data, ['foo']) },
+        nextCursor: { one: 'bar' }
+      });
+    });
+
     it('when multiple cursors point to the same data', function () {
       var data = Immutable.fromJS({ foo: 'bar', bar: [1, 2, 3] });
       var data2 = Immutable.fromJS({ baz: [1, 2, 3] });
@@ -296,33 +319,6 @@ describe('shouldComponentUpdate', function () {
   describe('overridables', function () {
 
     describe('through main component', function () {
-      it('should have overridable isCursor', function (done) {
-        var data = Immutable.fromJS({ foo: 'bar', bar: [1, 2, 3] });
-        var called = 0;
-        var local = component.withDefaults({
-          isCursor: function () { called++; return true; }
-        }).shouldComponentUpdate;
-
-        shouldUpdate({
-          cursor: Cursor.from(data, ['foo']),
-          nextCursor: Cursor.from(data, ['bar'])
-        }, local);
-
-        called.should.be.above(1);
-        done();
-      });
-
-      it('should have overridable isEqualCursor', function (done) {
-        var data = Immutable.fromJS({ foo: 'bar', bar: [1, 2, 3] });
-        var local = component.withDefaults({
-          isEqualCursor: function () { done(); return true; }
-        }).shouldComponentUpdate;
-
-        shouldNotUpdate({
-          cursor: Cursor.from(data, ['foo']),
-          nextCursor: Cursor.from(data, ['bar'])
-        }, local);
-      });
 
       it('should have overridable isEqualState', function (done) {
         var local = component.withDefaults({
@@ -345,39 +341,11 @@ describe('shouldComponentUpdate', function () {
         localOne.should.not.equal(localTwo);
       });
 
-      it('should have overridable isCursor', function (done) {
-        var data = Immutable.fromJS({ foo: 'bar', bar: [1, 2, 3] });
-        var called = 0;
-        var local = shouldComponentUpdate.withDefaults({
-          isCursor: function () { called++; return true; }
-        });
-
-        shouldUpdate({
-          cursor: Cursor.from(data, ['foo']),
-          nextCursor: Cursor.from(data, ['bar'])
-        }, local);
-
-        called.should.be.above(1);
-        done();
-      });
-
       it('should have debug on product of withDefaults', function () {
         var localComponent = shouldComponentUpdate.withDefaults({
           isCursor: function () { }
         });
         localComponent.debug.should.be.a('function');
-      });
-
-      it('should have overridable isEqualCursor', function () {
-        var data = Immutable.fromJS({ foo: 'bar', bar: [1, 2, 3] });
-        var local = shouldComponentUpdate.withDefaults({
-          isEqualCursor: function () { return true; }
-        });
-
-        shouldNotUpdate({
-          cursor: Cursor.from(data, ['foo']),
-          nextCursor: Cursor.from(data, ['bar'])
-        }, local);
       });
 
       it('should have overridable isImmutable', function (done) {
@@ -410,19 +378,15 @@ describe('shouldComponentUpdate', function () {
         }, local);
       });
 
-      it('should have accessible helpers (isCursor, isEqualState, isEqualProps, isEqualCursor) to use externally', function () {
+      it('should have accessible helpers (isEqualState, isEqualProps, isImmutable) to use externally', function () {
         var local = shouldComponentUpdate.withDefaults();
 
         shouldComponentUpdate.should.have.property('isEqualState');
-        shouldComponentUpdate.should.have.property('isCursor');
         shouldComponentUpdate.should.have.property('isEqualProps');
-        shouldComponentUpdate.should.have.property('isEqualCursor');
         shouldComponentUpdate.should.have.property('isImmutable');
 
         local.should.have.property('isEqualState');
-        local.should.have.property('isCursor');
         local.should.have.property('isEqualProps');
-        local.should.have.property('isEqualCursor');
         local.should.have.property('isImmutable');
       });
 

@@ -542,7 +542,7 @@ describe('component', function () {
         isCursor: isCursor
       });
 
-      localComponent.shouldComponentUpdate.isCursor.should.equal(isCursor);
+      localComponent.isCursor.should.equal(isCursor);
       var Component = localComponent(function () {
         return React.DOM.text(null, 'hello');
       });

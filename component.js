@@ -46,9 +46,6 @@ module.exports = factory();
  *   isNode: function(propValue), // determines if propValue is a valid React node
  *
  *   // Passed on to `shouldComponentUpdate`
- *   isCursor: function(cursor), // check if prop is cursor
- *   unCursor: function (cursor), // convert cursor to object
- *   isEqualCursor: function (oneCursor, otherCursor), // compares cursor
  *   isEqualState: function (currentState, nextState), // compares state
  *   isEqualProps: function (currentProps, nextProps), // compares props
  *   isImmutable: function (maybeImmutable) // check if object is immutable
@@ -97,7 +94,7 @@ function factory (options) {
   options = options || {};
   var _shouldComponentUpdate = options.shouldComponentUpdate ||
                                shouldComponentUpdate.withDefaults(options);
-  var _isCursor = options.isCursor || shouldComponentUpdate.isCursor;
+  var _isCursor = options.isCursor || isCursor;
   var _isImmutable = options.isImmutable || shouldComponentUpdate.isImmutable;
   var _isJsx = !!options.jsx;
   var _hiddenCursorField = options.cursorField || '__singleCursor';
@@ -128,6 +125,7 @@ function factory (options) {
    */
   ComponentCreator.debug = debugFn;
   ComponentCreator.shouldComponentUpdate = _shouldComponentUpdate;
+  ComponentCreator.isCursor = _isCursor;
   return ComponentCreator;
 
   function ComponentCreator (displayName, mixins, render) {
@@ -408,3 +406,17 @@ function componentWillReceiveProps (newProps) {
 componentWillReceiveProps.asMixin = {
   componentWillReceiveProps: componentWillReceiveProps
 };
+
+/**
+ * Predicate to check if `potential` is Immutable cursor or not (defaults to duck testing
+ * Immutable.js cursors). Can override through `options.isCursor`.
+ *
+ * @param {potential} potential to check if is cursor
+ *
+ * @module shouldComponentUpdate.isCursor
+ * @returns {Boolean}
+ * @api public
+ */
+function isCursor (potential) {
+  return !!(potential && typeof potential.deref === 'function');
+}
