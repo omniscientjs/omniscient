@@ -12,10 +12,8 @@ var isNotIgnorable = not(or(isStatics, isChildren));
  * @param {Object} nextProps Next props. Can be objects of cursors, values or immutable structures
  * @param {Object} nextState Next state. Can be objects of values or immutable structures
  *
- * @property {Function} isCursor Get default isCursor
  * @property {Function} isEqualState Get default isEqualState
  * @property {Function} isEqualProps Get default isEqualProps
- * @property {Function} isEqualCursor Get default isEqualCursor
  * @property {Function} isImmutable Get default isImmutable
  * @property {Function} debug Get default debug
  *
@@ -31,12 +29,9 @@ module.exports = factory();
  * ### Options
  * ```js
  * {
- *   isCursor: function(cursor), // check if is props
- *   isEqualCursor: function (oneCursor, otherCursor), // check cursor
  *   isEqualState: function (currentState, nextState), // check state
  *   isImmutable: function (currentState, nextState), // check if object is immutable
  *   isEqualProps: function (currentProps, nextProps), // check props
- *   unCursor: function (cursor) // convert from cursor to object
  * }
  * ```
  *
@@ -52,17 +47,12 @@ function factory (methods) {
   var debug;
   methods = methods || {};
 
-  var _isCursor      = methods.isCursor || isCursor,
-      _isEqualCursor = methods.isEqualCursor || isEqualCursor,
+  var _isImmutable   = methods.isImmutable || isImmutable,
       _isEqualState  = methods.isEqualState || isEqualState,
-      _isEqualProps  = methods.isEqualProps || isEqualProps,
-      _isImmutable   = methods.isImmutable || isImmutable,
-      _unCursor      = methods.unCursor || unCursor;
+      _isEqualProps  = methods.isEqualProps || isEqualProps;
 
-  shouldComponentUpdate.isCursor = _isCursor;
   shouldComponentUpdate.isEqualState = _isEqualState;
   shouldComponentUpdate.isEqualProps = _isEqualProps;
-  shouldComponentUpdate.isEqualCursor = _isEqualCursor;
   shouldComponentUpdate.isImmutable = _isImmutable;
   shouldComponentUpdate.debug = debugFn;
 
@@ -106,9 +96,8 @@ function factory (methods) {
    * @api public
    */
   function isEqualState (value, other) {
-    return isEqual(value, other, function (current, next) {
-      if (current === next) return true;
-      return compare(current, next, _isImmutable, isEqualImmutable);
+    return isEqual(value, other, function() {
+      return compareValueOf.apply(shouldComponentUpdate, arguments);
     });
   }
 
@@ -126,30 +115,9 @@ function factory (methods) {
    * @api public
    */
   function isEqualProps (value, other) {
-    return isEqual(value, other, function (current, next) {
-      if (current === next) return true;
-
-      var cursorsEqual = compare(current, next, _isCursor, _isEqualCursor);
-      if (cursorsEqual !== void 0) return cursorsEqual;
-
-      return compare(current, next, _isImmutable, isEqualImmutable);
+    return isEqual(value, other, function() {
+      return compareValueOf.apply(shouldComponentUpdate, arguments);
     });
-  }
-
-  /**
-   * Predicate to check if cursors are equal through reference checks. Uses `unCursor`.
-   * Override through `shouldComponentUpdate.withDefaults` to support different cursor
-   * implementations.
-   *
-   * @param {Cursor} a
-   * @param {Cursor} b
-   *
-   * @module shouldComponentUpdate.isEqualCursor
-   * @returns {Boolean}
-   * @api public
-   */
-  function isEqualCursor (a, b) {
-    return _unCursor(a) === _unCursor(b);
   }
 
   function debugFn (pattern, logFn) {
@@ -184,21 +152,30 @@ function factory (methods) {
   }
 }
 
-function compare (current, next, typeCheck, equalCheck) {
-  var isCurrent = typeCheck(current);
-  var isNext = typeCheck(next);
+function compareValueOf (current, next) {
+  if (current === next) return true;
+  if (!current || !next) return;
 
-  if (isCurrent && isNext) {
-    return equalCheck(current, next);
-  }
-  if (isCurrent || isCurrent) {
+  var currentValue = current.valueOf();
+  var nextValue = next.valueOf();
+
+  if (currentValue === nextValue) return true;
+
+  // bail early on primitive types
+  if (typeof currentValue !== 'object' || typeof nextValue !== 'object') {
     return false;
   }
-  return void 0;
-}
 
-function isEqualImmutable (a, b) {
-  return a === b;
+  // If condition is true, then current or next may be cursors.
+  // So we bail early here.
+  if (current !== currentValue || next !== nextValue) {
+    return false;
+  }
+
+  if (this.isImmutable(currentValue) || this.isImmutable(nextValue)) {
+    return false;
+  }
+
 }
 
 /**
@@ -217,35 +194,6 @@ function isImmutable(maybeImmutable) {
   return !!(maybeImmutable && maybeImmutable[IS_ITERABLE_SENTINEL]);
 }
 
-/**
- * Transforming function to take in cursor and return a non-cursor.
- * Override through `shouldComponentUpdate.withDefaults` to support different cursor
- * implementations.
- *
- * @param {cursor} cursor to transform
- *
- * @module shouldComponentUpdate.unCursor
- * @returns {Object|Number|String|Boolean}
- * @api public
- */
-function unCursor(cursor) {
-  if (!cursor || !cursor.deref) return cursor;
-  return cursor.deref();
-}
-
-/**
- * Predicate to check if `potential` is Immutable cursor or not (defaults to duck testing
- * Immutable.js cursors). Can override through `.withDefaults()`.
- *
- * @param {potential} potential to check if is cursor
- *
- * @module shouldComponentUpdate.isCursor
- * @returns {Boolean}
- * @api public
- */
-function isCursor (potential) {
-  return !!(potential && typeof potential.deref === 'function');
-}
 
 function not (fn) {
   return function () {

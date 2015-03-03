@@ -12,7 +12,7 @@ var Cursor = require('immutable/contrib/cursor');
 
 var component = require('../');
 var shouldComponentUpdate = require('../shouldupdate');
-var isCursor = shouldComponentUpdate.isCursor;
+var isCursor = component.isCursor;
 
 describe('debug', function () {
   describe('api', function () {
