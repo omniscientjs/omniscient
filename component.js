@@ -367,7 +367,7 @@ function wrapWithDelegate (key) {
   var statics = this;
   var delegee = statics[key];
   if (typeof delegee === 'function') {
-    statics[key] = delegate(delegee);
+    statics[key] = isDelegate(delegee) ? delegee : delegate(delegee);
   }
 }
 
@@ -391,17 +391,21 @@ function componentWillReceiveProps (newProps) {
   var currentProps = this.props;
   var currentStatics = currentProps.statics;
   var newStatics = newProps.statics;
+  var haveChangedStatics = newStatics !== currentStatics &&
+                           newStatics &&
+                           typeof newStatics === 'object';
 
-  if (newStatics && typeof newStatics === 'object') {
+  if (haveChangedStatics) {
     Object.keys(newStatics).forEach(function(key) {
       var newMember = newStatics[key];
       if (typeof(newMember) == 'function') {
         var currentMember = currentStatics && currentStatics[key];
         if (isDelegate(currentMember)) {
-          currentMember.delegee = newMember;
+          var delegee = isDelegate(newMember) ? newMember.delegee : newMember;
+          currentMember.delegee = delegee;
           newStatics[key] = currentMember;
         } else {
-          newStatics[key] = delegee(newMember);
+          newStatics[key] = delegate(newMember);
         }
       }
     });

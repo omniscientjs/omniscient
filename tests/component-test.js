@@ -658,7 +658,7 @@ describe('component', function () {
     });
   });
 
-  describe('passing changed statics', function () {
+  describe('hot swapping statics', function () {
     it('statics handlers get updated', function (done) {
       var renders = 0;
       var onChange = null;
@@ -732,6 +732,207 @@ describe('component', function () {
 
       onChange().should.equal(4);
       statics.onChange().should.equal(4);
+
+      done();
+    });
+
+    it('statics do not hot swap unless updated', function (done) {
+      var renders = 0;
+      var onChange = null;
+      var statics = statics;
+      var Component = component(function (input, output) {
+        onChange = output.onChange;
+        statics = output;
+        renders = renders + 1;
+        return React.DOM.text(null, 'hello');
+      });
+
+      var changeHandler = function() { return 1 }
+      var handlers = {onChange: changeHandler };
+
+      render(Component({}, handlers));
+
+      renders.should.equal(1);
+      onChange.delegee.should.equal(changeHandler);
+      onChange().should.equal(1);
+      statics.onChange().should.equal(1);
+
+      render(Component({}, handlers));
+
+      renders.should.equal(1);
+      onChange.delegee.should.equal(changeHandler);
+      onChange().should.equal(1);
+      statics.onChange().should.equal(1);
+
+      var onChange2 = onChange;
+
+      render(Component({a: 1}, handlers));
+
+      renders.should.equal(2);
+      onChange.delegee.should.equal(changeHandler);
+      onChange().should.equal(1);
+      statics.onChange().should.equal(1);
+
+      done();
+    });
+
+    it('should never delegate to delegee', function (done) {
+      var renders = 0;
+      var onChange = null;
+      var statics = statics;
+      var Component = component(function (input, output) {
+        onChange = output.onChange;
+        statics = output;
+        renders = renders + 1;
+        return React.DOM.text(null, 'hello');
+      });
+
+      var changeHandler = function() { return 1 }
+
+      render(Component({}, {onChange: changeHandler}));
+
+      renders.should.equal(1);
+      onChange.delegee.should.equal(changeHandler);
+      onChange().should.equal(1);
+      statics.onChange().should.equal(1);
+
+      render(Component({}, {onChange: changeHandler}));
+
+      renders.should.equal(1);
+      onChange.delegee.should.equal(changeHandler);
+      onChange().should.equal(1);
+      statics.onChange().should.equal(1);
+
+      var onChange2 = onChange;
+
+      render(Component({a: 1}, {onChange: changeHandler}));
+
+      renders.should.equal(2);
+      onChange.delegee.should.equal(changeHandler);
+      onChange().should.equal(1);
+      statics.onChange().should.equal(1);
+
+      render(Component({a: 1}, {onChange: onChange}));
+
+      renders.should.equal(2);
+      onChange.delegee.should.equal(changeHandler);
+      onChange().should.equal(1);
+      statics.onChange().should.equal(1);
+
+      render(Component({a: 2}, {onChange: onChange}));
+
+      renders.should.equal(3);
+      onChange.delegee.should.equal(changeHandler);
+      onChange().should.equal(1);
+      statics.onChange().should.equal(1);
+
+      done();
+    });
+
+    it('delegates should not nest', function (done) {
+      var renders = [];
+      var handlers = {};
+
+      var A = component(function (input, output) {
+        renders.push("A");
+        handlers.a = output.onChange;
+        return React.DOM.div({}, [
+          B(input.b, output),
+          C(input.c, {onChange: output.onChange})
+        ]);
+      });
+
+      var B = component(function (input, output) {
+        renders.push("B");
+        handlers.b = output.onChange;
+        return React.DOM.span({}, input);
+      });
+
+      var C = component(function (input, output) {
+        renders.push("C");
+        handlers.c = output.onChange;
+        return React.DOM.div({}, [D(input.d, {onChange: output.onChange})]);
+      });
+
+      var D = component(function (input, output) {
+        renders.push("D");
+        handlers.d = output.onChange;
+        return React.DOM.span({}, input.d);
+      });
+
+      var changeHandler = function() { return 1 }
+
+      render(A({b: [1], c: {d: [2]}}, {onChange: changeHandler}));
+
+      renders.splice(0).join('->').should.equal('A->B->C->D');
+      handlers.a.delegee.should.equal(changeHandler);
+      handlers.b.delegee.should.equal(changeHandler);
+      handlers.c.delegee.should.equal(changeHandler);
+      handlers.d.delegee.should.equal(changeHandler);
+
+      render(A({b: [1], c: {d: [2]}}, {onChange: changeHandler}));
+
+      renders.splice(0).join('->').should.equal('');
+      handlers.a.delegee.should.equal(changeHandler);
+      handlers.b.delegee.should.equal(changeHandler);
+      handlers.c.delegee.should.equal(changeHandler);
+      handlers.d.delegee.should.equal(changeHandler);
+
+      render(A({b: [11], c: {d: [2]}}, {onChange: changeHandler}));
+
+      renders.splice(0).join('->').should.equal('A->B');
+      handlers.a.delegee.should.equal(changeHandler);
+      handlers.b.delegee.should.equal(changeHandler);
+      handlers.c.delegee.should.equal(changeHandler);
+      handlers.d.delegee.should.equal(changeHandler);
+
+      render(A({b: [11], c: {d: [22]}}, {onChange: changeHandler}));
+
+      renders.splice(0).join('->').should.equal('A->C->D');
+      handlers.a.delegee.should.equal(changeHandler);
+      handlers.b.delegee.should.equal(changeHandler);
+      handlers.c.delegee.should.equal(changeHandler);
+      handlers.d.delegee.should.equal(changeHandler);
+
+      var onChange = function() { return 2 };
+      render(A({b: [11], c: {d: [22]}}, {onChange: onChange}));
+
+      renders.splice(0).join('->').should.equal('');
+      handlers.a.delegee.should.equal(onChange);
+      handlers.b.delegee.should.equal(onChange);
+      handlers.c.delegee.should.equal(onChange);
+      handlers.d.delegee.should.equal(onChange);
+
+      done();
+    });
+
+    it('update no handler to handler', function (done) {
+      var renders = [];
+      var handlers = null;
+
+      var Component = component(function (input, output) {
+        renders.push(1);
+        handlers = output;
+        return React.DOM.text('');
+      });
+
+      var onChange = function() {}
+      render(Component({}, {}));
+
+
+      renders.length.should.equal(1);
+      (handlers.onChange === void 0).should.be.true();
+
+      render(Component({a: 1}, {onChange: onChange}));
+
+      renders.length.should.equal(2);
+      handlers.onChange.delegee.should.equal(onChange);
+
+      var onUpdate = function() {}
+      render(Component({a: 1}, {onChange: onUpdate}));
+
+      renders.length.should.equal(2);
+      handlers.onChange.delegee.should.equal(onUpdate);
 
       done();
     });
