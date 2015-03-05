@@ -3,7 +3,7 @@ Changelog
 
 Changelog with fixes and additions between each release.
 
-## Version `v3.1.0` (unreleased)
+## Version `v3.1.0`
 
 Changes for the new up-comming release of Omniscient (`v3.1.0`), to allow users to track comming changes.
 
