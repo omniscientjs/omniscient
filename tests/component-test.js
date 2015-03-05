@@ -833,36 +833,36 @@ describe('component', function () {
       var renders = [];
       var handlers = {};
 
-      var A = component(function (input, output) {
+      var A = component('a', function (input, output) {
         renders.push("A");
         handlers.a = output.onChange;
-        return React.DOM.div({}, [
-          B(input.b, output),
-          C(input.c, {onChange: output.onChange})
+        return React.DOM.div({key: 'a'}, [
+          B('b', input.b, output),
+          C('c', input.c, {onChange: output.onChange})
         ]);
       });
 
-      var B = component(function (input, output) {
+      var B = component('b', function (input, output) {
         renders.push("B");
         handlers.b = output.onChange;
-        return React.DOM.span({}, input);
+        return React.DOM.span({ key: 'b'}, [input.text ]);
       });
 
-      var C = component(function (input, output) {
+      var C = component('c', function (input, output) {
         renders.push("C");
         handlers.c = output.onChange;
-        return React.DOM.div({}, [D(input.d, {onChange: output.onChange})]);
+        return React.DOM.div({ key: 'c'}, [D('d', input.d, {onChange: output.onChange})]);
       });
 
-      var D = component(function (input, output) {
+      var D = component('d', function (input, output) {
         renders.push("D");
         handlers.d = output.onChange;
-        return React.DOM.span({}, input.d);
+        return React.DOM.span({ key: 'd'}, input.d);
       });
 
       var changeHandler = function() { return 1 }
 
-      render(A({b: [1], c: {d: [2]}}, {onChange: changeHandler}));
+      render(A({b: {text: 1}, c: {d: [2]}}, {onChange: changeHandler}));
 
       renders.splice(0).join('->').should.equal('A->B->C->D');
       handlers.a.delegee.should.equal(changeHandler);
@@ -870,7 +870,7 @@ describe('component', function () {
       handlers.c.delegee.should.equal(changeHandler);
       handlers.d.delegee.should.equal(changeHandler);
 
-      render(A({b: [1], c: {d: [2]}}, {onChange: changeHandler}));
+      render(A({b: {text: 1}, c: {d: [2]}}, {onChange: changeHandler}));
 
       renders.splice(0).join('->').should.equal('');
       handlers.a.delegee.should.equal(changeHandler);
@@ -878,7 +878,7 @@ describe('component', function () {
       handlers.c.delegee.should.equal(changeHandler);
       handlers.d.delegee.should.equal(changeHandler);
 
-      render(A({b: [11], c: {d: [2]}}, {onChange: changeHandler}));
+      render(A({b: {text: 11}, c: {d: [2]}}, {onChange: changeHandler}));
 
       renders.splice(0).join('->').should.equal('A->B');
       handlers.a.delegee.should.equal(changeHandler);
@@ -886,7 +886,7 @@ describe('component', function () {
       handlers.c.delegee.should.equal(changeHandler);
       handlers.d.delegee.should.equal(changeHandler);
 
-      render(A({b: [11], c: {d: [22]}}, {onChange: changeHandler}));
+      render(A({b: {text: 11}, c: {d: [22]}}, {onChange: changeHandler}));
 
       renders.splice(0).join('->').should.equal('A->C->D');
       handlers.a.delegee.should.equal(changeHandler);
@@ -895,7 +895,7 @@ describe('component', function () {
       handlers.d.delegee.should.equal(changeHandler);
 
       var onChange = function() { return 2 };
-      render(A({b: [11], c: {d: [22]}}, {onChange: onChange}));
+      render(A({b: {text: 11}, c: {d: [22]}}, {onChange: onChange}));
 
       renders.splice(0).join('->').should.equal('');
       handlers.a.delegee.should.equal(onChange);
