@@ -4,6 +4,7 @@ var React  = require('react'),
     assign = require('lodash.assign');
 
 var shouldComponentUpdate = require('./shouldupdate');
+var cached = require('./cached');
 
 /**
  * Create components for functional views.
@@ -102,6 +103,7 @@ function factory (options) {
   var _isJsx = !!options.jsx;
   var _hiddenCursorField = options.cursorField || '__singleCursor';
   var _isNode = options.isNode || isNode;
+  var _cached = cached.withDefaults(_shouldComponentUpdate);
 
 
   /**
@@ -127,6 +129,7 @@ function factory (options) {
    * @api public
    */
   ComponentCreator.debug = debugFn;
+  ComponentCreator.cached = _cached;
   ComponentCreator.shouldComponentUpdate = _shouldComponentUpdate;
   return ComponentCreator;
 
