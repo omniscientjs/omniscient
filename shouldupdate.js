@@ -3,6 +3,8 @@
 var filter  = require('lodash.pick'),
     isEqual = require('lodash.isequal');
 
+var isNotIgnorable = not(or(isStatics, isChildren));
+
 /**
  * Directly fetch `shouldComponentUpdate` mixin to use outside of Omniscient.
  * You can do this if you don't want to use Omniscients syntactic sugar.
@@ -67,27 +69,9 @@ function factory (methods) {
   return shouldComponentUpdate;
 
   function shouldComponentUpdate (nextProps, nextState) {
-    var isNotIgnorable = not(or(isStatics, isChildren));
-
-    var nextCursors    = filter(nextProps, isNotIgnorable),
-        currentCursors = filter(this.props, isNotIgnorable);
-
-    var nextCursorsKeys    = Object.keys(nextCursors),
-        currentCursorsKeys = Object.keys(currentCursors);
-
-    if (currentCursorsKeys.length !== nextCursorsKeys.length) {
-      if (debug) debug.call(this, 'shouldComponentUpdate => true (number of cursors differ)');
-      return true;
-    }
-
-    if (hasDifferentKeys(currentCursorsKeys, currentCursors, nextCursors)) {
-      if (debug) debug.call(this, 'shouldComponentUpdate => true (cursors have different keys)');
-      return true;
-    }
-
-    if (hasChangedCursors(currentCursors, nextCursors)) {
-      if (debug) debug.call(this, 'shouldComponentUpdate => true (cursors have changed)');
-      return true;
+    if (nextProps === this.props && nextState === this.state) {
+      if (debug) debug.call(this, 'shouldComponentUpdate => false (equal input)');
+      return false;
     }
 
     if (!_isEqualState(this.state, nextState)) {
@@ -95,41 +79,17 @@ function factory (methods) {
       return true;
     }
 
-    if (hasChangedProperties(currentCursors, nextCursors)) {
-      if (debug) debug.call(this, 'shouldComponentUpdate => true (properties have changed)');
+    var nextProps    = filter(nextProps, isNotIgnorable),
+        currentProps = filter(this.props, isNotIgnorable);
+
+    if (!_isEqualProps(currentProps, nextProps)) {
+      if (debug) debug.call(this, 'shouldComponentUpdate => true (props have changed)');
       return true;
     }
 
     if (debug) debug.call(this, 'shouldComponentUpdate => false');
 
     return false;
-  }
-
-  function hasChangedCursors (current, next) {
-    current = filter(current, _isCursor);
-    next = filter(next, _isCursor);
-
-    var nextKeys    = Object.keys(current),
-        currentKeys = Object.keys(next);
-
-    var nextLength = nextKeys.length;
-
-    if (nextLength !== currentKeys.length) {
-      return true;
-    }
-
-    for (var i = 0; i < nextLength; i++) {
-      if (!_isEqualCursor(current[nextKeys[i]], next[currentKeys[i]])) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  function hasChangedProperties (current, next) {
-    current = filter(current, not(_isCursor));
-    next    = filter(next, not(_isCursor));
-    return !_isEqualProps(current, next);
   }
 
   /**
@@ -147,13 +107,8 @@ function factory (methods) {
    */
   function isEqualState (value, other) {
     return isEqual(value, other, function (current, next) {
-      if (_isImmutable(current) && _isImmutable(next)) {
-        return current === next;
-      }
-      if (_isImmutable(current) || _isImmutable(next)) {
-        return false;
-      }
-      return void 0;
+      if (current === next) return true;
+      return compare(current, next, _isImmutable, isEqualImmutable);
     });
   }
 
@@ -172,19 +127,12 @@ function factory (methods) {
    */
   function isEqualProps (value, other) {
     return isEqual(value, other, function (current, next) {
-      if (_isCursor(current) && _isCursor(next)) {
-        return _isEqualCursor(current, next);
-      }
-      if (_isCursor(current) || _isCursor(next)) {
-        return false;
-      }
-      if (_isImmutable(current) && _isImmutable(next)) {
-        return current === next;
-      }
-      if (_isImmutable(current) || _isImmutable(next)) {
-        return false;
-      }
-      return void 0;
+      if (current === next) return true;
+
+      var cursorsEqual = compare(current, next, _isCursor, _isEqualCursor);
+      if (cursorsEqual !== void 0) return cursorsEqual;
+
+      return compare(current, next, _isImmutable, isEqualImmutable);
     });
   }
 
@@ -236,6 +184,22 @@ function factory (methods) {
   }
 }
 
+function compare (current, next, typeCheck, equalCheck) {
+  var isCurrent = typeCheck(current);
+  var isNext = typeCheck(next);
+
+  if (isCurrent && isNext) {
+    return equalCheck(current, next);
+  }
+  if (isCurrent || isCurrent) {
+    return false;
+  }
+  return void 0;
+}
+
+function isEqualImmutable (a, b) {
+  return a === b;
+}
 
 /**
  * Predicate to check if a potential is an immutable structure or not.
@@ -245,7 +209,7 @@ function factory (methods) {
  * @param {maybeImmutable} value to check if it is immutable.
  *
  * @module shouldComponentUpdate.isImmutable
- * @returns {Object|Number|String|Boolean}
+ * @returns {Boolean}
  * @api public
  */
 var IS_ITERABLE_SENTINEL = '@@__IMMUTABLE_ITERABLE__@@';
@@ -269,7 +233,6 @@ function unCursor(cursor) {
   return cursor.deref();
 }
 
-
 /**
  * Predicate to check if `potential` is Immutable cursor or not (defaults to duck testing
  * Immutable.js cursors). Can override through `.withDefaults()`.
@@ -281,13 +244,7 @@ function unCursor(cursor) {
  * @api public
  */
 function isCursor (potential) {
-  return potential && typeof potential.deref === 'function';
-}
-
-function hasDifferentKeys (currentCursorsKeys, currentCursors, nextCursors) {
-  return !currentCursorsKeys.every(function existsInBoth (key) {
-    return typeof currentCursors[key] !== 'undefined' && typeof nextCursors[key] !== 'undefined';
-  });
+  return !!(potential && typeof potential.deref === 'function');
 }
 
 function not (fn) {
