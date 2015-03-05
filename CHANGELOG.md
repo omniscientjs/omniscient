@@ -20,9 +20,40 @@ var Component = localComponent(function(myPassedCursor) {
 
 React.render(<Component foobar={myCursor} />, document.body)
 ```
+2. Added "hot swapping" of functions passed in statics. This is to swap out event handlers passed with a cursor reference. See #68
+3. As Omniscient encourages more work in the render function, you might have to do additional work even though some of your data is unchanged. We added `omniscient.cached` to allow for cached functions, dependent on input. Example:
+
+```js
+var called = 0;
+var point = function (point) {
+  return point.get('x') + ':' + point.get('y');
+};
+var line = component.cached(function (from, to) {
+  called = called + 1;
+  return point(from) + '-' + point(to)
+});
+
+
+var a = Cursor.from(Immutable.fromJS({x:0, y:0}));
+var b = Cursor.from(Immutable.fromJS({x: 1, y:7}));
+
+line(a, b).should.equal("0:0-1:7");
+called.should.equal(1);
+
+line(a, b).should.equal("0:0-1:7");
+called.should.equal(1);
+```
+
+### Bugfixes
+1. Fixes a bug where children were being attached as statics (#66)
+2. Fixes bug when overriding isEqualCursor (419046b9)
+3. Fixes accessible cursor across mixins when unwrapping cursors. (#86)
 
 ### Internal changes
 1. Now uses `lodash.assign` internally, for potential de-duping. #61
+2. Makes sure the `props` object is not mutated (#62)
+3. Uses isNode from React to test for valid elements (#63)
+4. Improves performance and simplifies internals of `shouldComponentUpdate` mixin (#78, #79)
 
 ## Version `v3.0.1`
 
