@@ -32,7 +32,7 @@
     "test": "mocha -R spec tests/**-test.js",
     "test-watch": "mocha -G -w -R min tests/**-test.js",
     "dist": "node makeBundle.js",
-    "build-docs": "cat component.js shouldupdate.js | dox -r | doxme > api.md"
+    "build-docs": "cat component.js shouldupdate.js cached.js | dox -r | doxme > api.md"
   },
   "repository": {
     "type": "git",
