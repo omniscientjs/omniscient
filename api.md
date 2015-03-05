@@ -17,11 +17,18 @@ component's arguments will not be tracked for changes.
 
 ### Parameters
 
-| parameter     | type         | description                                                                                          |
+| param         | type         | description                                                                                          |
 | ------------- | ------------ | ---------------------------------------------------------------------------------------------------- |
 | `displayName` | String       | Component's display name. Used when debug()'ing and by React                                         |
 | `mixins`      | Array,Object | React mixins. Object literals with functions, or array of object literals with functions.            |
 | `render`      | Function     | Properties that do not trigger update when changed. Can be cursors, object and immutable structures  |
+
+
+### Properties
+
+| property                | type     | description                        |
+| ----------------------- | -------- | ---------------------------------- |
+| `shouldComponentUpdate` | Function | Get default shouldComponentUpdate  |
 
 
 
@@ -83,9 +90,16 @@ React.render(, document.body);
 
 ### Parameters
 
-| parameter | type   | description                        |
+| param     | type   | description                        |
 | --------- | ------ | ---------------------------------- |
 | `Options` | Object | Options with defaults to override  |
+
+
+### Properties
+
+| property                | type     | description                        |
+| ----------------------- | -------- | ---------------------------------- |
+| `shouldComponentUpdate` | Function | Get default shouldComponentUpdate  |
 
 
 
@@ -108,9 +122,16 @@ SearchBox>: render
 
 ### Parameters
 
-| parameter | type   | description                                          |
+| param     | type   | description                                          |
 | --------- | ------ | ---------------------------------------------------- |
 | `pattern` | RegExp | Filter pattern. Only show messages matching pattern  |
+
+
+### Properties
+
+| property | type   | description                   |
+| -------- | ------ | ----------------------------- |
+| `jsx`    | Object | Get component for use in JSX  |
 
 
 ### Example
@@ -130,7 +151,7 @@ Invoke component (rendering it)
 
 ### Parameters
 
-| parameter     | type   | description                                                                                          |
+| param         | type   | description                                                                                          |
 | ------------- | ------ | ---------------------------------------------------------------------------------------------------- |
 | `displayName` | String | Component display name. Used in debug and by React                                                   |
 | `props`       | Object | Properties that **do** trigger update when changed. Can be cursors, object and immutable structures  |
@@ -138,28 +159,15 @@ Invoke component (rendering it)
 | `..rest`      | Object | Child components (React elements, scalar values)                                                     |
 
 
+### Properties
+
+| property | type   | description                   |
+| -------- | ------ | ----------------------------- |
+| `jsx`    | Object | Get component for use in JSX  |
+
+
 
 **Returns** `ReactElement`, 
-
-
-### `isNode(propValue)`
-
-Predicate showing whether or not the argument is a valid React Node
-or not. Can be numbers, strings, bools, and React Elements.
-
-React's isNode check from ReactPropTypes validator
-but adjusted to not accept objects to avoid collision with props & statics.
-
-
-### Parameters
-
-| parameter   | type   | description                                     |
-| ----------- | ------ | ----------------------------------------------- |
-| `propValue` | String | Property value to check if is valid React Node  |
-
-
-
-**Returns** `Boolean`, 
 
 
 ### `shouldComponentUpdate(nextProps, nextState)`
@@ -170,10 +178,22 @@ You can do this if you don't want to use Omniscients syntactic sugar.
 
 ### Parameters
 
-| parameter   | type   | description                                                           |
+| param       | type   | description                                                           |
 | ----------- | ------ | --------------------------------------------------------------------- |
 | `nextProps` | Object | Next props. Can be objects of cursors, values or immutable structures |
 | `nextState` | Object | Next state. Can be objects of values or immutable structures          |
+
+
+### Properties
+
+| property        | type     | description               |
+| --------------- | -------- | ------------------------- |
+| `isCursor`      | Function | Get default isCursor      |
+| `isEqualState`  | Function | Get default isEqualState  |
+| `isEqualProps`  | Function | Get default isEqualProps  |
+| `isEqualCursor` | Function | Get default isEqualCursor |
+| `isImmutable`   | Function | Get default isImmutable   |
+| `debug`         | Function | Get default debug         |
 
 
 
@@ -199,7 +219,7 @@ Create a “local” instance of the shouldComponentUpdate with overriden defaul
 
 ### Parameters
 
-| parameter   | type   | description                                    |
+| param       | type   | description                                    |
 | ----------- | ------ | ---------------------------------------------- |
 | `[Options]` | Object | _optional:_ Options with defaults to override  |
 
@@ -218,10 +238,10 @@ Override through `shouldComponentUpdate.withDefaults`.
 
 ### Parameters
 
-| parameter | type   | description |
-| --------- | ------ | ----------- |
-| `value`   | Object |             |
-| `other`   | Object |             |
+| param   | type   | description |
+| ------- | ------ | ----------- |
+| `value` | Object |             |
+| `other` | Object |             |
 
 
 
@@ -238,10 +258,10 @@ Override through `shouldComponentUpdate.withDefaults`.
 
 ### Parameters
 
-| parameter | type   | description |
-| --------- | ------ | ----------- |
-| `value`   | Object |             |
-| `other`   | Object |             |
+| param   | type   | description |
+| ------- | ------ | ----------- |
+| `value` | Object |             |
+| `other` | Object |             |
 
 
 
@@ -257,10 +277,10 @@ implementations.
 
 ### Parameters
 
-| parameter | type   | description |
-| --------- | ------ | ----------- |
-| `a`       | Cursor |             |
-| `b`       | Cursor |             |
+| param | type   | description |
+| ----- | ------ | ----------- |
+| `a`   | Cursor |             |
+| `b`   | Cursor |             |
 
 
 
@@ -276,9 +296,9 @@ implementations.
 
 ### Parameters
 
-| parameter | type           | description                   |
-| --------- | -------------- | ----------------------------- |
-| `value`   | maybeImmutable | to check if it is immutable.  |
+| param   | type           | description                   |
+| ------- | -------------- | ----------------------------- |
+| `value` | maybeImmutable | to check if it is immutable.  |
 
 
 
@@ -294,9 +314,9 @@ implementations.
 
 ### Parameters
 
-| parameter | type   | description   |
-| --------- | ------ | ------------- |
-| `cursor`  | cursor | to transform  |
+| param    | type   | description   |
+| -------- | ------ | ------------- |
+| `cursor` | cursor | to transform  |
 
 
 
@@ -311,7 +331,7 @@ Immutable.js cursors). Can override through `.withDefaults()`.
 
 ### Parameters
 
-| parameter   | type      | description            |
+| param       | type      | description            |
 | ----------- | --------- | ---------------------- |
 | `potential` | potential | to check if is cursor  |
 
@@ -329,7 +349,7 @@ result to avoid recomputing if invoked with equal arguments as last time.
 
 ### Parameters
 
-| parameter  | type     | description               |
+| param      | type     | description               |
 | ---------- | -------- | ------------------------- |
 | `Function` | Function | that does a computation.  |
 
@@ -352,7 +372,7 @@ Create a “local” instance of the `cache` with overriden defaults.
 
 ### Parameters
 
-| parameter   | type   | description                                    |
+| param       | type   | description                                    |
 | ----------- | ------ | ---------------------------------------------- |
 | `[Options]` | Object | _optional:_ Options with defaults to override  |
 
@@ -374,12 +394,34 @@ call.
 
 ### Parameters
 
-| parameter  | type     | description        |
+| param      | type     | description        |
 | ---------- | -------- | ------------------ |
 | `function` | Function | doing computation  |
 
 
 
 **Returns** `Function`, Optimized function.
+
+## Private members 
+
+
+### `isNode(propValue)`
+
+Predicate showing whether or not the argument is a valid React Node
+or not. Can be numbers, strings, bools, and React Elements.
+
+React's isNode check from ReactPropTypes validator
+but adjusted to not accept objects to avoid collision with props & statics.
+
+
+### Parameters
+
+| param       | type   | description                                     |
+| ----------- | ------ | ----------------------------------------------- |
+| `propValue` | String | Property value to check if is valid React Node  |
+
+
+
+**Returns** `Boolean`, 
 
 
