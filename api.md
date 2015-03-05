@@ -346,6 +346,14 @@ Directly fetch `cache` to use outside of Omniscient.
 You can do this if you want to define functions that caches computed
 result to avoid recomputing if invoked with equal arguments as last time.
 
+Returns optimized version of given `f` function for repeated
+calls with an equal inputs. Returned function caches last input
+and a result of the computation for it, which is handy for
+optimizing `render` when computations are run on unchanged parts
+of state. Although note that only last result is cached so it is
+not practical to call it mulitple times with in the same `render`
+call.
+
 
 ### Parameters
 
@@ -355,7 +363,7 @@ result to avoid recomputing if invoked with equal arguments as last time.
 
 
 
-**Returns** `Function`, 
+**Returns** `Function`, Optimized function
 
 
 ### `cached.withDefaults([Options])`
@@ -379,28 +387,6 @@ Create a “local” instance of the `cache` with overriden defaults.
 
 
 **Returns** `Function`, cached with overriden defaults
-
-
-### `shouldComponentUpdate.isEqualState(function)`
-
-Returns optimized version of given `f` function for repeated
-calls with an equal inputs. Returned function caches last input
-and a result of the computation for it, which is handy for
-optimizing `render` when computations are run on unchanged parts
-of state. Although note that only last result is cached so it is
-not practical to call it mulitple times with in the same `render`
-call.
-
-
-### Parameters
-
-| param      | type     | description        |
-| ---------- | -------- | ------------------ |
-| `function` | Function | doing computation  |
-
-
-
-**Returns** `Function`, Optimized function.
 
 ## Private members 
 
