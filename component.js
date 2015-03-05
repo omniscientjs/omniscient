@@ -142,6 +142,7 @@ function factory (options) {
         // If `props['__singleCursor']` is set a single cursor was passed
         // to the component, pick it out and pass it.
         var input = this.props[_hiddenCursorField] || this.props;
+        this.cursor = this.props[_hiddenCursorField];
         return options.render.call(this, input, this.props.statics);
       }
     };

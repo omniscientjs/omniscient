@@ -203,6 +203,33 @@ describe('component', function () {
       render(Component(cursorInput));
     });
 
+    it('should pass and expose single immutable cursor on this.props', function (done) {
+      var mixins = [{ componentDidMount: done }];
+      var cursorInput = Cursor.from(Immutable.fromJS({ foo: 'hello' }), 'foo');
+
+      var Component = component(mixins, function (cursor) {
+        this.cursor.should.equal(cursor);
+        this.cursor.should.equal(cursorInput);
+        return React.DOM.text(null, 'hello');
+      });
+      render(Component(cursorInput));
+    });
+
+    it('should pass and expose single immutable cursor on this.props and re-render', function () {
+      var cursorInput = Cursor.from(Immutable.fromJS({ foo: 'hello' }), 'foo');
+      var i = 0;
+      var Component = component(function (cursor) {
+        i++;
+        return React.DOM.text(null, 'hello');
+      });
+
+      render(Component(cursorInput));
+      render(Component(cursorInput));
+      render(Component(cursorInput.update(function () { return 'bar'; })));
+
+      i.should.equal(2);
+    });
+
     it('should pass single cursor and statics', function (done) {
       var mixins = [{ componentDidMount: done, myMixin: noop }];
       var input = { cursor: 'foo', statics: 'Hello' };
