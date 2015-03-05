@@ -126,6 +126,14 @@ function factory (methods) {
    * @api public
    */
   function isEqualProps (value, other) {
+    if (value === other) return true;
+
+    var cursorsEqual = compare(value, other, _isCursor, _isEqualCursor);
+    if (cursorsEqual !== void 0) return cursorsEqual;
+
+    var immutableEqual = compare(value, other, _isImmutable, isEqualImmutable);
+    if (immutableEqual !== void 0) return immutableEqual;
+
     return isEqual(value, other, function (current, next) {
       if (current === next) return true;
 
