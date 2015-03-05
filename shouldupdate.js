@@ -191,7 +191,7 @@ function compare (current, next, typeCheck, equalCheck) {
   if (isCurrent && isNext) {
     return equalCheck(current, next);
   }
-  if (isCurrent || isCurrent) {
+  if (isCurrent || isNext) {
     return false;
   }
   return void 0;
