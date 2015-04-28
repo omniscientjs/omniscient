@@ -227,7 +227,9 @@ var List = component(function (props) {
 
 ### Efficient `shouldComponentUpdate`
 
-Omniscient works by implementing a `shouldComponentUpdate` mixin optimized for usage with immutable cursors and immutable structures. You can also use `shouldComponentUpdate` without the syntactic sugar that Omniscient brings.
+Omniscient works by implementing a `shouldComponentUpdate` mixin optimized for usage with immutable cursors and immutable structures. The provided `shouldComponentUpdate` will trigger update iif passed props (with support for cursors and/or immutable data) or state change. It does not check a components passed children (`props.children`), but these will rather be checked in the `shouldComponentUpdate` of the children. This is to not encourage too "dumb" components wrapping less dumb ones.
+
+You can also use `shouldComponentUpdate` without the syntactic sugar that Omniscient brings.
 
 ```js
 var shouldComponentUpdateMixin = {
