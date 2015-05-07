@@ -306,7 +306,7 @@ function hasShouldComponentUpdate (mixins) {
     if (mixin.shouldComponentUpdate) {
         return true;
     }
-    if (mixin.mixins instanceof Array) {
+    if (Array.isArray(mixin.mixins)) {
         return hasShouldComponentUpdate(mixin.mixins);
     }
     return false;
