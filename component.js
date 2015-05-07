@@ -303,9 +303,16 @@ function removeOldStaticMethods (mixins) {
 
 function hasShouldComponentUpdate (mixins) {
   return mixins.some(function (mixin) {
-    return !!mixin.shouldComponentUpdate;
+    if (mixin.shouldComponentUpdate) {
+        return true;
+    }
+    if (mixin.mixins instanceof Array) {
+        return hasShouldComponentUpdate(mixin.mixins);
+    }
+    return false;
   });
 }
+
 
 function toArray (args) {
   return Array.prototype.slice.call(args);
