@@ -137,6 +137,23 @@ describe('component', function () {
       render(Component({ foo: 'hello' }));
     });
 
+    it('should have overridable shouldComponentUpdate in nested mixin', function (done) {
+      var shouldUpdate = function (nextProps) { return true; };
+      var mixins = {
+        componentDidMount: done,
+        mixins: [{
+          mixins: [{ shouldComponentUpdate: shouldUpdate }]
+        }]
+      };
+
+      var Component = component(mixins, function () {
+        this.shouldComponentUpdate.should.equal(shouldUpdate);
+        return React.DOM.text(null, 'hello');
+      });
+
+      render(Component({ foo: 'hello' }));
+    });
+
     it('should allow shouldComponentUpdate as mixin to vanilla React', function (done) {
       var mixins = [{
         shouldComponentUpdate: shouldUpdateMixin
