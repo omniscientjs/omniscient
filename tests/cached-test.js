@@ -61,8 +61,8 @@ describe('cached', function () {
       return a.value + b.value;
     });
     var v = function (x) {
-      return {value:x}
-    }
+      return {value:x};
+    };
 
     f(v(0), v(1)).should.equal(1);
     called.should.equal(1);
@@ -112,7 +112,7 @@ describe('cached', function () {
     };
     var line = component.cached(function (from, to) {
       called = called + 1;
-      return point(from) + '-' + point(to)
+      return point(from) + '-' + point(to);
     });
 
     var a = Cursor.from(Immutable.fromJS({x:0, y:0}));
@@ -283,7 +283,7 @@ describe('cached', function () {
     f(a).should.equal(1);
     f(b).should.equal(1);
 
-    f({equals: function() { return true } }).should.equal(2);
+    f({equals: function () { return true; } }).should.equal(2);
 
     f(1).should.equal(2);
     f({whatever: 'you want'}).should.equal(3);

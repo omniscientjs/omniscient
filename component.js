@@ -41,13 +41,13 @@ module.exports = factory();
  * ```js
  * {
  *   // Goes directly to component
- *   shouldComponentUpdate: function(nextProps, nextState), // check update
+ *   shouldComponentUpdate: function (nextProps, nextState), // check update
  *   jsx: false, // whether or not to default to jsx components
  *   cursorField: '__singleCursor', // cursor property name to "unwrap" before passing in to render
- *   isNode: function(propValue), // determines if propValue is a valid React node
+ *   isNode: function (propValue), // determines if propValue is a valid React node
  *
  *   // Passed on to `shouldComponentUpdate`
- *   isCursor: function(cursor), // check if prop is cursor
+ *   isCursor: function (cursor), // check if prop is cursor
  *   unCursor: function (cursor), // convert cursor to object
  *   isEqualCursor: function (oneCursor, otherCursor), // compares cursor
  *   isEqualState: function (currentState, nextState), // compares state
@@ -358,9 +358,9 @@ function isNode (propValue) {
 }
 
 function delegate(delegee) {
-  var delegate = function() {
+  var delegate = function () {
     return delegate.delegee.apply(this, arguments);
-  }
+  };
   delegate.delegee = delegee;
   delegate.isDelegate = true;
   return delegate;
@@ -399,9 +399,9 @@ function componentWillReceiveProps (newProps) {
                            typeof newStatics === 'object';
 
   if (haveChangedStatics) {
-    Object.keys(newStatics).forEach(function(key) {
+    Object.keys(newStatics).forEach(function (key) {
       var newMember = newStatics[key];
-      if (typeof(newMember) == 'function') {
+      if (typeof (newMember) == 'function') {
         var currentMember = currentStatics && currentStatics[key];
         if (isDelegate(currentMember)) {
           var delegee = isDelegate(newMember) ? newMember.delegee : newMember;

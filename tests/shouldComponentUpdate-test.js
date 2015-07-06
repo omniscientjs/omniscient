@@ -49,7 +49,7 @@ describe('shouldComponentUpdate', function () {
 
       shouldUpdate({
         cursor: { one: Cursor.from(data, ['foo']), two: Cursor.from(data2) },
-        nextCursor: { one: Cursor.from(data, ['foo']).update(function (x) { return 1; }), two: Cursor.from(data2) }
+        nextCursor: { one: Cursor.from(data, ['foo']).update(function () { return 1; }), two: Cursor.from(data2) }
       });
     });
 
@@ -110,14 +110,14 @@ describe('shouldComponentUpdate', function () {
     it('when state have immutable structures', function () {
       shouldUpdate({
         state: { foo: Immutable.List.of(1) },
-        nextState: { foo: Immutable.List.of(2) },
+        nextState: { foo: Immutable.List.of(2) }
       });
     });
 
     it('when props have immutable structures', function () {
       shouldUpdate({
         cursor: { foo: Immutable.List.of(1) },
-        nextCursor: { foo: Immutable.List.of(2) },
+        nextCursor: { foo: Immutable.List.of(2) }
       });
     });
 
@@ -149,9 +149,6 @@ describe('shouldComponentUpdate', function () {
       var data = Immutable.fromJS({ foo: 'bar', bar: [1, 2, 3] });
       var one = Cursor.from(data, ['foo']);
       var two = Cursor.from(data, ['bar']);
-      var three = one.update(function () {
-        return "changed";
-      });
 
       shouldUpdate({
         cursor: {
@@ -188,7 +185,7 @@ describe('shouldComponentUpdate', function () {
       var map = Immutable.List.of(1);
       shouldNotUpdate({
         state: { foo: map },
-        nextState: { foo: map },
+        nextState: { foo: map }
       });
     });
 
@@ -196,13 +193,11 @@ describe('shouldComponentUpdate', function () {
       var map = Immutable.List.of(1);
       shouldNotUpdate({
         props: { foo: map },
-        nextProps: { foo: map },
+        nextProps: { foo: map }
       });
     });
 
     it('when only statics has changed', function () {
-      var data = Immutable.fromJS({ foo: 'bar' });
-
       shouldNotUpdate({
         statics: { foo: 'hello' },
         nextStatics: { bar: 'bye' }
@@ -210,8 +205,6 @@ describe('shouldComponentUpdate', function () {
     });
 
     it('when children has changed', function () {
-      var data = Immutable.fromJS({ foo: 'bar' });
-
       shouldNotUpdate({
         children: { foo: 'hello' },
         nextChildren: { bar: 'bye' }
@@ -219,8 +212,6 @@ describe('shouldComponentUpdate', function () {
     });
 
     it('when statics and children has changed', function () {
-      var data = Immutable.fromJS({ foo: 'bar' });
-
       shouldNotUpdate({
         statics: { foo: 'hello' },
         nextStatics: { bar: 'bye' },
@@ -326,7 +317,7 @@ describe('shouldComponentUpdate', function () {
 
       it('should have overridable isEqualState', function (done) {
         var local = component.withDefaults({
-          isEqualState: function () { done() }
+          isEqualState: function () { done(); }
         }).shouldComponentUpdate;
 
         shouldUpdate({
@@ -401,7 +392,7 @@ describe('shouldComponentUpdate', function () {
 
       it('should have overridable isEqualProps', function (done) {
         var local = shouldComponentUpdate.withDefaults({
-          isEqualProps: function foobar () { done() }
+          isEqualProps: function foobar () { done(); }
         });
 
         shouldUpdate({
@@ -428,7 +419,7 @@ describe('shouldComponentUpdate', function () {
 
       it('should have overridable isEqualState', function (done) {
         var local = shouldComponentUpdate.withDefaults({
-          isEqualState: function () { done() }
+          isEqualState: function () { done(); }
         });
 
         shouldUpdate({

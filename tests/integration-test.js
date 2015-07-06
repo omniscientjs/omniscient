@@ -87,7 +87,7 @@ describe('component render test', function () {
   });
 
   it('should handle updates that mutate owners state', function (done) {
-    var click = function(node) {
+    var click = function (node) {
       var event = document.createEvent('click');
       event.initEvent('click', true, false);
       node.dispatchEvent(event);
@@ -99,7 +99,7 @@ describe('component render test', function () {
     });
 
     var List = component('List', function (props) {
-      var onRemove = function(item) {
+      var onRemove = function (item) {
         props.items.remove(props.items.indexOf(item));
       };
 
@@ -114,13 +114,13 @@ describe('component render test', function () {
       return d.li({
         id: 'item-' + props.item.get('id'),
         className: props.item.get('isSelected') ? 'selected' : '',
-        onClick: function() {
+        onClick: function () {
           props.statics.onRemove(props.item);
         }
       }, props.item.get('id'));
     });
 
-    var render = function() {
+    var render = function () {
       React.render(List({ items: structure.cursor('items') }), document.body);
     };
 

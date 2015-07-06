@@ -55,7 +55,7 @@ function factory (methods) {
       // Update input either way to allow GC reclaim it unless
       // anything else is referring to it.
       input = arguments;
-      return output
-    }
+      return output;
+    };
   };
 }

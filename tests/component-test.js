@@ -532,8 +532,6 @@ describe('component', function () {
     it('does not attach a node as props.statics', function (done) {
       var mixins = [{ componentDidMount: done }];
 
-      var statics = { foo: 'bar' };
-
       var c1 = ['hello', 'world'];
 
       var Component = component(mixins, function (cursor) {
@@ -764,7 +762,7 @@ describe('component', function () {
         return React.DOM.text(null, 'hello');
       });
 
-      var changeHandler = function() { return 1 }
+      var changeHandler = function () { return 1; };
       var handlers = {onChange: changeHandler };
 
       render(Component({}, handlers));
@@ -780,8 +778,6 @@ describe('component', function () {
       onChange.delegee.should.equal(changeHandler);
       onChange().should.equal(1);
       statics.onChange().should.equal(1);
-
-      var onChange2 = onChange;
 
       render(Component({a: 1}, handlers));
 
@@ -804,7 +800,7 @@ describe('component', function () {
         return React.DOM.text(null, 'hello');
       });
 
-      var changeHandler = function() { return 1 }
+      var changeHandler = function () { return 1; };
 
       render(Component({}, {onChange: changeHandler}));
 
@@ -819,8 +815,6 @@ describe('component', function () {
       onChange.delegee.should.equal(changeHandler);
       onChange().should.equal(1);
       statics.onChange().should.equal(1);
-
-      var onChange2 = onChange;
 
       render(Component({a: 1}, {onChange: changeHandler}));
 
@@ -877,7 +871,7 @@ describe('component', function () {
         return React.DOM.span({ key: 'd'}, input.d);
       });
 
-      var changeHandler = function() { return 1 }
+      var changeHandler = function () { return 1; };
 
       render(A({b: {text: 1}, c: {d: [2]}}, {onChange: changeHandler}));
 
@@ -911,7 +905,7 @@ describe('component', function () {
       handlers.c.delegee.should.equal(changeHandler);
       handlers.d.delegee.should.equal(changeHandler);
 
-      var onChange = function() { return 2 };
+      var onChange = function () { return 2; };
       render(A({b: {text: 11}, c: {d: [22]}}, {onChange: onChange}));
 
       renders.splice(0).join('->').should.equal('');
@@ -933,7 +927,7 @@ describe('component', function () {
         return React.DOM.text('');
       });
 
-      var onChange = function() {}
+      var onChange = function () {};
       render(Component({}, {}));
 
 
@@ -945,7 +939,7 @@ describe('component', function () {
       renders.length.should.equal(2);
       handlers.onChange.delegee.should.equal(onChange);
 
-      var onUpdate = function() {}
+      var onUpdate = function () {};
       render(Component({a: 1}, {onChange: onUpdate}));
 
       renders.length.should.equal(2);
@@ -973,21 +967,21 @@ describe('component', function () {
       return React.DOM.text(null, 'hello');
     });
 
-    render(Component({}, {onChange: function() { return 1 } }));
+    render(Component({}, {onChange: function () { return 1; } }));
     renderCalled.should.equal(1);
     onChange().should.equal(1);
 
-    render(Component({}, {onChange: function() { return 2 } }));
+    render(Component({}, {onChange: function () { return 2; } }));
     renderCalled.should.equal(1);
     onChange().should.equal(2);
     willReceivePropsCalled.should.equal(1);
 
-    render(Component({}, {onChange: function() { return 3 } }));
+    render(Component({}, {onChange: function () { return 3; } }));
     renderCalled.should.equal(1);
     onChange().should.equal(3);
     willReceivePropsCalled.should.equal(2);
 
-    render(Component({a: 1}, {onChange: function() { return 4 } }));
+    render(Component({a: 1}, {onChange: function () { return 4; } }));
     renderCalled.should.equal(2);
     onChange().should.equal(4);
     willReceivePropsCalled.should.equal(3);
@@ -1012,23 +1006,23 @@ describe('component', function () {
       return React.DOM.text(null, 'hello');
     });
 
-    render(Component({}, {onChange: function() { return 1 } }));
+    render(Component({}, {onChange: function () { return 1; } }));
     renderCalled.should.equal(1);
     willMountCalled.should.equal(1);
     onChange().should.equal(1);
 
 
-    render(Component({}, {onChange: function() { return 2 } }));
+    render(Component({}, {onChange: function () { return 2; } }));
     renderCalled.should.equal(1);
     willMountCalled.should.equal(1);
     onChange().should.equal(2);
 
-    render(Component({a: 1}, {onChange: function() { return 3 } }));
+    render(Component({a: 1}, {onChange: function () { return 3; } }));
     renderCalled.should.equal(2);
     willMountCalled.should.equal(1);
     onChange().should.equal(3);
 
-    render(Component({a: 1}, {onChange: function() { return 4 } }));
+    render(Component({a: 1}, {onChange: function () { return 4; } }));
     renderCalled.should.equal(2);
     willMountCalled.should.equal(1);
     onChange().should.equal(4);

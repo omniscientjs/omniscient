@@ -191,7 +191,7 @@ describe('debug', function () {
 
       shouldUpdate({
         cursor: {
-          one: one,
+          one: one
         },
         nextCursor: {
           one: one,

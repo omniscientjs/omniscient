@@ -31,7 +31,7 @@ module.exports = factory();
  * ### Options
  * ```js
  * {
- *   isCursor: function(cursor), // check if is props
+ *   isCursor: function (cursor), // check if is props
  *   isEqualCursor: function (oneCursor, otherCursor), // check cursor
  *   isEqualState: function (currentState, nextState), // check state
  *   isImmutable: function (currentState, nextState), // check if object is immutable
@@ -79,10 +79,10 @@ function factory (methods) {
       return true;
     }
 
-    var nextProps    = filter(nextProps, isNotIgnorable),
+    var nextPropsNotIgnorable = filter(nextProps, isNotIgnorable),
         currentProps = filter(this.props, isNotIgnorable);
 
-    if (!_isEqualProps(currentProps, nextProps)) {
+    if (!_isEqualProps(currentProps, nextPropsNotIgnorable)) {
       if (debug) debug.call(this, 'shouldComponentUpdate => true (props have changed)');
       return true;
     }
