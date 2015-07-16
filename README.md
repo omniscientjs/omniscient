@@ -173,6 +173,9 @@ component transparency and is thought of as an anti-pattern.
 You can also pass more advanced constructs as CSP channels or FRP streams as a part
 of statics.
 
+**Note:** Statics will be replaced in favor of a new more explicit and robust API
+in the next major release.
+
 ```js
 var Item = component(function (cursor, statics) {
   var onClick = function () {
