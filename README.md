@@ -378,5 +378,4 @@ for finding errors, you can also use filtering in your browser inspector.
 [gitter-url]: https://gitter.im/omniscientjs/omniscient?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge
 [gitter-image]: https://badges.gitter.im/Join%20Chat.svg
 
-*Logo is composed by icons from [Iconmoon](http://www.icomoon.io)
-and [Picol](http://picol.org). Licensed under [CC BY 3.0](http://creativecommons.org/licenses/by/3.0/)*
+*Logo created by the creative people at [Know Associates](http://knowassociates.com/)*
