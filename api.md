@@ -45,13 +45,13 @@ unwrap cursors, etc.
 ```js
 {
   // Goes directly to component
-  shouldComponentUpdate: function(nextProps, nextState), // check update
+  shouldComponentUpdate: function (nextProps, nextState), // check update
   jsx: false, // whether or not to default to jsx components
   cursorField: '__singleCursor', // cursor property name to "unwrap" before passing in to render
-  isNode: function(propValue), // determines if propValue is a valid React node
+  isNode: function (propValue), // determines if propValue is a valid React node
 
   // Passed on to `shouldComponentUpdate`
-  isCursor: function(cursor), // check if prop is cursor
+  isCursor: function (cursor), // check if prop is cursor
   unCursor: function (cursor), // convert cursor to object
   isEqualCursor: function (oneCursor, otherCursor), // compares cursor
   isEqualState: function (currentState, nextState), // compares state
@@ -207,7 +207,7 @@ Create a “local” instance of the shouldComponentUpdate with overriden defaul
 ### Options
 ```js
 {
-  isCursor: function(cursor), // check if is props
+  isCursor: function (cursor), // check if is props
   isEqualCursor: function (oneCursor, otherCursor), // check cursor
   isEqualState: function (currentState, nextState), // check state
   isImmutable: function (currentState, nextState), // check if object is immutable
@@ -334,6 +334,27 @@ Immutable.js cursors). Can override through `.withDefaults()`.
 | param       | type      | description            |
 | ----------- | --------- | ---------------------- |
 | `potential` | potential | to check if is cursor  |
+
+
+
+**Returns** `Boolean`, 
+
+
+### `shouldComponentUpdate.isIgnorable(value, key)`
+
+Predicate to check if a property on props should be ignored or not.
+For now this defaults to ignore if property key is `statics`, but that
+is deprecated behaviour, and will be removed by the next major release.
+
+Override through `shouldComponentUpdate.withDefaults`.
+
+
+### Parameters
+
+| param   | type   | description |
+| ------- | ------ | ----------- |
+| `value` | Object |             |
+| `key`   | String |             |
 
 
 
