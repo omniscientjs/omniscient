@@ -81,10 +81,10 @@ function factory (methods) {
       return true;
     }
 
-    var nextPropsNotIgnorable = filter(nextProps, isNotIgnorable),
-        currentProps = filter(this.props, isNotIgnorable);
+    var filteredNextProps    = filter(nextProps, isNotIgnorable),
+        filteredCurrentProps = filter(this.props, isNotIgnorable);
 
-    if (!_isEqualProps(currentProps, nextPropsNotIgnorable)) {
+    if (!_isEqualProps(filteredCurrentProps, filteredNextProps)) {
       if (debug) debug.call(this, 'shouldComponentUpdate => true (props have changed)');
       return true;
     }

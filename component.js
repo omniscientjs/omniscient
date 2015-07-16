@@ -358,12 +358,13 @@ function isNode (propValue) {
 }
 
 function delegate(delegee) {
-  var delegate = function () {
-    return delegate.delegee.apply(this, arguments);
+  var delegateFunction = function() {
+    return delegateFunction.delegee.apply(this, arguments);
   };
-  delegate.delegee = delegee;
-  delegate.isDelegate = true;
-  return delegate;
+
+  delegateFunction.delegee = delegee;
+  delegateFunction.isDelegate = true;
+  return delegateFunction;
 }
 
 function wrapWithDelegate (key) {
