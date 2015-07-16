@@ -55,6 +55,7 @@ unwrap cursors, etc.
   unCursor: function (cursor), // convert cursor to object
   isEqualCursor: function (oneCursor, otherCursor), // compares cursor
   isEqualState: function (currentState, nextState), // compares state
+  isIgnorable: function (propertyValue, propertyKey), // check if property item is ignorable
   isEqualProps: function (currentProps, nextProps), // compares props
   isImmutable: function (maybeImmutable) // check if object is immutable
 }
@@ -212,6 +213,7 @@ Create a “local” instance of the shouldComponentUpdate with overriden defaul
   isEqualState: function (currentState, nextState), // check state
   isImmutable: function (currentState, nextState), // check if object is immutable
   isEqualProps: function (currentProps, nextProps), // check props
+  isIgnorable: function (propertyValue, propertyKey), // check if property item is ignorable
   unCursor: function (cursor) // convert from cursor to object
 }
 ```

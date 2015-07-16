@@ -35,6 +35,7 @@ module.exports = factory();
  *   isEqualState: function (currentState, nextState), // check state
  *   isImmutable: function (currentState, nextState), // check if object is immutable
  *   isEqualProps: function (currentProps, nextProps), // check props
+ *   isIgnorable: function (propertyValue, propertyKey), // check if property item is ignorable
  *   unCursor: function (cursor) // convert from cursor to object
  * }
  * ```
