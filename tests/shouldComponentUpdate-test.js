@@ -352,6 +352,23 @@ describe('shouldComponentUpdate', function () {
         done();
       });
 
+      it('should have overridable isIgnorable', function () {
+        var numCalls = 0;
+        var local = shouldComponentUpdate.withDefaults({
+          isIgnorable: function foobar (value, key) {
+            numCalls++;
+            return key === 'ignore';
+          }
+        });
+
+        shouldNotUpdate({
+          cursor: { ignore: 'hello' },
+          nextCursor: { ignore: 'bye' }
+        }, local);
+
+        numCalls.should.be.above(1);
+      });
+
       it('should have debug on product of withDefaults', function () {
         var localComponent = shouldComponentUpdate.withDefaults({
           isCursor: function () { }

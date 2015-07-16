@@ -3,7 +3,6 @@
 var filter  = require('lodash.pick'),
     isEqual = require('lodash.isequal');
 
-var isNotIgnorable = not(or(isStatics, isChildren));
 
 /**
  * Directly fetch `shouldComponentUpdate` mixin to use outside of Omniscient.
@@ -57,7 +56,10 @@ function factory (methods) {
       _isEqualState  = methods.isEqualState || isEqualState,
       _isEqualProps  = methods.isEqualProps || isEqualProps,
       _isImmutable   = methods.isImmutable || isImmutable,
+      _isIgnorable   = methods.isIgnorable || isIgnorable,
       _unCursor      = methods.unCursor || unCursor;
+
+  var isNotIgnorable = not(or(_isIgnorable, isChildren));
 
   shouldComponentUpdate.isCursor = _isCursor;
   shouldComponentUpdate.isEqualState = _isEqualState;
@@ -261,7 +263,21 @@ function not (fn) {
   };
 }
 
-function isStatics (_, key) {
+/**
+ * Predicate to check if a property on props should be ignored or not.
+ * For now this defaults to ignore if property key is `statics`, but that
+ * is deprecated behaviour, and will be removed by the next major release.
+ *
+ * Override through `shouldComponentUpdate.withDefaults`.
+ *
+ * @param {Object} value
+ * @param {String} key
+ *
+ * @module shouldComponentUpdate.isIgnorable
+ * @returns {Boolean}
+ * @api public
+ */
+function isIgnorable (_, key) {
   return key === 'statics';
 }
 
