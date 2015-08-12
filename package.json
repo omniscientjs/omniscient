@@ -2,7 +2,7 @@
   "name": "omniscient",
   "version": "3.2.0",
   "description": "A library providing an abstraction for React components for passing the same data structure through the entire component flow using cursors and immutable data structures.",
-  "main": "component.js",
+  "main": "index.js",
   "directories": {
     "example": "example"
   },
@@ -27,6 +27,9 @@
     "uglify-js": "^2.4.15",
     "dox": "^0.6.1",
     "doxme": "git://github.com/mikaelbr/doxme#dev"
+  },
+  "optionalDependencies": {
+    "react-native": "^0.8.0"
   },
   "scripts": {
     "test": "mocha -R spec tests/**-test.js",

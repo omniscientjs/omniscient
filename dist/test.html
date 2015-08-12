@@ -1,0 +1,14 @@
+<html>
+  <body>
+    <div id="test"></div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.13.3/react.js"></script>
+    <script src="omniscient.js"></script>
+    <script>
+      var component = omniscient;
+      var Greet = component(function (props) {
+        return React.DOM.span({}, props.text);
+      });
+      React.render(Greet({ text: 'works' }), document.querySelector("#test"));
+    </script>
+  </body>
+</html>
