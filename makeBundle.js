@@ -7,7 +7,7 @@ var fs = require('fs');
 var UglifyJS = require('uglify-js');
 var pack = require('./package.json');
 
-var inputFile = './component.js';
+var inputFile = './index.js';
 var outputFile = './dist/omniscient.js';
 var outputMinifiedFile = './dist/omniscient.min.js';
 
