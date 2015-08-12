@@ -47,7 +47,7 @@
     "react": "global:React"
   },
   "author": "@torgeir,@mikaelbr",
-  "license": "mit",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/omniscientjs/omniscient/issues"
   },
