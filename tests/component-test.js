@@ -932,7 +932,7 @@ describe('component', function () {
 
 
       renders.length.should.equal(1);
-      (handlers.onChange === void 0).should.be.true();
+      (handlers.onChange === void 0).should.be.true;
 
       render(Component({a: 1}, {onChange: onChange}));
 
@@ -1032,7 +1032,7 @@ describe('component', function () {
 
   beforeEach(function () {
     global.document = jsdom.jsdom('<html><body></body></html>');
-    global.window = global.document.parentWindow;
+    global.window = global.document.defaultView;
   });
 
   afterEach(function () {

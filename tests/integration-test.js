@@ -15,7 +15,7 @@ describe('component render test', function () {
     // React needs a dom before being required
     // https://github.com/facebook/react/blob/master/src/vendor/core/ExecutionEnvironment.js#L39
     global.document = jsdom.jsdom('<html><body></body></html>');
-    global.window = global.document.parentWindow;
+    global.window = global.document.defaultView;
     global.navigator = global.window.navigator;
 
     // React creates a dummy dom node that uses the current document.
@@ -88,7 +88,7 @@ describe('component render test', function () {
 
   it('should handle updates that mutate owners state', function (done) {
     var click = function (node) {
-      var event = document.createEvent('click');
+      var event = new window.Event();
       event.initEvent('click', true, false);
       node.dispatchEvent(event);
     };

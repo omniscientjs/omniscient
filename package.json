@@ -15,21 +15,21 @@
     "react": ">=0.12.0 || >=0.14.0-alpha"
   },
   "devDependencies": {
-    "browserify": "^8.1.1",
+    "browserify": "^11.0.1",
     "browserify-shim": "^3.8.2",
-    "chai": "^1.9.2",
-    "derequire": "^1.2.0",
-    "immstruct": "^1.0.0",
+    "chai": "^3.2.0",
+    "derequire": "^2.0.1",
+    "immstruct": "^2.0.0",
     "immutable": "^3.0.2",
-    "jsdom": "^3.1.0",
+    "jsdom": "^6.1.0",
     "mocha": "^2.0.1",
-    "react": "^0.12.2",
+    "react": "^0.13.3",
     "uglify-js": "^2.4.15",
-    "dox": "^0.6.1",
+    "dox": "^0.8.0",
     "doxme": "git://github.com/mikaelbr/doxme#dev"
   },
   "optionalDependencies": {
-    "react-native": "^0.8.0"
+    "react-native": "^0.9.0"
   },
   "scripts": {
     "test": "mocha -R spec tests/**-test.js",
