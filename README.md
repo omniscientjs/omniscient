@@ -361,9 +361,15 @@ for finding errors, you can also use filtering in your browser inspector.
 - [Mikael Brevik](https://github.com/mikaelbr) ([@mikaelbrevik](https://twitter.com/mikaelbrevik))
 - [Torgeir Thoresen](https://github.com/torgeir) ([@torgeir](https://twitter.com/torgeir))
 
-## Omniscient in the wild
+## Examples
 
-- [TodoMVC - Omniscient](https://github.com/jcranendonk/todomvc-omniscient/) by [jcranendonk](https://github.com/jcranendonk)
+The [OmniscientJS github organization](https://github.com/omniscientjs) has a lot of example repos to get you started with different pieces of technology along with omniscient
+
+- https://github.com/omniscientjs/omniscient-starter-pack
+- https://github.com/omniscientjs/omniscient-react-native
+- https://github.com/omniscientjs/omniscient-redux
+- https://github.com/omniscientjs/omniscient-react-router
+- https://github.com/omniscientjs/omniscient-immstruct-reference
 
 ## License
 
