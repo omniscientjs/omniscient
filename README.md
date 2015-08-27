@@ -197,7 +197,7 @@ var mixins = {
   }
 }
 
-var List = component(function (cursor) {
+var List = component(mixins, function (cursor) {
   return React.DOM.ul({},
                       cursor.map(function (item) {
                         // pass on item cursor and statics as second arg
