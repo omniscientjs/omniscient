@@ -13,7 +13,7 @@ the cursors of [Om](https://github.com/swannodette/om), for js, using
  - top-down rendering of components (unidirectional data flow)
  - favours immutable data (with Immutable.js)
  - encourages small, composable components, and shared functionality through mixins
- - Seperation of concern. Components only deal with their own piece of data
+ - Separation of concern. Components only deal with their own piece of data
  - components can only change their own data, via cursors (without knowing where their data resides in the outer immutable data structure)
  - easily listen for changes across your data structure and trigger re-render
  - immutable data can give even faster re-renders than with pure React, as React can be prevented from even considering to re-render component trees with unchanged data
