@@ -14,21 +14,20 @@ If you simply pass one cursor, the cursor will be accessible on the
 `props.cursor` accessor. Data placed on the property `statics` of the
 component's arguments will not be tracked for changes.
 
-
 ### Parameters
 
-| param         | type         | description                                                                                          |
-| ------------- | ------------ | ---------------------------------------------------------------------------------------------------- |
-| `displayName` | String       | Component's display name. Used when debug()'ing and by React                                         |
-| `mixins`      | Array,Object | React mixins. Object literals with functions, or array of object literals with functions.            |
-| `render`      | Function     | Properties that do not trigger update when changed. Can be cursors, object and immutable structures  |
+| param         | type         | description                                                                                         |
+| ------------- | ------------ | --------------------------------------------------------------------------------------------------- |
+| `displayName` | String       | Component's display name. Used when debug()'ing and by React                                        |
+| `mixins`      | Array,Object | React mixins. Object literals with functions, or array of object literals with functions.           |
+| `render`      | Function     | Properties that do not trigger update when changed. Can be cursors, object and immutable structures |
 
 
 ### Properties
 
-| property                | type     | description                        |
-| ----------------------- | -------- | ---------------------------------- |
-| `shouldComponentUpdate` | Function | Get default shouldComponentUpdate  |
+| property                | type     | description                       |
+| ----------------------- | -------- | --------------------------------- |
+| `shouldComponentUpdate` | Function | Get default shouldComponentUpdate |
 
 
 
@@ -45,35 +44,21 @@ unwrap cursors, etc.
 ```js
 {
   // Goes directly to component
-  shouldComponentUpdate: function (nextProps, nextState), // check update
-  jsx: false, // whether or not to default to jsx components
+  shouldComponentUpdate: function(nextProps, nextState), // check update
   cursorField: '__singleCursor', // cursor property name to "unwrap" before passing in to render
-  isNode: function (propValue), // determines if propValue is a valid React node
+  isNode: function(propValue), // determines if propValue is a valid React node
 
   // Passed on to `shouldComponentUpdate`
-  isCursor: function (cursor), // check if prop is cursor
+  isCursor: function(cursor), // check if prop is cursor
   unCursor: function (cursor), // convert cursor to object
   isEqualCursor: function (oneCursor, otherCursor), // compares cursor
   isEqualState: function (currentState, nextState), // compares state
-  isIgnorable: function (propertyValue, propertyKey), // check if property item is ignorable
   isEqualProps: function (currentProps, nextProps), // compares props
   isImmutable: function (maybeImmutable) // check if object is immutable
 }
 ```
 
 ### Examples
-#### Always use JSX
-```js
-var component = require('omniscient');
-var jsxComponent = component.withDefaults({
-  jsx: true
-});
-
-var Greeting = jsxComponent(function () {
-  return Hello!
-});
-React.render(, document.body);
-```
 
 #### Un-wrapping curors
 ```jsx
@@ -88,19 +73,18 @@ var Component = localComponent(function (myCursor) {
 React.render(, document.body);
 ```
 
-
 ### Parameters
 
-| param     | type   | description                        |
-| --------- | ------ | ---------------------------------- |
-| `Options` | Object | Options with defaults to override  |
+| param     | type   | description                       |
+| --------- | ------ | --------------------------------- |
+| `Options` | Object | Options with defaults to override |
 
 
 ### Properties
 
-| property                | type     | description                        |
-| ----------------------- | -------- | ---------------------------------- |
-| `shouldComponentUpdate` | Function | Get default shouldComponentUpdate  |
+| property                | type     | description                       |
+| ----------------------- | -------- | --------------------------------- |
+| `shouldComponentUpdate` | Function | Get default shouldComponentUpdate |
 
 
 
@@ -120,25 +104,17 @@ SearchBox>: shouldComponentUpdate => true (cursors have changed)
 SearchBox>: render
 ```
 
-
 ### Parameters
 
-| param     | type   | description                                          |
-| --------- | ------ | ---------------------------------------------------- |
-| `pattern` | RegExp | Filter pattern. Only show messages matching pattern  |
-
-
-### Properties
-
-| property | type   | description                   |
-| -------- | ------ | ----------------------------- |
-| `jsx`    | Object | Get component for use in JSX  |
+| param     | type   | description                                         |
+| --------- | ------ | --------------------------------------------------- |
+| `pattern` | RegExp | Filter pattern. Only show messages matching pattern |
 
 
 ### Example
 
 ```js
-omniscient.debug(/Search/i); 
+omniscient.debug(/Search/i);
 ```
 
 
@@ -148,7 +124,6 @@ omniscient.debug(/Search/i);
 ### `Component(displayName, props, statics, ..rest)`
 
 Invoke component (rendering it)
-
 
 ### Parameters
 
@@ -160,13 +135,6 @@ Invoke component (rendering it)
 | `..rest`      | Object | Child components (React elements, scalar values)                                                     |
 
 
-### Properties
-
-| property | type   | description                   |
-| -------- | ------ | ----------------------------- |
-| `jsx`    | Object | Get component for use in JSX  |
-
-
 
 **Returns** `ReactElement`, 
 
@@ -175,7 +143,6 @@ Invoke component (rendering it)
 
 Directly fetch `shouldComponentUpdate` mixin to use outside of Omniscient.
 You can do this if you don't want to use Omniscients syntactic sugar.
-
 
 ### Parameters
 
@@ -218,12 +185,11 @@ Create a “local” instance of the shouldComponentUpdate with overriden defaul
 }
 ```
 
-
 ### Parameters
 
-| param       | type   | description                                    |
-| ----------- | ------ | ---------------------------------------------- |
-| `[Options]` | Object | _optional:_ Options with defaults to override  |
+| param       | type   | description                                   |
+| ----------- | ------ | --------------------------------------------- |
+| `[Options]` | Object | _optional:_ Options with defaults to override |
 
 
 
@@ -236,7 +202,6 @@ Predicate to check if state is equal. Checks in the tree for immutable structure
 and if it is, check by reference. Does not support cursors.
 
 Override through `shouldComponentUpdate.withDefaults`.
-
 
 ### Parameters
 
@@ -257,7 +222,6 @@ and if it is, check by reference.
 
 Override through `shouldComponentUpdate.withDefaults`.
 
-
 ### Parameters
 
 | param   | type   | description |
@@ -275,7 +239,6 @@ Override through `shouldComponentUpdate.withDefaults`.
 Predicate to check if cursors are equal through reference checks. Uses `unCursor`.
 Override through `shouldComponentUpdate.withDefaults` to support different cursor
 implementations.
-
 
 ### Parameters
 
@@ -295,12 +258,11 @@ Predicate to check if a potential is an immutable structure or not.
 Override through `shouldComponentUpdate.withDefaults` to support different cursor
 implementations.
 
-
 ### Parameters
 
-| param   | type           | description                   |
-| ------- | -------------- | ----------------------------- |
-| `value` | maybeImmutable | to check if it is immutable.  |
+| param   | type           | description                  |
+| ------- | -------------- | ---------------------------- |
+| `value` | maybeImmutable | to check if it is immutable. |
 
 
 
@@ -313,12 +275,11 @@ Transforming function to take in cursor and return a non-cursor.
 Override through `shouldComponentUpdate.withDefaults` to support different cursor
 implementations.
 
-
 ### Parameters
 
-| param    | type   | description   |
-| -------- | ------ | ------------- |
-| `cursor` | cursor | to transform  |
+| param    | type   | description  |
+| -------- | ------ | ------------ |
+| `cursor` | cursor | to transform |
 
 
 
@@ -330,12 +291,11 @@ implementations.
 Predicate to check if `potential` is Immutable cursor or not (defaults to duck testing
 Immutable.js cursors). Can override through `.withDefaults()`.
 
-
 ### Parameters
 
-| param       | type      | description            |
-| ----------- | --------- | ---------------------- |
-| `potential` | potential | to check if is cursor  |
+| param       | type      | description           |
+| ----------- | --------- | --------------------- |
+| `potential` | potential | to check if is cursor |
 
 
 
@@ -349,7 +309,6 @@ For now this defaults to ignore if property key is `statics`, but that
 is deprecated behaviour, and will be removed by the next major release.
 
 Override through `shouldComponentUpdate.withDefaults`.
-
 
 ### Parameters
 
@@ -377,12 +336,11 @@ of state. Although note that only last result is cached so it is
 not practical to call it mulitple times with in the same `render`
 call.
 
-
 ### Parameters
 
-| param      | type     | description               |
-| ---------- | -------- | ------------------------- |
-| `Function` | Function | that does a computation.  |
+| param      | type     | description              |
+| ---------- | -------- | ------------------------ |
+| `Function` | Function | that does a computation. |
 
 
 
@@ -400,12 +358,11 @@ Create a “local” instance of the `cache` with overriden defaults.
 }
 ```
 
-
 ### Parameters
 
-| param       | type   | description                                    |
-| ----------- | ------ | ---------------------------------------------- |
-| `[Options]` | Object | _optional:_ Options with defaults to override  |
+| param       | type   | description                                   |
+| ----------- | ------ | --------------------------------------------- |
+| `[Options]` | Object | _optional:_ Options with defaults to override |
 
 
 
@@ -422,12 +379,11 @@ or not. Can be numbers, strings, bools, and React Elements.
 React's isNode check from ReactPropTypes validator
 but adjusted to not accept objects to avoid collision with props & statics.
 
-
 ### Parameters
 
-| param       | type   | description                                     |
-| ----------- | ------ | ----------------------------------------------- |
-| `propValue` | String | Property value to check if is valid React Node  |
+| param       | type   | description                                    |
+| ----------- | ------ | ---------------------------------------------- |
+| `propValue` | String | Property value to check if is valid React Node |
 
 
 

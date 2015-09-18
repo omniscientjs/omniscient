@@ -197,24 +197,8 @@ describe('shouldComponentUpdate', function () {
       });
     });
 
-    it('when only statics has changed', function () {
-      shouldNotUpdate({
-        statics: { foo: 'hello' },
-        nextStatics: { bar: 'bye' }
-      });
-    });
-
     it('when children has changed', function () {
       shouldNotUpdate({
-        children: { foo: 'hello' },
-        nextChildren: { bar: 'bye' }
-      });
-    });
-
-    it('when statics and children has changed', function () {
-      shouldNotUpdate({
-        statics: { foo: 'hello' },
-        nextStatics: { bar: 'bye' },
         children: { foo: 'hello' },
         nextChildren: { bar: 'bye' }
       });

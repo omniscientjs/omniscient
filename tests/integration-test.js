@@ -7,6 +7,8 @@ var immstruct = require('immstruct');
 
 var React, d;
 
+var ReactDOM = require('react-dom');
+
 var component;
 
 describe('component render test', function () {
@@ -14,7 +16,7 @@ describe('component render test', function () {
   beforeEach(function () {
     // React needs a dom before being required
     // https://github.com/facebook/react/blob/master/src/vendor/core/ExecutionEnvironment.js#L39
-    global.document = jsdom.jsdom('<html><body></body></html>');
+    global.document = jsdom.jsdom('<html><body><div id="app"></div></body></html>');
     global.window = global.document.defaultView;
     global.navigator = global.window.navigator;
 
@@ -75,10 +77,10 @@ describe('component render test', function () {
     });
 
     var div = document.createElement('div');
-    React.render(List({ cursor: structure.cursor('items') }), div); // 1
+    ReactDOM.render(List({ cursor: structure.cursor('items') }), div); // 1
 
     structure.on('swap', function () {
-      React.render(List({ cursor: structure.cursor('items') }), div); // 4
+      ReactDOM.render(List({ cursor: structure.cursor('items') }), div); // 4
     });
 
     structure.cursor().update('items', function (items) {
@@ -121,33 +123,26 @@ describe('component render test', function () {
     });
 
     var render = function () {
-      React.render(List({ items: structure.cursor('items') }), document.body);
+      ReactDOM.render(List({ items: structure.cursor('items') }), document.querySelector('#app'));
     };
 
     structure.on('swap', render);
     render();
 
-    var ul = document.body.firstChild;
+    var ul = document.querySelector('#app').firstChild;
 
-    should.equal(ul.children.length, 4,
-                 'should contain 4 list items');
+    should.equal(ul.children.length, 4, 'should contain 4 list items');
 
-    click(document.getElementById('item-1'));
+    click(document.querySelector('#item-1'));
 
-    should.equal(ul.children.length, 3,
-                 'item should have being removed');
-    should.equal(document.getElementById('item-1'), null,
-                 'item was removed');
+    should.equal(ul.children.length, 3, 'item should have being removed');
+    should.equal(document.querySelector('#item-1'), null, 'item was removed');
 
-    click(document.getElementById('item-0'));
+    click(document.querySelector('#item-0'));
 
-    should.equal(ul.children.length, 2,
-                 'item should have being removed');
-    should.equal(document.getElementById('item-1'), null,
-                 'item-1 is still removed');
-    should.equal(document.getElementById('item-0'), null,
-                 'item-0 was removed');
-
+    should.equal(ul.children.length, 2, 'item should have being removed');
+    should.equal(document.querySelector('#item-1'), null, 'item-1 is still removed');
+    should.equal(document.querySelector('#item-0'), null, 'item-0 was removed');
     done();
   });
 });

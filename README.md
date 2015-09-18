@@ -10,6 +10,7 @@ the cursors of [Om](https://github.com/swannodette/om), for js, using
 ### Rationale
 
  - Functional programming for UIs
+ - Works as memoization for stateless React components
  - top-down rendering of components (unidirectional data flow)
  - favours immutable data (with Immutable.js)
  - encourages small, composable components, and shared functionality through mixins
@@ -29,7 +30,6 @@ See more about Omniscient on it's [website](http://omniscientjs.github.io/), whe
 With cursors, components can have the outer immutable structure swapped when a component's data is changed. A re-render can be triggered, but only component trees referencing data affected by the change will actually be re-rendered. This means that if you don't pass any data (cursor or non-cursor property) to a component, this component won't be re-rendered. This could affect shallow parent components. Such a component could have a [`shouldComponentUpdate` that always return true](http://omniscientjs.github.io/api/01-omniscient-api-reference/#shouldcomponentupdatewithdefaultsoptions). This will make the component always re-render.
 
 
-The example below is using non-JSX.
 If you pass in a single cursor, this is added to the `props.cursor` property, where `props` is what you get passed to your component.
 
 ```js
@@ -79,12 +79,8 @@ var structure = immstruct({ guest: { name: 'omniscent' } });
 
 // Now, as we pass in guestCursor as a property on props from
 // JSX, we'll have to use destructuring to get cursor
-var GreetComponent = component(({guestCursor}) =>
+var Greet = component(({guestCursor}) =>
   <div>Hello from {guestCursor.get('name')}</div>);
-
-// As we get a component not element from component, we need to get
-// element to use with react. Access the element through `.jsx`
-var Greet = GreetComponent.jsx;
 
 function render () {
   // Render Greet component and pass on cursor.
@@ -105,23 +101,6 @@ setTimeout(function () {
 }, 1000);
 
 ```
-
-Note: The `.jsx` will get an element which you can use with JSX. If you
-use JSX all the way, you can make Omniscient always return JSX-elements:
-
-```js
-var component = require('omniscient').withDefaults({
-  jsx: true
-});
-
-// Now, as we pass in guestCursor as a property on props from
-// JSX, we'll have to use destructuring to get cursor
-var Greet = component(({name}) => <div>Hello from {name}</div>);
-
-React.render(<Greet name="Omniscient" />, document.body);
-```
-
-See more on overriding defaults in the [API Reference](http://omniscientjs.github.io/api/01-omniscient-api-reference/#omniscientwithdefaultsoptions)
 
 ### Reuseable mixins
 
