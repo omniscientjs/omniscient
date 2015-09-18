@@ -164,46 +164,13 @@ var SavingFocusingInput = component([Props, SaveOnEdit, SelectOnRender],
 
 #### Talking back from child to parent
 
-Communicating information back to the parent component from a child component can be done by
-passing down constructs as EventEmitters or simply event handler functions. These can
-be passed down as a part of a field called statics. **Statics won't trigger a re-render**,
-so you cannot pass data or functions that will alter the output. This will break the
-component transparency and is thought of as an anti-pattern.
-
-You can also pass more advanced constructs as CSP channels or FRP streams as a part
-of statics.
-
-**Note:** Statics will be replaced in favor of a new more explicit and robust API
-in the next major release.
+Often you would like to talk back to parents by passing down some sort of helper function or helper constructions like EventEmitters. In these cases you don't want to trigger a re-render if any of the internal changes. You can wrap the provided `shouldComponentUpdate` and extend it to ignore given fields. The helper library [Omnipotent](https://github.com/omniscientjs/omnipotent) has a implementation of this: the `ignore` decorator:
 
 ```js
-var Item = component(function (cursor, statics) {
-  var onClick = function () {
-    statics.channel.emit('data', cursor);
-  };
-  return React.DOM.li({ onClick: onClick },
-                      React.DOM.text({}, cursor.get('text')));
-});
+var Title = component('View', ({input, ignoreThis}) =>
+  <h1>{input.deref()} vs. {ignoreThis.deref()}</h1>);
 
-
-// In some other file
-var events = new EventEmitter();
-var mixins = {
-  componentDidMount: function () {
-    events.on('data', function (item) {
-      console.log('Hello from', item);
-      // use self.props.cursor if needed (self = bound this)
-    });
-  }
-}
-
-var List = component(mixins, function (cursor) {
-  return React.DOM.ul({},
-                      cursor.map(function (item) {
-                        // pass on item cursor and statics as second arg
-                        return Item(item, { channel: events });
-                      }).toArray();
-});
+var IgnoredTitle = ignore('ignoreThis', Title);
 ```
 
 ### Local State

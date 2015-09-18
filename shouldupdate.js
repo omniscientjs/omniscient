@@ -91,7 +91,6 @@ function factory (methods) {
     }
 
     if (debug) debug.call(this, 'shouldComponentUpdate => false');
-
     return false;
   }
 
@@ -240,8 +239,7 @@ function isImmutable(maybeImmutable) {
  * @api public
  */
 function unCursor(cursor) {
-  if (!cursor || !cursor.deref) return cursor;
-  return cursor.deref();
+  return !isCursor(cursor) ? cursor : cursor.deref();
 }
 
 /**
@@ -279,7 +277,7 @@ function not (fn) {
  * @api public
  */
 function isIgnorable (_, key) {
-  return key === 'statics';
+  return false;
 }
 
 function isChildren (_, key) {
