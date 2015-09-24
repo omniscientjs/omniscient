@@ -235,10 +235,6 @@ function factory (options) {
       mixins = [mixins];
     }
 
-    // Add built-in lifetime methods to keep `statics` up to date.
-    mixins.unshift(componentWillMount.asMixin,
-                   componentWillReceiveProps.asMixin);
-
     if (!hasShouldComponentUpdate(mixins)) {
       mixins.unshift({
         shouldComponentUpdate: _shouldComponentUpdate
@@ -333,67 +329,3 @@ function sliceFrom (args, value) {
 function flatten (array) {
   return Array.prototype.concat.apply([], array);
 }
-
-function delegate(delegee) {
-  var delegateFunction = function() {
-    return delegateFunction.delegee.apply(this, arguments);
-  };
-
-  delegateFunction.delegee = delegee;
-  delegateFunction.isDelegate = true;
-  return delegateFunction;
-}
-
-function wrapWithDelegate (key) {
-  var statics = this;
-  var delegee = statics[key];
-  if (typeof delegee === 'function') {
-    statics[key] = isDelegate(delegee) ? delegee : delegate(delegee);
-  }
-}
-
-function isDelegate (value) {
-  return value && value.isDelegate;
-}
-
-function componentWillMount () {
-  var statics = this.props.statics;
-  if (statics && typeof statics === 'object') {
-    Object.keys(statics).forEach(wrapWithDelegate, statics);
-  }
-}
-// `asMixin` will let us reuse same objcet instead of re-creating
-// it per each component.
-componentWillMount.asMixin = {
-  componentWillMount: componentWillMount
-};
-
-function componentWillReceiveProps (newProps) {
-  var currentProps = this.props;
-  var currentStatics = currentProps.statics;
-  var newStatics = newProps.statics;
-  var haveChangedStatics = newStatics !== currentStatics &&
-        newStatics &&
-        typeof newStatics === 'object';
-
-  if (haveChangedStatics) {
-    Object.keys(newStatics).forEach(function (key) {
-      var newMember = newStatics[key];
-      if (typeof (newMember) == 'function') {
-        var currentMember = currentStatics && currentStatics[key];
-        if (isDelegate(currentMember)) {
-          var delegee = isDelegate(newMember) ? newMember.delegee : newMember;
-          currentMember.delegee = delegee;
-          newStatics[key] = currentMember;
-        } else {
-          newStatics[key] = delegate(newMember);
-        }
-      }
-    });
-  }
-}
-// `asMixin` will let us reuse same objcet instead of re-creating
-// it per each component.
-componentWillReceiveProps.asMixin = {
-  componentWillReceiveProps: componentWillReceiveProps
-};
