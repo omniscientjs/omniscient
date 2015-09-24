@@ -17,8 +17,7 @@ var cached = require('./cached');
  * and it will also be available on `this.props`.
  *
  * If you simply pass one cursor, the cursor will be accessible on the
- * `props.cursor` accessor. Data placed on the property `statics` of the
- * component's arguments will not be tracked for changes.
+ * `props.cursor` accessor.
  *
  * @param {String} displayName Component's display name. Used when debug()'ing and by React
  * @param {Array|Object} mixins React mixins. Object literals with functions, or array of object literals with functions.
@@ -130,7 +129,7 @@ function factory (options) {
         // to the component, pick it out and pass it.
         var input = this.props[_hiddenCursorField] || this.props;
         this.cursor = this.props[_hiddenCursorField];
-        return options.render.call(this, input, this.props.statics);
+        return options.render.call(this, input);
       }
     };
 
@@ -146,25 +145,23 @@ function factory (options) {
      *
      * @param {String} displayName Component display name. Used in debug and by React
      * @param {Object} props Properties that **do** trigger update when changed. Can be cursors, object and immutable structures
-     * @param {Object} statics Properties that do not trigger update when changed. Can be cursors, object and immutable structuress
      * @param {Object} ..rest Child components (React elements, scalar values)
      *
      * @module Component
      * @returns {ReactElement}
      * @api public
      */
-    var create = function (key, props, statics) {
+    var create = function (key, props) {
       var _props;
       var inputCursor;
       var children;
 
       if (typeof key === 'object') {
-        statics = props;
         props = key;
         key   = void 0;
       }
 
-      children = flatten(sliceFrom(arguments, statics).filter(_isNode));
+      children = flatten(sliceFrom(arguments, props).filter(_isNode));
 
       // If passed props is a signle cursor we move it to `props[_hiddenCursorField]`
       // to simplify should component update. The render function will move it back.
@@ -175,12 +172,6 @@ function factory (options) {
         _props[_hiddenCursorField] = inputCursor;
       } else {
         _props = assign({}, props);
-      }
-
-      // If statics is a node (due to it being optional)
-      // don't attach the node to the statics prop
-      if (!!statics && !props.statics && !_isNode(statics)) {
-        _props.statics = statics;
       }
 
       if (key) {
@@ -254,7 +245,7 @@ function factory (options) {
  * or not. Can be numbers, strings, bools, and React Elements.
  *
  * React's isNode check from ReactPropTypes validator
- * but adjusted to not accept objects to avoid collision with props & statics.
+ * but adjusted to not accept objects to avoid collision with props.
  *
  * @param {String} propValue Property value to check if is valid React Node
  *
