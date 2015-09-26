@@ -356,6 +356,32 @@ for finding errors, you can also use filtering in your browser inspector.
 
 ---
 
+## React 0.14
+
+When React 0.14 becomes stable, we will transition to be an even simpler library.
+Omniscient.js could essentially just be a very low hanging fruit for improved
+performance for stateless React components, just like memoization for normal
+functions. Omniscient will also keep some of it's original features, such as
+easier `key`, `children` as rest to a component (instead of on props as with
+normal stateless React), but all these syntactic sugar have been and still will
+be optional to use. You can use Omniscient.js the same way as React, if that is
+what you want.
+
+Most notable change will be deprecation and removal of `statics`. There will
+no longer be an implicit ignored field on your props. However, sometimes this
+is what you want, so you can still achieve the same thing using
+[decorators](https://github.com/omniscientjs/omnipotent#ignorefields--stringarraystring-component--component).
+By doing `ignore('statics', MyComponent)` you'll be able to use it as before,
+but with a better explicit API.
+
+Also gone, with the change of `React 0.14` is the horrible, but previously
+necessary `.JSX` accessor. With the latest of React we can use JSX and non-JSX
+much more interoperable. Which is fantastic news!
+
+Follow [this pull request for all changes and discussion](https://github.com/omniscientjs/omniscient/pull/116).
+
+---
+
 ## Authors
 
 - [Mikael Brevik](https://github.com/mikaelbr) ([@mikaelbrevik](https://twitter.com/mikaelbrevik))
