@@ -75,7 +75,7 @@ function createTicker () {
 }
 ```
 
-__See more on using life cycle methods below in the section "Passing Life Cycle Methods or other Methods".__
+_See more on using life cycle methods below in the section ["Passing Life Cycle Methods or other Methods"](#passing-life-cycle-methods-or-other-methods)._
 
 Following the Todo example on the [React homepage](http://facebook.github.io/react/), one approach, also stateless and functional, with Omniscient.js and immutable data could be as follows:
 
