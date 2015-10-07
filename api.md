@@ -3,24 +3,27 @@
 
 Create components for functional views.
 
-The API of Omniscient is pretty simple, you create a component
-with a render function and the mixins you need.
+The API of Omniscient is pretty simple, you create a Stateless React Component
+but memoized with a smart implemented `shouldComponentUpdate`.
 
-When using the created component, you can pass a cursor or an object
-as data to it. This data will be the render function's first argument,
-and it will also be available on `this.props`.
+The provided `shouldComponentUpdate` handles immutable data and cursors by default.
+It also falls back to a deep value check if passed props isn't immutable structures.
+
+You can use an Omniscient component in the same way you'd use a React Stateless Function,
+or you can use some of the additional features, such as string defined display name and
+pass in life cycle methods. These are features normally not accessible for vanilla
+Stateless React Components.
 
 If you simply pass one cursor, the cursor will be accessible on the
-`props.cursor` accessor. Data placed on the property `statics` of the
-component's arguments will not be tracked for changes.
+`props.cursor` accessor.
 
 ### Parameters
 
-| param         | type         | description                                                                                         |
-| ------------- | ------------ | --------------------------------------------------------------------------------------------------- |
-| `displayName` | String       | Component's display name. Used when debug()'ing and by React                                        |
-| `mixins`      | Array,Object | React mixins. Object literals with functions, or array of object literals with functions.           |
-| `render`      | Function     | Properties that do not trigger update when changed. Can be cursors, object and immutable structures |
+| param         | type         | description                                                                               |
+| ------------- | ------------ | ----------------------------------------------------------------------------------------- |
+| `displayName` | String       | Component's display name. Used when debug()'ing and by React                              |
+| `mixins`      | Array,Object | React mixins. Object literals with functions, or array of object literals with functions. |
+| `render`      | Function     | Stateless component to add memoization on.                                                |
 
 
 ### Properties
@@ -121,18 +124,17 @@ omniscient.debug(/Search/i);
 **Returns** `Immstruct`, 
 
 
-### `Component(displayName, props, statics, ..rest)`
+### `Component(displayName, props, ...rest)`
 
 Invoke component (rendering it)
 
 ### Parameters
 
-| param         | type   | description                                                                                          |
-| ------------- | ------ | ---------------------------------------------------------------------------------------------------- |
-| `displayName` | String | Component display name. Used in debug and by React                                                   |
-| `props`       | Object | Properties that **do** trigger update when changed. Can be cursors, object and immutable structures  |
-| `statics`     | Object | Properties that do not trigger update when changed. Can be cursors, object and immutable structuress |
-| `..rest`      | Object | Child components (React elements, scalar values)                                                     |
+| param         | type   | description                                                                                |
+| ------------- | ------ | ------------------------------------------------------------------------------------------ |
+| `displayName` | String | Component display name. Used in debug and by React                                         |
+| `props`       | Object | Properties (triggers update when changed). Can be cursors, object and immutable structures |
+| `...rest`     | Object | Child components (React elements, scalar values)                                           |
 
 
 
@@ -161,6 +163,7 @@ You can do this if you don't want to use Omniscients syntactic sugar.
 | `isEqualProps`  | Function | Get default isEqualProps  |
 | `isEqualCursor` | Function | Get default isEqualCursor |
 | `isImmutable`   | Function | Get default isImmutable   |
+| `isIgnorable`   | Function | Get default isIgnorable   |
 | `debug`         | Function | Get default debug         |
 
 
@@ -377,7 +380,7 @@ Predicate showing whether or not the argument is a valid React Node
 or not. Can be numbers, strings, bools, and React Elements.
 
 React's isNode check from ReactPropTypes validator
-but adjusted to not accept objects to avoid collision with props & statics.
+but adjusted to not accept objects to avoid collision with props.
 
 ### Parameters
 
