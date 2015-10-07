@@ -9,22 +9,25 @@ var cached = require('./cached');
 /**
  * Create components for functional views.
  *
- * The API of Omniscient is pretty simple, you create a component
- * with a render function and the mixins you need.
+ * The API of Omniscient is pretty simple, you create a Stateless React Component
+ * but memoized with a smart implemented `shouldComponentUpdate`.
  *
- * When using the created component, you can pass a cursor or an object
- * as data to it. This data will be the render function's first argument,
- * and it will also be available on `this.props`.
+ * The provided `shouldComponentUpdate` handles immutable data and cursors by default.
+ * It also falls back to a deep value check if passed props isn't immutable structures.
+ *
+ * You can use an Omniscient component in the same way you'd use a React Stateless Function,
+ * or you can use some of the additional features, such as string defined display name and
+ * pass in life cycle methods. These are features normally not accessible for vanilla
+ * Stateless React Components.
  *
  * If you simply pass one cursor, the cursor will be accessible on the
  * `props.cursor` accessor.
  *
  * @param {String} displayName Component's display name. Used when debug()'ing and by React
  * @param {Array|Object} mixins React mixins. Object literals with functions, or array of object literals with functions.
- * @param {Function} render Properties that do not trigger update when changed. Can be cursors, object and immutable structures
+ * @param {Function} render Stateless component to add memoization on.
  *
  * @property {Function} shouldComponentUpdate Get default shouldComponentUpdate
-
  * @module omniscient
  * @returns {Component}
  * @api public
@@ -144,8 +147,8 @@ function factory (options) {
      * Invoke component (rendering it)
      *
      * @param {String} displayName Component display name. Used in debug and by React
-     * @param {Object} props Properties that **do** trigger update when changed. Can be cursors, object and immutable structures
-     * @param {Object} ..rest Child components (React elements, scalar values)
+     * @param {Object} props Properties (triggers update when changed). Can be cursors, object and immutable structures
+     * @param {Object} ...rest Child components (React elements, scalar values)
      *
      * @module Component
      * @returns {ReactElement}

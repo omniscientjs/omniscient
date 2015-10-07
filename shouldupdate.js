@@ -16,6 +16,7 @@ var filter  = require('lodash.pick'),
  * @property {Function} isEqualProps Get default isEqualProps
  * @property {Function} isEqualCursor Get default isEqualCursor
  * @property {Function} isImmutable Get default isImmutable
+ * @property {Function} isIgnorable Get default isIgnorable
  * @property {Function} debug Get default debug
  *
  * @module shouldComponentUpdate
