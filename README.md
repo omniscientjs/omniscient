@@ -139,6 +139,8 @@ function addItem (e) {
 }
 ```
 
+Note, in the examples above, we have to manually do re-rendering. This can be a tedious and usually not something you'd do. You can read more about automating this in the section ["Immutable Structure and Re-render Loop"](#immutable-structure-and-re-render-loop).
+
 ### Passing Life Cycle Methods or other Methods
 
 In contrast to vanilla React stateless functions, Omniscient components can get passed life cycle methods when that is necessary. For instance, when you want to do some operations when the component is mounted.
@@ -230,38 +232,65 @@ Cursors (similar to functional lenses) are shallow wrappers on top of immutable 
 ### Example using Cursors
 
 ```js
-var React     = require('react'),
-    ReactDOM  = requrie('react-dom'),
-    immstruct = require('immstruct'),
-    component = require('omniscient');
+var React = require('react');
+var ReactDOM = require('react-dom');
+var component = require('omniscient');
+var immstruct = require('immstruct');
 
-var structure = immstruct({ guest: { name: 'omniscent' } });
-var div = React.DOM.div;
+// List of todo items as a stateless function
+var TodoList = component(({items}) =>
+  <ul>
+    {items.map((itemText, i) =>
+      <li key={i + itemText}>{itemText}</li>
+    )}
+  </ul>
+);
 
-// Composable component, gets passed a cursor
-var Greet = component(function (props){
-  var guestCursor = props.state;
-  return div({}, 'Hello from ' + guestCursor.get('name'));
+// Todo App as a stateless function. Just a render function.
+var TodoApp = component(({state}) => (
+  <div>
+    <h3>TODO</h3>
+    <TodoList items={state.get('items')} />
+    <form onSubmit={(e) => addItem(state, e)}>
+      <input onChange={(e) => changeText(state, e)} value={state.get('text')} />
+      <button>{'Add #' + (state.get('items').size + 1)}</button>
+    </form>
+  </div>
+));
+
+// Default initial structure as immutable data.
+var structure = immstruct({
+  items: [],
+  text: ''
 });
 
-function render () {
-  // Render Greet component and pass on cursor.
-  ReactDOM.render(Greet({
-    state: structure.cursor('guest')
-  }), document.querySelector('#app'));
+// Render and re-render loop
+var mountNode = document.querySelector('#app');
+function render (state) {
+  // Passing a cursor to the state instead of the actual state it self
+  ReactDOM.render(<TodoApp state={structure.cursor()} />, mountNode);
 }
 
-// Render on initial load
+
+// Render out initial application
 render();
 
-// Will trigger when cursor on structure updates
+// Listen for changes and rerender (render loop)
 structure.on('swap', render);
 
-// Update cursor to correct typo
-setTimeout(function () {
-  structure.cursor('guest').set('name', 'Omniscient');
-}, 1000);
+// Actions. Ways to update the current state and trigger a re-render
 
+function changeText (cursor, e) {
+  cursor.set('text', e.target.value);
+}
+
+function addItem (stateCursor, e) {
+  e.preventDefault();
+  stateCursor.update(function (current) {
+    current = current.update('items', (items) => items.concat(current.get('text')));
+    return current.set('text', '');
+  })
+}
 ```
 
 *See [more demos in the playground](http://omniscientjs.github.io/playground/) on the homepage*
