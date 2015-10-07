@@ -3,9 +3,6 @@ var jsdom = require('jsdom');
 var Immutable = require('immutable');
 var Cursor = require('immutable/contrib/cursor');
 
-var React  = require('react/addons'),
-    ReactTestUtils = React.addons.TestUtils;
-
 var should = chai.should();
 
 var component = require('../');

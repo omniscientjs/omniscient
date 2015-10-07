@@ -4,8 +4,8 @@ var assert = require('assert');
 var chai = require('chai');
 chai.should();
 
-var React  = require('react/addons'),
-    ReactTestUtils = React.addons.TestUtils;
+var React  = require('react');
+var ReactServer = require('react-dom/server');
 
 var Immutable = require('immutable');
 var Cursor = require('immutable/contrib/cursor');
@@ -291,7 +291,7 @@ describe('debug', function () {
 });
 
 function render (component) {
-  ReactTestUtils.renderIntoDocument(component);
+  ReactServer.renderToString(component);
 }
 
 function shouldNotUpdate (opts, fn) {

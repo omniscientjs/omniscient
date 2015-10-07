@@ -3,9 +3,10 @@ var jsdom = require('jsdom');
 var Immutable = require('immutable');
 var Cursor = require('immutable/contrib/cursor');
 
-var React  = require('react/addons'),
-    ReactTestUtils = React.addons.TestUtils;
+var React = require('react');
+var ReactDOM = require('react-dom');
 
+var DOM = React.DOM;
 var should = chai.should();
 
 var component = require('../');
@@ -21,7 +22,7 @@ describe('component', function () {
         this.constructor.should.have.property('displayName');
         this.constructor.displayName.should.equal('myComponent');
 
-        return React.DOM.text(null, 'hello');
+        return DOM.text(null, 'hello');
       });
 
       render(Component());
@@ -33,7 +34,7 @@ describe('component', function () {
         this.constructor.should.have.property('displayName');
         this.constructor.displayName.should.equal('MyComponentName');
 
-        return React.DOM.text(null, 'hello');
+        return DOM.text(null, 'hello');
       });
 
       render(Component());
@@ -47,58 +48,24 @@ describe('component', function () {
       var mixins = [{ statics: { foo: noop, bar: noop } }];
 
       var Component = component(mixins, function () {
-        return React.DOM.text(null, 'hello');
+        return DOM.text(null, 'hello');
       });
 
       Component.foo.should.be.a('function');
-      Component.jsx.foo.should.be.a('function');
       Component.bar.should.be.a('function');
-      Component.jsx.bar.should.be.a('function');
     });
 
     it('should take static methods from several mixins', function () {
       var mixins = [{ statics: { foo: noop } }, { statics: { bar: noop } }];
 
       var Component = component(mixins, function () {
-        return React.DOM.text(null, 'hello');
+        return DOM.text(null, 'hello');
       });
 
       Component.foo.should.be.a('function');
-      Component.jsx.foo.should.be.a('function');
       Component.bar.should.be.a('function');
-      Component.jsx.bar.should.be.a('function');
     });
 
-  });
-
-  describe('default jsx', function () {
-
-    it('should return jsx element if jsx set as default', function (done) {
-      var localComponent = component.withDefaults({
-        jsx: true
-      });
-      var mixins = [{ componentDidMount: done, myMixin: noop }];
-
-      var Element = localComponent(mixins, function (props) {
-        this.should.have.property('myMixin');
-        props.name.should.equal('The Doctor');
-        return React.DOM.text(null, 'hello');
-      });
-
-      render(React.createElement(Element, { name: 'The Doctor' }));
-    });
-
-    it('should return created element per default', function (done) {
-      var mixins = [{ componentDidMount: done, myMixin: noop }];
-
-      var Component = component(mixins, function (props) {
-        this.should.have.property('myMixin');
-        props.name.should.equal('The Doctor');
-        return React.DOM.text(null, 'hello');
-      });
-
-      render(Component({ name: 'The Doctor' }));
-    });
   });
 
   describe('mixins', function () {
@@ -108,7 +75,7 @@ describe('component', function () {
 
       var Component = component(mixins, function () {
         this.should.have.property('myMixin');
-        return React.DOM.text(null, 'hello');
+        return DOM.text(null, 'hello');
       });
 
       render(Component());
@@ -119,7 +86,7 @@ describe('component', function () {
 
       var Component = component(mixins, function () {
         this.should.have.property('myMixin');
-        return React.DOM.text(null, 'hello');
+        return DOM.text(null, 'hello');
       });
 
       render(Component());
@@ -131,7 +98,7 @@ describe('component', function () {
 
       var Component = component(mixins, function () {
         this.shouldComponentUpdate.should.equal(shouldUpdate);
-        return React.DOM.text(null, 'hello');
+        return DOM.text(null, 'hello');
       });
 
       render(Component({ foo: 'hello' }));
@@ -148,7 +115,7 @@ describe('component', function () {
 
       var Component = component(mixins, function () {
         this.shouldComponentUpdate.should.equal(shouldUpdate);
-        return React.DOM.text(null, 'hello');
+        return DOM.text(null, 'hello');
       });
 
       render(Component({ foo: 'hello' }));
@@ -164,7 +131,7 @@ describe('component', function () {
         render: function () {
           this.shouldComponentUpdate.should.equal(shouldUpdateMixin);
           done();
-          return React.DOM.text(null, 'hello');
+          return DOM.text(null, 'hello');
         }
       });
 
@@ -179,7 +146,7 @@ describe('component', function () {
       var Component = component(mixins, function (cursor, statics) {
         cursor.should.eql({});
         should.not.exist(statics);
-        return React.DOM.text(null, 'hello');
+        return DOM.text(null, 'hello');
       });
 
       render(Component());
@@ -191,7 +158,7 @@ describe('component', function () {
 
       var Component = component(mixins, function (cursor) {
         cursor.should.eql(cursor1);
-        return React.DOM.text(null, 'hello');
+        return DOM.text(null, 'hello');
       });
 
       render(Component(cursor1));
@@ -203,7 +170,7 @@ describe('component', function () {
 
       var Component = component(mixins, function (props) {
         props.cursor.should.eql(cursor1);
-        return React.DOM.text(null, 'hello');
+        return DOM.text(null, 'hello');
       });
 
       render(Component({ cursor: cursor1 }));
@@ -215,7 +182,7 @@ describe('component', function () {
 
       var Component = component(mixins, function (cursor) {
         cursor.should.equal(cursorInput);
-        return React.DOM.text(null, 'hello');
+        return DOM.text(null, 'hello');
       });
       render(Component(cursorInput));
     });
@@ -227,7 +194,7 @@ describe('component', function () {
       var Component = component(mixins, function (cursor) {
         this.cursor.should.equal(cursor);
         this.cursor.should.equal(cursorInput);
-        return React.DOM.text(null, 'hello');
+        return DOM.text(null, 'hello');
       });
       render(Component(cursorInput));
     });
@@ -237,7 +204,7 @@ describe('component', function () {
       var i = 0;
       var Component = component(function (cursor) {
         i++;
-        return React.DOM.text(null, 'hello');
+        return DOM.text(null, 'hello');
       });
 
       render(Component(cursorInput));
@@ -247,13 +214,12 @@ describe('component', function () {
       i.should.equal(2);
     });
 
-    it('should pass single cursor and statics', function (done) {
+    it('should pass single cursor', function (done) {
       var mixins = [{ componentDidMount: done, myMixin: noop }];
-      var input = { cursor: 'foo', statics: 'Hello' };
-      var Component = component(mixins, function (cursor, staticsarg) {
+      var input = { cursor: 'foo' };
+      var Component = component(mixins, function (cursor) {
         cursor.should.eql(input);
-        staticsarg.should.equal(input.statics);
-        return React.DOM.text(null, 'hello');
+        return DOM.text(null, 'hello');
       });
 
       render(Component(input));
@@ -265,22 +231,10 @@ describe('component', function () {
 
       var Component = component(mixins, function (immutableStructure) {
         immutableStructure.should.eql(imm);
-        return React.DOM.text(null, 'hello');
+        return DOM.text(null, 'hello');
       });
 
       render(Component(imm));
-    });
-
-    it('should pass cursor and with statics as second argument', function (done) {
-      var mixins = [{ componentDidMount: done, myMixin: noop }];
-      var input = { cursor: 'foo', statics: 'Hello' };
-      var Component = component(mixins, function (props, staticsarg) {
-        props.cursor.should.equal(input.cursor);
-        staticsarg.value.should.equal(input.statics);
-        return React.DOM.text(null, 'hello');
-      });
-
-      render(Component({cursor: 'foo'}, { value: 'Hello' }));
     });
 
     it('should set React key', function (done) {
@@ -288,7 +242,7 @@ describe('component', function () {
 
       var Component = component(mixins, function () {
         hasKey(this, 'myKey');
-        return React.DOM.text(null, 'hello');
+        return DOM.text(null, 'hello');
       });
 
       render(Component('myKey'));
@@ -302,7 +256,7 @@ describe('component', function () {
 
         data.should.have.property('foo');
         data.foo.should.equal('hello');
-        return React.DOM.text(null, 'hello');
+        return DOM.text(null, 'hello');
       });
 
       render(Component('myKey', { foo: 'hello' }));
@@ -312,16 +266,14 @@ describe('component', function () {
       var mixins = [{ componentDidMount: done }];
 
       var props = { foo: 'hello' };
-      var statics = { bar: 'world' };
 
       var Component = component(mixins, function (data) {
         data.should.have.property('foo');
         data.foo.should.equal('hello');
-        props.should.not.have.property('statics');
-        return React.DOM.text(null, 'hello');
+        return DOM.text(null, 'hello');
       });
 
-      render(Component(props, statics));
+      render(Component(props));
     });
 
     it('should get passed key and immutable cursor-objects', function (done) {
@@ -332,7 +284,7 @@ describe('component', function () {
         hasKey(this, 'myKey');
 
         cursor.should.equal(cursorInput);
-        return React.DOM.text(null, 'hello');
+        return DOM.text(null, 'hello');
       });
       render(Component('myKey', cursorInput));
     });
@@ -340,15 +292,14 @@ describe('component', function () {
     it('should get passed key, cursor-objects and statics', function (done) {
       var mixins = [{ componentDidMount: done }];
 
-      var outerCursor = { cursor: 'hello', statics: 'foo' };
+      var outerCursor = { cursor: 'hello' };
 
-      var Component = component(mixins, function (props, statics) {
+      var Component = component(mixins, function (props) {
         hasKey(this, 'myKey');
 
         props.cursor.should.equal(outerCursor.cursor);
-        statics.should.equal(outerCursor.statics);
 
-        return React.DOM.text(null, 'hello');
+        return DOM.text(null, 'hello');
       });
 
       render(Component('myKey', outerCursor));
@@ -359,8 +310,8 @@ describe('component', function () {
 
       var outerCursor = { foo: 'hello' };
 
-      var c1 = React.DOM.text(null, 'hello');
-      var c2 = React.DOM.text(null, 'bar');
+      var c1 = DOM.text(null, 'hello');
+      var c2 = DOM.text(null, 'bar');
 
       var Component = component(mixins, function (cursor) {
         cursor.foo.should.equal(cursor.foo);
@@ -369,7 +320,7 @@ describe('component', function () {
         this.props.children[0].should.equal(c1);
         this.props.children[1].should.equal(c2);
 
-        return React.DOM.text(null, 'hello');
+        return DOM.text(null, 'hello');
       });
 
       render(Component(outerCursor, c1, c2));
@@ -385,65 +336,39 @@ describe('component', function () {
 
         cursor.foo.should.equal(outerCursor.foo);
         this.props.children.should.have.length(1);
-        this.props.children[0]._store.props.children.should.equal('hello');
 
-        return React.DOM.text(null, 'hello');
+        return DOM.text(null, 'hello');
       });
 
-      render(Component('myKey', outerCursor, React.DOM.text(null, 'hello')));
+      render(Component('myKey', outerCursor, DOM.text(null, 'hello')));
     });
 
-    it('should get passed key, cursor-object, statics and children', function (done) {
+    it('should get passed cursor-object and children', function (done) {
       var mixins = [{ componentDidMount: done }];
 
-      var outerCursor = { foo: 'hello', statics: 'foo' };
-
-      var Component = component(mixins, function (cursor, statics) {
-        hasKey(this, 'myKey');
-
-        cursor.foo.should.equal(outerCursor.foo);
-        this.props.children.should.have.length(1);
-        this.props.children[0]._store.props.children.should.equal('hello');
-
-        statics.should.equal(outerCursor.statics);
-
-        return React.DOM.text(null, 'hello');
-      });
-
-      render(Component('myKey', outerCursor, React.DOM.text(null, 'hello')));
-    });
-
-    it('should get passed cursor-object, statics and children', function (done) {
-      var mixins = [{ componentDidMount: done }];
-
-      var outerCursor = { foo: 'hello', statics: 'foo' };
+      var outerCursor = { foo: 'hello' };
 
       var Component = component(mixins, function (cursor, statics) {
         cursor.foo.should.equal(outerCursor.foo);
         this.props.children.should.have.length(1);
-        this.props.children[0]._store.props.children.should.equal('hello');
 
-        statics.should.equal(outerCursor.statics);
-
-        return React.DOM.text(null, 'hello');
+        return DOM.text(null, 'hello');
       });
 
-      render(Component(outerCursor, React.DOM.text(null, 'hello')));
+      render(Component(outerCursor, DOM.text(null, 'hello')));
     });
 
-    it('should pass multiple cursors and statics', function (done) {
+    it('should pass multiple cursors', function (done) {
       var mixins = [{ componentDidMount: done }];
       var cursor1 = {};
       var cursor2 = {};
-      var statics = 'foo';
 
       var Component = component(mixins, function (cursor, staticarg) {
         cursor.one.should.equal(cursor1);
         cursor.two.should.equal(cursor2);
-        staticarg.should.equal(statics);
-        return React.DOM.text(null, 'hello');
+        return DOM.text(null, 'hello');
       });
-      render(Component({ one: cursor1, two: cursor2, statics: statics }));
+      render(Component({ one: cursor1, two: cursor2 }));
     });
 
     it('can take strings as children', function (done) {
@@ -461,7 +386,7 @@ describe('component', function () {
         this.props.children[0].should.equal(c1);
         this.props.children[1].should.equal(c2);
 
-        return React.DOM.text(null, this.props.children);
+        return DOM.text(null, this.props.children);
       });
 
       render(Component(outerCursor, c1, c2));
@@ -481,72 +406,48 @@ describe('component', function () {
         this.props.children[0].should.equal(c1[0]);
         this.props.children[1].should.equal(c1[1]);
 
-        return React.DOM.text(null, this.props.children);
+        return DOM.text(null, this.props.children);
       });
 
       render(Component(outerCursor, c1));
     });
 
-    it('can take props, statics & children', function (done) {
-      var mixins = [{ componentDidMount: done }];
-
-      var statics = { foo: 'bar' };
-
-      var c1 = ['hello', 'world'];
-
-      var Component = component(mixins, function (cursor) {
-        this.props.children.should.have.length(2);
-
-        this.props.children[0].should.equal(c1[0]);
-        this.props.children[1].should.equal(c1[1]);
-
-        return React.DOM.text(null, this.props.children);
-      });
-
-      render(Component({}, statics, c1));
-    });
-
-    it('can take key, props, statics & children', function (done) {
-      var mixins = [{ componentDidMount: done }];
-
-      var outerStatics = { foo: 'bar' };
-
-      var c1 = ['hello', 'world'];
-
-      var Component = component(mixins, function (cursor, statics) {
-        hasKey(this, 'myKey');
-
-        statics.should.deep.equal(outerStatics);
-
-        this.props.children.should.have.length(2);
-
-        this.props.children[0].should.equal(c1[0]);
-        this.props.children[1].should.equal(c1[1]);
-
-        return React.DOM.text(null, this.props.children);
-      });
-
-      render(Component('myKey', {}, outerStatics, c1));
-    });
-
-    it('does not attach a node as props.statics', function (done) {
+    it('can take props & children', function (done) {
       var mixins = [{ componentDidMount: done }];
 
       var c1 = ['hello', 'world'];
 
       var Component = component(mixins, function (cursor) {
-        this.props.should.not.have.property('statics');
-
         this.props.children.should.have.length(2);
 
         this.props.children[0].should.equal(c1[0]);
         this.props.children[1].should.equal(c1[1]);
 
-        return React.DOM.text(null, this.props.children);
+        return DOM.text(null, this.props.children);
       });
 
       render(Component({}, c1));
     });
+
+    it('can take key, props & children', function (done) {
+      var mixins = [{ componentDidMount: done }];
+
+      var c1 = ['hello', 'world'];
+
+      var Component = component(mixins, function (cursor) {
+        hasKey(this, 'myKey');
+
+        this.props.children.should.have.length(2);
+
+        this.props.children[0].should.equal(c1[0]);
+        this.props.children[1].should.equal(c1[1]);
+
+        return DOM.text(null, this.props.children);
+      });
+
+      render(Component('myKey', {}, c1));
+    });
+
   });
 
   describe('overridables', function () {
@@ -563,7 +464,7 @@ describe('component', function () {
       var Component = localComponent(function () {
         this.shouldComponentUpdate.should.equal(shouldUpdate);
         done();
-        return React.DOM.text(null, 'hello');
+        return DOM.text(null, 'hello');
       });
 
       render(Component({ foo: 'hello' }));
@@ -586,7 +487,7 @@ describe('component', function () {
 
       localComponent.shouldComponentUpdate.isCursor.should.equal(isCursor);
       var Component = localComponent(function () {
-        return React.DOM.text(null, 'hello');
+        return DOM.text(null, 'hello');
       });
 
       render(Component({ foo: 'hello' }));
@@ -600,7 +501,7 @@ describe('component', function () {
 
       localComponent.shouldComponentUpdate.isImmutable.should.equal(isImmutable);
       var Component = localComponent(function () {
-        return React.DOM.text(null, 'hello');
+        return DOM.text(null, 'hello');
       });
 
       render(Component({ foo: 'hello' }));
@@ -608,7 +509,6 @@ describe('component', function () {
 
     it('should have overridable cursorField', function () {
       var localComponent = component.withDefaults({
-        jsx: true,
         cursorField: 'cursor'
       });
 
@@ -616,7 +516,7 @@ describe('component', function () {
 
       var Component = localComponent(function (cursor) {
         cursor.should.equal(cursor1);
-        return React.DOM.text(null, 'hello');
+        return DOM.text(null, 'hello');
       });
 
       render(React.createElement(Component, { cursor: cursor1 }));
@@ -626,14 +526,13 @@ describe('component', function () {
 
   describe('exposes arguments as props', function () {
 
-    it('should expose single cursor and statics', function (done) {
+    it('should expose single cursor', function (done) {
       var mixins = [{ componentDidMount: done }];
-      var props = { cursor: 'cursor', statics: 'foo' };
+      var props = { cursor: 'cursor' };
 
       var Component = component(mixins, function () {
         this.props.cursor.should.equal(props.cursor);
-        this.props.statics.should.equal(props.statics);
-        return React.DOM.text(null, 'hello');
+        return DOM.text(null, 'hello');
       });
       render(Component(props));
     });
@@ -642,16 +541,14 @@ describe('component', function () {
       var mixins = [{ componentDidMount: done }];
       var cursor1 = {};
       var cursor2 = {};
-      var statics = 'foo';
 
       var Component = component(mixins, function () {
         this.props.one.should.equal(cursor1);
         this.props.two.should.equal(cursor2);
-        this.props.statics.should.equal(statics);
-        return React.DOM.text(null, 'hello');
+        return DOM.text(null, 'hello');
       });
 
-      render(Component({ one: cursor1, two: cursor2, statics: statics }));
+      render(Component({ one: cursor1, two: cursor2 }));
     });
   });
 
@@ -660,7 +557,7 @@ describe('component', function () {
       var rendered = 0;
       var Component = component(function (input) {
         rendered = rendered + 1;
-        return React.DOM.text(null, 'Rendered ' + rendered + ' times');
+        return DOM.text(null, 'Rendered ' + rendered + ' times');
       });
 
       render(Component({}));
@@ -670,368 +567,79 @@ describe('component', function () {
       render(Component({}));
 
       rendered.should.equal(1);
-    });
-  });
-
-  describe('hot swapping statics', function () {
-    it('statics handlers get updated', function (done) {
-      var renders = 0;
-      var onChange = null;
-      var statics = statics;
-      var Component = component(function (input, output) {
-        onChange = output.onChange;
-        statics = output;
-        renders = renders + 1;
-        return React.DOM.text(null, 'hello');
-      });
-
-      render(Component({}, {
-        onChange: function () {
-          return 1;
-        }
-      }));
-
-      renders.should.equal(1);
-      onChange.should.be.a('function');
-      statics.should.be.a('object');
-      statics.onChange.should.equal(onChange);
-
-      var original = onChange;
-
-      onChange().should.equal(1);
-      statics.onChange().should.equal(1);
-
-      render(Component({}, {
-        onChange: function () {
-          return 2;
-        }
-      }));
-
-      renders.should.equal(1);
-      onChange.should.be.a('function');
-      statics.should.be.a('object');
-      statics.onChange.should.equal(onChange);
-      onChange.should.equal(original);
-
-      onChange().should.equal(2);
-      statics.onChange().should.equal(2);
-
-      var onChange2 = onChange;
-
-      render(Component({a: 1}, {
-        onChange: function () {
-          return 3;
-        }
-      }));
-
-      renders.should.equal(2);
-      onChange.should.be.a('function');
-      statics.should.be.a('object');
-      statics.onChange.should.equal(onChange);
-      onChange.should.equal(original);
-
-      onChange().should.equal(3);
-      statics.onChange().should.equal(3);
-
-      render(Component({a: 1}, {
-        onChange: function () {
-          return 4;
-        }
-      }));
-
-      renders.should.equal(2);
-      onChange.should.be.a('function');
-      statics.should.be.a('object');
-      statics.onChange.should.equal(onChange);
-      onChange.should.equal(original);
-
-      onChange().should.equal(4);
-      statics.onChange().should.equal(4);
-
-      done();
-    });
-
-    it('statics do not hot swap unless updated', function (done) {
-      var renders = 0;
-      var onChange = null;
-      var statics = statics;
-      var Component = component(function (input, output) {
-        onChange = output.onChange;
-        statics = output;
-        renders = renders + 1;
-        return React.DOM.text(null, 'hello');
-      });
-
-      var changeHandler = function () { return 1; };
-      var handlers = {onChange: changeHandler };
-
-      render(Component({}, handlers));
-
-      renders.should.equal(1);
-      onChange.delegee.should.equal(changeHandler);
-      onChange().should.equal(1);
-      statics.onChange().should.equal(1);
-
-      render(Component({}, handlers));
-
-      renders.should.equal(1);
-      onChange.delegee.should.equal(changeHandler);
-      onChange().should.equal(1);
-      statics.onChange().should.equal(1);
-
-      render(Component({a: 1}, handlers));
-
-      renders.should.equal(2);
-      onChange.delegee.should.equal(changeHandler);
-      onChange().should.equal(1);
-      statics.onChange().should.equal(1);
-
-      done();
-    });
-
-    it('should never delegate to delegee', function (done) {
-      var renders = 0;
-      var onChange = null;
-      var statics = statics;
-      var Component = component(function (input, output) {
-        onChange = output.onChange;
-        statics = output;
-        renders = renders + 1;
-        return React.DOM.text(null, 'hello');
-      });
-
-      var changeHandler = function () { return 1; };
-
-      render(Component({}, {onChange: changeHandler}));
-
-      renders.should.equal(1);
-      onChange.delegee.should.equal(changeHandler);
-      onChange().should.equal(1);
-      statics.onChange().should.equal(1);
-
-      render(Component({}, {onChange: changeHandler}));
-
-      renders.should.equal(1);
-      onChange.delegee.should.equal(changeHandler);
-      onChange().should.equal(1);
-      statics.onChange().should.equal(1);
-
-      render(Component({a: 1}, {onChange: changeHandler}));
-
-      renders.should.equal(2);
-      onChange.delegee.should.equal(changeHandler);
-      onChange().should.equal(1);
-      statics.onChange().should.equal(1);
-
-      render(Component({a: 1}, {onChange: onChange}));
-
-      renders.should.equal(2);
-      onChange.delegee.should.equal(changeHandler);
-      onChange().should.equal(1);
-      statics.onChange().should.equal(1);
-
-      render(Component({a: 2}, {onChange: onChange}));
-
-      renders.should.equal(3);
-      onChange.delegee.should.equal(changeHandler);
-      onChange().should.equal(1);
-      statics.onChange().should.equal(1);
-
-      done();
-    });
-
-    it('delegates should not nest', function (done) {
-      var renders = [];
-      var handlers = {};
-
-      var A = component('a', function (input, output) {
-        renders.push("A");
-        handlers.a = output.onChange;
-        return React.DOM.div({key: 'a'}, [
-          B('b', input.b, output),
-          C('c', input.c, {onChange: output.onChange})
-        ]);
-      });
-
-      var B = component('b', function (input, output) {
-        renders.push("B");
-        handlers.b = output.onChange;
-        return React.DOM.span({ key: 'b'}, [input.text ]);
-      });
-
-      var C = component('c', function (input, output) {
-        renders.push("C");
-        handlers.c = output.onChange;
-        return React.DOM.div({ key: 'c'}, [D('d', input.d, {onChange: output.onChange})]);
-      });
-
-      var D = component('d', function (input, output) {
-        renders.push("D");
-        handlers.d = output.onChange;
-        return React.DOM.span({ key: 'd'}, input.d);
-      });
-
-      var changeHandler = function () { return 1; };
-
-      render(A({b: {text: 1}, c: {d: [2]}}, {onChange: changeHandler}));
-
-      renders.splice(0).join('->').should.equal('A->B->C->D');
-      handlers.a.delegee.should.equal(changeHandler);
-      handlers.b.delegee.should.equal(changeHandler);
-      handlers.c.delegee.should.equal(changeHandler);
-      handlers.d.delegee.should.equal(changeHandler);
-
-      render(A({b: {text: 1}, c: {d: [2]}}, {onChange: changeHandler}));
-
-      renders.splice(0).join('->').should.equal('');
-      handlers.a.delegee.should.equal(changeHandler);
-      handlers.b.delegee.should.equal(changeHandler);
-      handlers.c.delegee.should.equal(changeHandler);
-      handlers.d.delegee.should.equal(changeHandler);
-
-      render(A({b: {text: 11}, c: {d: [2]}}, {onChange: changeHandler}));
-
-      renders.splice(0).join('->').should.equal('A->B');
-      handlers.a.delegee.should.equal(changeHandler);
-      handlers.b.delegee.should.equal(changeHandler);
-      handlers.c.delegee.should.equal(changeHandler);
-      handlers.d.delegee.should.equal(changeHandler);
-
-      render(A({b: {text: 11}, c: {d: [22]}}, {onChange: changeHandler}));
-
-      renders.splice(0).join('->').should.equal('A->C->D');
-      handlers.a.delegee.should.equal(changeHandler);
-      handlers.b.delegee.should.equal(changeHandler);
-      handlers.c.delegee.should.equal(changeHandler);
-      handlers.d.delegee.should.equal(changeHandler);
-
-      var onChange = function () { return 2; };
-      render(A({b: {text: 11}, c: {d: [22]}}, {onChange: onChange}));
-
-      renders.splice(0).join('->').should.equal('');
-      handlers.a.delegee.should.equal(onChange);
-      handlers.b.delegee.should.equal(onChange);
-      handlers.c.delegee.should.equal(onChange);
-      handlers.d.delegee.should.equal(onChange);
-
-      done();
-    });
-
-    it('update no handler to handler', function (done) {
-      var renders = [];
-      var handlers = null;
-
-      var Component = component(function (input, output) {
-        renders.push(1);
-        handlers = output;
-        return React.DOM.text('');
-      });
-
-      var onChange = function () {};
-      render(Component({}, {}));
-
-
-      renders.length.should.equal(1);
-      (handlers.onChange === void 0).should.be.true;
-
-      render(Component({a: 1}, {onChange: onChange}));
-
-      renders.length.should.equal(2);
-      handlers.onChange.delegee.should.equal(onChange);
-
-      var onUpdate = function () {};
-      render(Component({a: 1}, {onChange: onUpdate}));
-
-      renders.length.should.equal(2);
-      handlers.onChange.delegee.should.equal(onUpdate);
-
-      done();
     });
   });
 
   it('passing componentWillReceiveProps as mixin', function (done) {
-    var onChange = null;
     var willReceivePropsCalled = 0;
     var renderCalled = 0;
     var mixin = {
       componentWillReceiveProps: function (props) {
-        props.statics.onChange.should.equal(this.props.statics.onChange);
-        onChange.should.equal(this.props.statics.onChange);
         willReceivePropsCalled = willReceivePropsCalled + 1;
       }
     };
 
     var Component = component([mixin], function (input, output) {
       renderCalled = renderCalled + 1;
-      onChange = output.onChange;
-      return React.DOM.text(null, 'hello');
+      return DOM.text(null, 'hello');
     });
-
-    render(Component({}, {onChange: function () { return 1; } }));
+    var onChange = function () { return 1; };
+    render(Component({}, {onChange: onChange }));
     renderCalled.should.equal(1);
-    onChange().should.equal(1);
 
-    render(Component({}, {onChange: function () { return 2; } }));
+    render(Component({}, {onChange: onChange }));
     renderCalled.should.equal(1);
-    onChange().should.equal(2);
     willReceivePropsCalled.should.equal(1);
 
-    render(Component({}, {onChange: function () { return 3; } }));
+    render(Component({}, {onChange: onChange }));
     renderCalled.should.equal(1);
-    onChange().should.equal(3);
     willReceivePropsCalled.should.equal(2);
 
     render(Component({a: 1}, {onChange: function () { return 4; } }));
     renderCalled.should.equal(2);
-    onChange().should.equal(4);
     willReceivePropsCalled.should.equal(3);
 
     done();
   });
 
   it('passing componentWillMount as mixin', function (done) {
-    var onChange = null;
     var willMountCalled = 0;
     var renderCalled = 0;
     var mixin = {
       componentWillMount: function () {
-        onChange = this.props.statics.onChange;
         willMountCalled = willMountCalled + 1;
       }
     };
 
     var Component = component([mixin], function (input, output) {
       renderCalled = renderCalled + 1;
-      onChange.should.equal(output.onChange);
-      return React.DOM.text(null, 'hello');
+      return DOM.text(null, 'hello');
     });
 
-    render(Component({}, {onChange: function () { return 1; } }));
+    var onChange = function () { return 1; };
+    render(Component({}, {onChange: onChange }));
     renderCalled.should.equal(1);
     willMountCalled.should.equal(1);
-    onChange().should.equal(1);
 
 
-    render(Component({}, {onChange: function () { return 2; } }));
+    render(Component({}, {onChange: onChange }));
     renderCalled.should.equal(1);
     willMountCalled.should.equal(1);
-    onChange().should.equal(2);
 
-    render(Component({a: 1}, {onChange: function () { return 3; } }));
+    onChange = function () { return 3; };
+    render(Component({a: 1}, {onChange: onChange }));
     renderCalled.should.equal(2);
     willMountCalled.should.equal(1);
-    onChange().should.equal(3);
 
-    render(Component({a: 1}, {onChange: function () { return 4; } }));
+    render(Component({a: 1}, {onChange: onChange }));
     renderCalled.should.equal(2);
     willMountCalled.should.equal(1);
-    onChange().should.equal(4);
 
     done();
   });
 
   beforeEach(function () {
-    global.document = jsdom.jsdom('<html><body></body></html>');
+    global.document = jsdom.jsdom('<html><body><div id="app"></div></body></html>');
     global.window = global.document.defaultView;
   });
 
@@ -1044,7 +652,7 @@ describe('component', function () {
 function noop () {}
 
 function render (component) {
-  React.render(component, global.document.body);
+  ReactDOM.render(component, global.document.querySelector('#app'));
 }
 
 function hasKey(component, key) {
