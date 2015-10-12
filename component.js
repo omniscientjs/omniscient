@@ -142,9 +142,9 @@ function factory (options) {
     }
 
     var Component = React.createClass(componentObject);
-	if (_decorate) {
-		Component = _decorate(Component);
-	}
+    if (_decorate) {
+        Component = _decorate(Component);
+    }
 
     /**
      * Invoke component (rendering it)
