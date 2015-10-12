@@ -119,8 +119,8 @@ function factory (options) {
   ComponentCreator.shouldComponentUpdate = _shouldComponentUpdate;
   return ComponentCreator;
 
-  function ComponentCreator (displayName, mixins, render) {
-    var options = createDefaultArguments(displayName, mixins, render);
+  function ComponentCreator (displayName, mixins, render, decorate) {
+    var options = createDefaultArguments(displayName, mixins, render, decorate);
     var methodStatics = pickStaticMixins(options.mixins);
 
     var componentObject = {
@@ -142,8 +142,11 @@ function factory (options) {
     }
 
     var Component = React.createClass(componentObject);
-    if (_decorate) {
-        Component = _decorate(Component);
+    
+    // If there is a globally or locally set decorator, apply it to the class
+    var decorator = options.decorate || _decorate;
+    if (decorator) {
+      Component = decorator(Component);
     }
 
     /**
@@ -203,33 +206,35 @@ function factory (options) {
       debug = _shouldComponentUpdate.debug(pattern, logFn);
     }
   }
+  
+  var NO_RENDER = "Component definition requires `render` function as its argument"
 
-  function createDefaultArguments (displayName, mixins, render) {
-
-    // (render)
-    if (typeof displayName === 'function') {
-      render      = displayName;
-      mixins      = [];
-      displayName = void 0;
+  // [displayName], [mixins = []], render, [decorate]
+  function createDefaultArguments (/* args */) {
+    var args = Array.prototype.slice.call(arguments);
+    var currArg = 0, argCount = args.length;;
+    
+    var displayName, mixins = [], render, decorate;
+    
+    if (currArg == argCount) throw NO_RENDER;
+    if (typeof args[currArg] === 'string' || args[currArg] instanceof String) {
+      displayName = args[currArg++];
     }
-
-    // (mixins, render)
-    if (typeof displayName === 'object' && typeof mixins === 'function') {
-      render      = mixins;
-      mixins      = displayName;
-      displayName = void 0;
+    
+    if (currArg == argCount) throw NO_RENDER;
+    if (Array.isArray(args[currArg])) {
+      mixins = [args[currArg++]];
+    } else if (typeof args[currArg] === 'object') {
+      mixins = args[currArg++];
     }
-
-    // (displayName, render)
-    if (typeof displayName === 'string' && typeof mixins === 'function') {
-      render = mixins;
-      mixins = [];
+    
+    if (currArg == argCount) throw NO_RENDER;
+    if (typeof args[currArg] === 'function') {
+      render = args[currArg++];
     }
-
-    // Else (displayName, mixins, render)
-
-    if (!Array.isArray(mixins)) {
-      mixins = [mixins];
+    
+    if (currArg != argCount && typeof args[currArg] === 'function') {
+      decorate = args[currArg++];
     }
 
     if (!hasShouldComponentUpdate(mixins)) {
@@ -241,7 +246,8 @@ function factory (options) {
     return {
       displayName: displayName,
       mixins: mixins,
-      render: render
+      render: render,
+      decorate: decorate
     };
   }
 }
