@@ -93,7 +93,7 @@ function factory (options) {
   var _hiddenCursorField = options.cursorField || '__singleCursor';
   var _isNode = options.isNode || isNode;
   var _cached = cached.withDefaults(_shouldComponentUpdate);
-
+  var _decorate = options.decorate;
   /**
    * Activate debugging for components. Will log when a component renders,
    * the outcome of `shouldComponentUpdate`, and why the component re-renders.
@@ -142,6 +142,9 @@ function factory (options) {
     }
 
     var Component = React.createClass(componentObject);
+	if (_decorate) {
+		Component = _decorate(Component);
+	}
 
     /**
      * Invoke component (rendering it)
