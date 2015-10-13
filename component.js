@@ -143,10 +143,9 @@ function factory (options) {
 
     var Component = React.createClass(componentObject);
     
-    // If there is a globally or locally set decorator, apply it to the class
-    var decorator = options.decorate || _decorate;
-    if (decorator) {
-      Component = decorator(Component);
+    if (options.decorate) {
+      // don't leak implementation details
+      Component = options.decorate.call(this, Component);
     }
 
     /**
@@ -206,35 +205,42 @@ function factory (options) {
       debug = _shouldComponentUpdate.debug(pattern, logFn);
     }
   }
-  
-  var NO_RENDER = "Component definition requires `render` function as its argument"
 
   // [displayName], [mixins = []], render, [decorate]
   function createDefaultArguments (/* args */) {
     var args = Array.prototype.slice.call(arguments);
-    var currArg = 0, argCount = args.length;;
+    var currArg = 0;
     
-    var displayName, mixins = [], render, decorate;
+    var displayName, mixins, render, decorate;
     
-    if (currArg == argCount) throw NO_RENDER;
+    // take displayName from args if it's present
     if (typeof args[currArg] === 'string' || args[currArg] instanceof String) {
       displayName = args[currArg++];
     }
     
-    if (currArg == argCount) throw NO_RENDER;
+    // take an array of mixins or one mixin object
     if (Array.isArray(args[currArg])) {
-      mixins = [args[currArg++]];
-    } else if (typeof args[currArg] === 'object') {
       mixins = args[currArg++];
+    } else if (typeof args[currArg] === 'object') {
+      mixins = [args[currArg++]];
+    } else {
+      // if there're no mixins passed, use empty array
+      mixins = [];
     }
     
-    if (currArg == argCount) throw NO_RENDER;
+    // first function is render
     if (typeof args[currArg] === 'function') {
       render = args[currArg++];
+    } else {
+      throw new Error("Component definition requires `render` function as its argument");
     }
     
-    if (currArg != argCount && typeof args[currArg] === 'function') {
+    // second function is a decorator stack
+    if (typeof args[currArg] === 'function') {
       decorate = args[currArg++];
+    } else {
+      // If there is a globally set decorator, use it
+      decorate = _decorate;
     }
 
     if (!hasShouldComponentUpdate(mixins)) {
