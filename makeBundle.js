@@ -19,6 +19,9 @@ var b = browserify({
 b.add(inputFile);
 b.transform(shim);
 b.bundle(function (err, buf) {
+  if (err) {
+    throw err;
+  }
   var code = buf.toString();
   code = header + derequire(code);
   fs.writeFileSync(outputFile, code);
