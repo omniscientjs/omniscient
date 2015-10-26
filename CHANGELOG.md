@@ -3,6 +3,116 @@ Changelog
 
 Changelog with fixes and additions between each release.
 
+## Version `v4.0.0` - Breaking changes [Draft]
+
+`React 0.14.0` introduced some very nice features such as stateless components, and we saw that it hit very close the the usage as we've seen in Omniscient.js for the last year. With this change we made some simplifications to our components to be even more as vanilla React. Now you can use Omniscient.js as you would with vanilla React, just with added optimizations. Much like memoization for normal functions.
+
+There are still some features only available through Omniscient.js components, though. Such as syntactic sugar for component keys, string-defined display names, easier access to immutable data or cursors (wrapping/unwrapping as single argument), ability to add life cycle methods if that's something you need.
+
+### Deletions
+1. There is no longer a magic `statics` property. Instead this is made explicit through a overridable option on the provided `shouldComponentUpdate` called `isIgnorable`. This function can be used to signal what property on the props that should be ignored. Nothing is ignored by default. You don't have to use `isIgnorable` manually, but you can use the `ignore` component provided as syntactic sugar in a helper library called [omnipotent](https://github.com/omniscientjs/omnipotent#ignorefields--stringarraystring-component--component). See an example of this in the migration steps below.
+2. As there is no longer a default `statics` property, `statics` are no longer passed as second props argument to the function. This means you only get props as a singel parameter to your stateless component (Cursors/Immutable structures are still wrapped/unwrapped). This also means that there is no more passing statics as second argument to the component while using it. See examples in migration steps below.
+3. Now only supports `React 0.14.0`.
+4. No longer `.JSX` extension. This was a workaround to get interoperability with JSX and non-JSX code. With React 0.14, this is no longer needed!
+
+### Additions
+1. Adds support for React Class level decorators. See [relevant discussion and prompted need in issue #117](https://github.com/omniscientjs/omniscient/issues/117).
+  Example usage with decorator:
+  ```js
+  var decoratedComponent = component.withDefaults({
+    classDecorator: compose(Radium, function (Component) {
+      var DecoratedComponent = doSomething(Component);
+      return DecoratedComponent;
+    })
+  });
+  *
+  var Component = decoratedComponent(function (props) {
+    // ... some implementation
+  });
+  ```
+
+### Internal Changes
+1. Now only builds on node 4.0.0 due to the latest jsdom.
+
+
+### Migration Steps
+
+There are three things you need to change to get it working in the latest version. If you haven't used `statics`, there is nothing to change. The example before and after code below contains all the information you need to migrate.
+
+#### Before
+
+```js
+var MyComponent = components(function (props, statics) {
+  var onClick = statics.clickHandler;
+  return DOM.button({ onClick }, 'Click me!');
+});
+
+var App = component(function (props) {
+  return MyComponent({
+    text: 'Click me!'
+  }, {
+    // statics
+    clickHandler: function () {
+      console.log('Clicked the button!');
+    }
+  })
+});
+```
+
+#### After
+
+```js
+var shouldUpdate = require('omniscient/shouldupdate').withDefaults({
+  isIgnorable: function (value, key) {
+    // ignore properties with key `statics`
+    return key === 'statics';
+  }
+});
+
+var MyComponent = components({
+  shouldComponentUpdate: shouldUpdate
+}, function (props) {
+  var onClick = props.statics.clickHandler;
+  return DOM.button({ onClick }, 'Click me!');
+});
+
+var App = component(function (props) {
+  return MyComponent({
+    text: 'Click me!'
+    statics: {
+      clickHandler: function () {
+        console.log('Clicked the button!');
+      }
+    }
+  })
+});
+```
+
+Or using the [omnipotent helper](https://github.com/omniscientjs/omnipotent#ignorefields--stringarraystring-component--component):
+
+```js
+var ignore = require('omnipotent/decorator/ignore');
+
+var MyComponent = components(function (props) {
+  var onClick = props.statics.clickHandler;
+  return DOM.button({ onClick }, 'Click me!');
+});
+
+// Create a new component that has statics ignored
+var IgnoredMyComponent = ignore('statics', MyComponent);
+
+var App = component(function (props) {
+  return IgnoredMyComponent({
+    text: 'Click me!'
+    statics: {
+      clickHandler: function () {
+        console.log('Clicked the button!');
+      }
+    }
+  })
+});
+```
+
 ## Version `v3.3.0`
 
 _Temporary solution to roll out native support_
