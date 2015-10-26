@@ -50,12 +50,13 @@ module.exports = factory();
  *   classDecorator: function(Component), // Allows for decorating created class
  *
  *   // Passed on to `shouldComponentUpdate`
- *   isCursor: function(cursor), // check if prop is cursor
- *   unCursor: function (cursor), // convert cursor to object
- *   isEqualCursor: function (oneCursor, otherCursor), // compares cursor
- *   isEqualState: function (currentState, nextState), // compares state
- *   isEqualProps: function (currentProps, nextProps), // compares props
- *   isImmutable: function (maybeImmutable) // check if object is immutable
+ *   isCursor: function (cursor), // check if is props
+ *   isEqualCursor: function (oneCursor, otherCursor), // check cursor
+ *   isEqualState: function (currentState, nextState), // check state
+ *   isImmutable: function (currentState, nextState), // check if object is immutable
+ *   isEqualProps: function (currentProps, nextProps), // check props
+ *   isIgnorable: function (propertyValue, propertyKey), // check if property item is ignorable
+ *   unCursor: function (cursor) // convert from cursor to object
  * }
  * ```
  *
