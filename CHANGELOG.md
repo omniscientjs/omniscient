@@ -18,6 +18,7 @@ There are still some features only available through Omniscient.js components, t
 ### Additions
 1. Adds support for React Class level decorators. See [relevant discussion and prompted need in issue #117](https://github.com/omniscientjs/omniscient/issues/117).
   Example usage with decorator:
+
   ```js
   var decoratedComponent = component.withDefaults({
     classDecorator: compose(Radium, function (Component) {
