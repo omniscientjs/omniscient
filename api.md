@@ -50,6 +50,7 @@ unwrap cursors, etc.
   shouldComponentUpdate: function(nextProps, nextState), // check update
   cursorField: '__singleCursor', // cursor property name to "unwrap" before passing in to render
   isNode: function(propValue), // determines if propValue is a valid React node
+  classDecorator: function(Component), // Allows for decorating created class
 
   // Passed on to `shouldComponentUpdate`
   isCursor: function(cursor), // check if prop is cursor
@@ -73,7 +74,26 @@ var Component = localComponent(function (myCursor) {
   // Now you have myCursor directly instead of having to do props.foobar
 });
 
-React.render(, document.body);
+React.render(, mountingPoint);
+```
+
+#### Decorating class components
+```jsx
+// Some third party libraries requires you to decorate the
+// React class, not the created component. You can do that
+// by creating a decorated component factory
+var decoratedComponent = component.withDefaults({
+  classDecorator: compose(Radium, function (Component) {
+    var DecoratedComponent = doSomething(Component);
+    return DecoratedComponent;
+  })
+});
+
+var Component = decoratedComponent(function (props) {
+  // ... some implementation
+});
+
+React.render(, mountingPoint);
 ```
 
 ### Parameters
