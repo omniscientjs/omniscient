@@ -53,6 +53,7 @@ describe('component', function () {
       var decoratedComponent = component.withDefaults({
         classDecorator: decorator
       });
+
       var Component = decoratedComponent(function MyComponentName () {
         return DOM.text(null, 'hello');
       });
@@ -70,6 +71,7 @@ describe('component', function () {
       var decoratedComponent = component.withDefaults({
         classDecorator: decorator
       });
+      
       var Component = decoratedComponent(function MyComponentName () {
         this.constructor.displayName.should.equal('Foobar');
         return DOM.text(null, 'hello');
