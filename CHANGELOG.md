@@ -3,7 +3,7 @@ Changelog
 
 Changelog with fixes and additions between each release.
 
-## Version `v4.0.0` - Breaking changes [Draft]
+## Version `v4.0.0` - Breaking changes
 
 `React 0.14.0` introduced some very nice features such as stateless components, and we saw that it hit very close the the usage as we've seen in Omniscient.js for the last year. With this change we made some simplifications to our components to be even more similar to vanilla React. Now you can use Omniscient.js as you would with vanilla React, just with added optimizations. Much like memoization for normal functions.
 
