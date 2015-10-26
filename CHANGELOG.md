@@ -113,6 +113,54 @@ var App = component(function (props) {
 });
 ```
 
+### Migration Steps JSX removal
+
+`.jsx` has been removed, but the migration is real simple. Remove all instances of `.jsx` and `component.withDefaults({ jsx: true })` in your codebase.
+
+
+#### Before
+
+```jsx
+var MyComponent = components((props) => (
+  <h1>Hello {props.text}</h1>
+)).jsx; // note the `.jsx`
+
+var App = component(() => (
+  <div>
+    <MyComponent text="Hello!" />
+  </div>
+)).jsx;
+```
+
+
+#### After
+
+```jsx
+var MyComponent = components((props) => (
+  <h1>Hello {props.text}</h1>
+));
+
+var App = component(() => (
+  <div>
+    <MyComponent text="Hello!" />
+  </div>
+));
+```
+
+As an added bonus you now have complete interoperability between jsx and non-jsx:
+
+```jsx
+var MyComponent = components((props) => (
+  <h1>Hello {props.text}</h1>
+));
+
+var App = component(() => (
+  React.DOM.div({},
+    MyComponent({ text: 'Hello!' })
+  )
+));
+```
+
 ## Version `v3.3.0`
 
 _Temporary solution to roll out native support_
