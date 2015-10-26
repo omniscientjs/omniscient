@@ -47,6 +47,7 @@ module.exports = factory();
  *   shouldComponentUpdate: function(nextProps, nextState), // check update
  *   cursorField: '__singleCursor', // cursor property name to "unwrap" before passing in to render
  *   isNode: function(propValue), // determines if propValue is a valid React node
+ *   classDecorator: function(Component), // Allows for decorating created class
  *
  *   // Passed on to `shouldComponentUpdate`
  *   isCursor: function(cursor), // check if prop is cursor
@@ -70,7 +71,26 @@ module.exports = factory();
  *   // Now you have myCursor directly instead of having to do props.foobar
  * });
  *
- * React.render(<Component foobar={myCursor} />, document.body);
+ * React.render(<Component foobar={myCursor} />, mountingPoint);
+ * ```
+ *
+ * #### Decorating class components
+ * ```jsx
+ * // Some third party libraries requires you to decorate the
+ * // React class, not the created component. You can do that
+ * // by creating a decorated component factory
+ * var decoratedComponent = component.withDefaults({
+ *   classDecorator: compose(Radium, function (Component) {
+ *     var DecoratedComponent = doSomething(Component);
+ *     return DecoratedComponent;
+ *   })
+ * });
+ *
+ * var Component = decoratedComponent(function (props) {
+ *   // ... some implementation
+ * });
+ *
+ * React.render(<Component  />, mountingPoint);
  * ```
  *
  * @param {Object} Options Options with defaults to override
@@ -83,15 +103,16 @@ module.exports = factory();
  */
 module.exports.withDefaults = factory;
 
-function factory (options) {
+function factory (initialOptions) {
   var debug;
-  options = options || {};
-  var _shouldComponentUpdate = options.shouldComponentUpdate ||
-        shouldComponentUpdate.withDefaults(options);
-  var _isCursor = options.isCursor || shouldComponentUpdate.isCursor;
-  var _isImmutable = options.isImmutable || shouldComponentUpdate.isImmutable;
-  var _hiddenCursorField = options.cursorField || '__singleCursor';
-  var _isNode = options.isNode || isNode;
+  initialOptions = initialOptions || {};
+  var _shouldComponentUpdate = initialOptions.shouldComponentUpdate ||
+        shouldComponentUpdate.withDefaults(initialOptions);
+  var _isCursor = initialOptions.isCursor || shouldComponentUpdate.isCursor;
+  var _isImmutable = initialOptions.isImmutable || shouldComponentUpdate.isImmutable;
+  var _hiddenCursorField = initialOptions.cursorField || '__singleCursor';
+  var _isNode = initialOptions.isNode || isNode;
+  var _classDecorator = initialOptions.classDecorator || identity;
   var _cached = cached.withDefaults(_shouldComponentUpdate);
 
   /**
@@ -141,7 +162,7 @@ function factory (options) {
       removeOldStaticMethods(options.mixins);
     }
 
-    var Component = React.createClass(componentObject);
+    var Component = _classDecorator(React.createClass(componentObject));
 
     /**
      * Invoke component (rendering it)
@@ -308,6 +329,9 @@ function hasShouldComponentUpdate (mixins) {
   });
 }
 
+function identity (fn) {
+  return fn;
+}
 
 function toArray (args) {
   return Array.prototype.slice.call(args);

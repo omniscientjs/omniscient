@@ -42,6 +42,46 @@ describe('component', function () {
 
   });
 
+  describe('decorator', function () {
+
+    it('should attach decorator', function () {
+      var hasBeenCalled = false;
+      var decorator = function (SomeClass) {
+        hasBeenCalled = true;
+        return SomeClass;
+      };
+      var decoratedComponent = component.withDefaults({
+        classDecorator: decorator
+      });
+
+      var Component = decoratedComponent(function MyComponentName () {
+        return DOM.text(null, 'hello');
+      });
+
+      render(Component());
+      hasBeenCalled.should.equal(true);
+    });
+
+    it('should allow to extend class as decorator', function () {
+      var decorator = function (ComposedComponent) {
+        ComposedComponent.displayName.should.equal('MyComponentName');
+        ComposedComponent.displayName = 'Foobar';
+        return ComposedComponent;
+      };
+      var decoratedComponent = component.withDefaults({
+        classDecorator: decorator
+      });
+      
+      var Component = decoratedComponent(function MyComponentName () {
+        this.constructor.displayName.should.equal('Foobar');
+        return DOM.text(null, 'hello');
+      });
+
+      render(Component());
+    });
+
+  });
+
   describe('statics', function () {
 
     it('should take static methods', function () {
