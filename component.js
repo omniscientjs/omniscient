@@ -112,7 +112,7 @@ function factory (initialOptions) {
   var _isImmutable = initialOptions.isImmutable || shouldComponentUpdate.isImmutable;
   var _hiddenCursorField = initialOptions.cursorField || '__singleCursor';
   var _isNode = initialOptions.isNode || isNode;
-  var _decorator = initialOptions.classDecorator || identity;
+  var _classDecorator = initialOptions.classDecorator || identity;
   var _cached = cached.withDefaults(_shouldComponentUpdate);
 
   /**
@@ -162,7 +162,7 @@ function factory (initialOptions) {
       removeOldStaticMethods(options.mixins);
     }
 
-    var Component = _decorator(React.createClass(componentObject));
+    var Component = _classDecorator(React.createClass(componentObject));
 
     /**
      * Invoke component (rendering it)
