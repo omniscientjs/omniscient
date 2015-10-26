@@ -93,7 +93,7 @@ function factory (options) {
   var _hiddenCursorField = options.cursorField || '__singleCursor';
   var _isNode = options.isNode || isNode;
   var _cached = cached.withDefaults(_shouldComponentUpdate);
-
+  var _decorate = options.decorate;
   /**
    * Activate debugging for components. Will log when a component renders,
    * the outcome of `shouldComponentUpdate`, and why the component re-renders.
@@ -119,8 +119,8 @@ function factory (options) {
   ComponentCreator.shouldComponentUpdate = _shouldComponentUpdate;
   return ComponentCreator;
 
-  function ComponentCreator (displayName, mixins, render) {
-    var options = createDefaultArguments(displayName, mixins, render);
+  function ComponentCreator (displayName, mixins, render, decorate) {
+    var options = createDefaultArguments(displayName, mixins, render, decorate);
     var methodStatics = pickStaticMixins(options.mixins);
 
     var componentObject = {
@@ -142,6 +142,11 @@ function factory (options) {
     }
 
     var Component = React.createClass(componentObject);
+    
+    if (options.decorate) {
+      // don't leak implementation details
+      Component = options.decorate.call(this, Component);
+    }
 
     /**
      * Invoke component (rendering it)
@@ -201,32 +206,41 @@ function factory (options) {
     }
   }
 
-  function createDefaultArguments (displayName, mixins, render) {
-
-    // (render)
-    if (typeof displayName === 'function') {
-      render      = displayName;
-      mixins      = [];
-      displayName = void 0;
+  // [displayName], [mixins = []], render, [decorate]
+  function createDefaultArguments (/* args */) {
+    var args = Array.prototype.slice.call(arguments);
+    var currArg = 0;
+    
+    var displayName, mixins, render, decorate;
+    
+    // take displayName from args if it's present
+    if (typeof args[currArg] === 'string' || args[currArg] instanceof String) {
+      displayName = args[currArg++];
     }
-
-    // (mixins, render)
-    if (typeof displayName === 'object' && typeof mixins === 'function') {
-      render      = mixins;
-      mixins      = displayName;
-      displayName = void 0;
-    }
-
-    // (displayName, render)
-    if (typeof displayName === 'string' && typeof mixins === 'function') {
-      render = mixins;
+    
+    // take an array of mixins or one mixin object
+    if (Array.isArray(args[currArg])) {
+      mixins = args[currArg++];
+    } else if (typeof args[currArg] === 'object') {
+      mixins = [args[currArg++]];
+    } else {
+      // if there're no mixins passed, use empty array
       mixins = [];
     }
-
-    // Else (displayName, mixins, render)
-
-    if (!Array.isArray(mixins)) {
-      mixins = [mixins];
+    
+    // first function is render
+    if (typeof args[currArg] === 'function') {
+      render = args[currArg++];
+    } else {
+      throw new Error("Component definition requires `render` function as its argument");
+    }
+    
+    // second function is a decorator stack
+    if (typeof args[currArg] === 'function') {
+      decorate = args[currArg++];
+    } else {
+      // If there is a globally set decorator, use it
+      decorate = _decorate;
     }
 
     if (!hasShouldComponentUpdate(mixins)) {
@@ -238,7 +252,8 @@ function factory (options) {
     return {
       displayName: displayName,
       mixins: mixins,
-      render: render
+      render: render,
+      decorate: decorate
     };
   }
 }
