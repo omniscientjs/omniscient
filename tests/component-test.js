@@ -62,6 +62,21 @@ describe('component', function () {
       hasBeenCalled.should.equal(true);
     });
 
+    it('should attach inline decorator', function () {
+      var hasBeenCalled = false;
+      var decorator = function (SomeClass) {
+        hasBeenCalled = true;
+        return SomeClass;
+      };
+
+      var Component = component.withDecorator(decorator, function MyComponentName () {
+        return DOM.text(null, 'hello');
+      });
+
+      render(Component());
+      hasBeenCalled.should.equal(true);
+    });
+
     it('should allow to extend class as decorator', function () {
       var decorator = function (ComposedComponent) {
         ComposedComponent.displayName.should.equal('MyComponentName');
@@ -71,7 +86,7 @@ describe('component', function () {
       var decoratedComponent = component.withDefaults({
         classDecorator: decorator
       });
-      
+
       var Component = decoratedComponent(function MyComponentName () {
         this.constructor.displayName.should.equal('Foobar');
         return DOM.text(null, 'hello');
