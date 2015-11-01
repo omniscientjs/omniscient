@@ -5,7 +5,6 @@ var Cursor = require('immutable/contrib/cursor');
 
 var React = require('react');
 var ReactDOM = require('react-dom');
-var ReactDOMServer = require('react-dom/server');
 
 var DOM = React.DOM;
 var should = chai.should();
