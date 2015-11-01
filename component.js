@@ -240,25 +240,24 @@ function factory (initialOptions) {
         // the `create` function if it has a prototype. We are passed `props`, `publicContext`
         // and `ReactUpdateQueue`.
         // https://github.com/facebook/react/blob/88bae3fb73511893519195e451c56896463f669b/src/renderers/shared/reconciler/ReactCompositeComponent.js#L154-L171
-          var publicProps = keyOrProps;
-          var publicContext = propsOrPublicContext;
         if (typeof ReactUpdateQueue == 'object' && !_isNode(ReactUpdateQueue)) {
+          var publicProps = keyOrProps,
+              publicContext = propsOrPublicContext;
           return new Component(publicProps, publicContext, ReactUpdateQueue);
         }
 
-        var key = keyOrProps;
-        var props = propsOrPublicContext;
-
-        var _props;
-        var inputCursor;
-        var children;
+        var key = keyOrProps,
+            props = propsOrPublicContext;
 
         if (typeof key === 'object') {
           props = key;
           key   = void 0;
         }
 
-        children = flatten(sliceFrom(arguments, props).filter(_isNode));
+        var children = flatten(sliceFrom(arguments, props).filter(_isNode));
+
+        var _props,
+            inputCursor;
 
         // If passed props is a signle cursor we move it to `props[_hiddenCursorField]`
         // to simplify should component update. The render function will move it back.
