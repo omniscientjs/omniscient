@@ -150,7 +150,22 @@ function factory (initialOptions) {
    *   var DecoratedComponent = doSomething(Component);
    *   return DecoratedComponent;
    * });
-   * var Component = component.withDecorator(someDecorator, function (props) {
+   * var Component = component.classDecorator(someDecorator, function (props) {
+   *   // ... some implementation
+   * });
+   *
+   * React.render(<Component />, mountingPoint);
+   * ```
+   *
+   * Also works by creating a component factory:
+   *
+   * ```jsx
+   * var someDecorator = compose(Radium, function (Component) {
+   *   var DecoratedComponent = doSomething(Component);
+   *   return DecoratedComponent;
+   * });
+   * var newFactory = component.classDecorator(someDecorator);
+   * var Component = newFactory(function (props) {
    *   // ... some implementation
    * });
    *
@@ -158,17 +173,21 @@ function factory (initialOptions) {
    * ```
    *
    * @param {Function} classDecorator Decorator to use for internal class (e.g. Redux connect, Radium)
-   * @param {String} displayName Component's display name. Used when debug()'ing and by React
-   * @param {Array|Object} mixins React mixins. Object literals with functions, or array of object literals with functions.
-   * @param {Function} render Stateless component to add memoization on.
+   * @param {String} [displayName] Component's display name. Used when debug()'ing and by React
+   * @param {Array|Object} [mixins] React mixins. Object literals with functions, or array of object literals with functions.
+   * @param {Function} [render] Stateless component to add memoization on.
    *
    * @property {Function} shouldComponentUpdate Get default shouldComponentUpdate
    * @module omniscient
-   * @returns {Component}
+   * @returns {Component\Function}
    * @api public
    */
-  CreatedComponent.withDecorator = function (classDecorator, displayName, mixins, render) {
-    return ComponentCreatorFactory(classDecorator)(displayName, mixins, render);
+  CreatedComponent.classDecorator = function (classDecorator) {
+    var shouldPartiallyApply = arguments.length === 1;
+    if (shouldPartiallyApply) {
+      return ComponentCreatorFactory(classDecorator);
+    }
+    return ComponentCreatorFactory(classDecorator).apply(null, toArray(arguments).splice(1));
   };
   return CreatedComponent;
 

@@ -69,7 +69,23 @@ describe('component', function () {
         return SomeClass;
       };
 
-      var Component = component.withDecorator(decorator, function MyComponentName () {
+      var Component = component.classDecorator(decorator, function MyComponentName () {
+        return DOM.text(null, 'hello');
+      });
+
+      render(Component());
+      hasBeenCalled.should.equal(true);
+    });
+
+    it('should allow for creating a partially applied classDecorator factory', function () {
+      var hasBeenCalled = false;
+      var decorator = function (SomeClass) {
+        hasBeenCalled = true;
+        return SomeClass;
+      };
+
+      var Component = component.classDecorator(decorator)({foo: function () {}}, function MyComponentName () {
+        this.foo.should.be.a('function');
         return DOM.text(null, 'hello');
       });
 
