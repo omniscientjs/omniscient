@@ -241,9 +241,9 @@ function factory (initialOptions) {
         // the `create` function if it has a prototype. We are passed `props`, `publicContext`
         // and `ReactUpdateQueue`.
         // https://github.com/facebook/react/blob/88bae3fb73511893519195e451c56896463f669b/src/renderers/shared/reconciler/ReactCompositeComponent.js#L154-L171
-        if (typeof ReactUpdateQueue == 'object') {
           var publicProps = keyOrProps;
           var publicContext = propsOrPublicContext;
+        if (typeof ReactUpdateQueue == 'object' && !_isNode(ReactUpdateQueue)) {
           return new Component(publicProps, publicContext, ReactUpdateQueue);
         }
 
