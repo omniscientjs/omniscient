@@ -275,7 +275,7 @@ function factory (initialOptions) {
           _props.key = key;
         }
 
-        if (!!children.length) {
+        if (children.length) {
           _props.children = children;
         }
 
