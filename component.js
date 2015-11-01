@@ -179,7 +179,7 @@ function factory (initialOptions) {
    *
    * @property {Function} shouldComponentUpdate Get default shouldComponentUpdate
    * @module omniscient
-   * @returns {Component\Function}
+   * @returns {Component|Function}
    * @api public
    */
   CreatedComponent.classDecorator = function (classDecorator) {
@@ -187,7 +187,7 @@ function factory (initialOptions) {
     if (shouldPartiallyApply) {
       return ComponentCreatorFactory(classDecorator);
     }
-    return ComponentCreatorFactory(classDecorator).apply(null, toArray(arguments).splice(1));
+    return ComponentCreatorFactory(classDecorator).apply(null, toArray(arguments).slice(1));
   };
   return CreatedComponent;
 
