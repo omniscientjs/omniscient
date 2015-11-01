@@ -607,6 +607,18 @@ describe('component', function () {
     });
   });
 
+  describe('as an element', function () {
+
+    it('should create react class instance, not an element, when passed `publicProps`, `publicContext`, and `ReactUpdateQueue`', function () {
+      var Component = component(function () {
+        return DOM.div();
+      });
+      React.isValidElement(Component()).should.be.true;
+      React.isValidElement(Component({}, {}, {})).should.be.false;
+    });
+
+  });
+
   describe('should not re-render', function () {
     it('should not rerender on equivalent input', function () {
       var rendered = 0;
