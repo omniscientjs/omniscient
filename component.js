@@ -236,7 +236,6 @@ function factory (initialOptions) {
        * @api public
        */
       var create = function (keyOrProps, propsOrPublicContext, ReactUpdateQueue) {
-
         // After stateless arrow functions was allowed as components, react will instantiate
         // the `create` function if it has a prototype. We are passed `props`, `publicContext`
         // and `ReactUpdateQueue`.
@@ -288,7 +287,7 @@ function factory (initialOptions) {
       }
 
       return create;
-    };
+    }
   }
 
   function debugFn (pattern, logFn) {
