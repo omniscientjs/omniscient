@@ -5,6 +5,7 @@ var Cursor = require('immutable/contrib/cursor');
 
 var React = require('react');
 var ReactDOM = require('react-dom');
+var ReactDOMServer = require('react-dom/server');
 
 var DOM = React.DOM;
 var should = chai.should();
@@ -605,6 +606,18 @@ describe('component', function () {
 
       render(Component({ one: cursor1, two: cursor2 }));
     });
+  });
+
+  describe('as an element', function () {
+
+    it('should create react class instance, not an element, when passed `publicProps`, `publicContext`, and `ReactUpdateQueue`', function () {
+      var Component = component(function () {
+        return DOM.div();
+      });
+      React.isValidElement(Component()).should.be.true;
+      React.isValidElement(Component({}, {}, {})).should.be.false;
+    });
+
   });
 
   describe('should not re-render', function () {
