@@ -623,9 +623,9 @@ describe('component', function () {
     });
   });
 
-  describe('as an element', function () {
+  describe('creator disquises as a react class', function () {
 
-    it('should create react class instance, not an element, when passed `publicProps`, `publicContext`, and `ReactUpdateQueue`', function () {
+    it('creates react class instance, not an element, when passed `publicProps`, `publicContext`, and `ReactUpdateQueue`', function () {
       var Component = component(function () {
         return DOM.div();
       });
@@ -633,6 +633,16 @@ describe('component', function () {
       React.isValidElement(Component({}, {}, {})).should.be.false;
     });
 
+    it('exposes `type` on itself', function () {
+      var Type;
+      var comp = component.classDecorator(Class => Type = Class);
+
+      var Creator = comp(function () {
+        return DOM.div();
+      });
+
+      Creator.type.should.equal(Type);
+    });
   });
 
   describe('should not re-render', function () {
