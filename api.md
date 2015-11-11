@@ -115,6 +115,82 @@ React.render(, mountingPoint);
 **Returns** `Component`, 
 
 
+### `omniscient(classDecorator, [displayName], [mixins], [render])`
+
+Create components for functional views, with an attached local class decorator.
+Omniscient uses a `React.createClass()` internally to create an higher order
+component to attach performance boost and add some syntactic sugar to your
+components. Sometimes third party apps need to be added as decorator to this
+internal class. For instance Redux or Radium.
+This create factory behaves the same as normal Omniscient.js component
+creation, but with the additional first parameter for class decorator.
+
+The API of Omniscient is pretty simple, you create a Stateless React Component
+but memoized with a smart implemented `shouldComponentUpdate`.
+
+The provided `shouldComponentUpdate` handles immutable data and cursors by default.
+It also falls back to a deep value check if passed props isn't immutable structures.
+
+You can use an Omniscient component in the same way you'd use a React Stateless Function,
+or you can use some of the additional features, such as string defined display name and
+pass in life cycle methods. These are features normally not accessible for vanilla
+Stateless React Components.
+
+If you simply pass one cursor, the cursor will be accessible on the
+`props.cursor` accessor.
+
+#### Decorating class components
+```jsx
+// Some third party libraries requires you to decorate the
+// React class, not the created component. You can do that
+// by creating a decorated component factory
+var someDecorator = compose(Radium, function (Component) {
+  var DecoratedComponent = doSomething(Component);
+  return DecoratedComponent;
+});
+var Component = component.classDecorator(someDecorator, function (props) {
+  // ... some implementation
+});
+
+React.render(, mountingPoint);
+```
+
+Also works by creating a component factory:
+
+```jsx
+var someDecorator = compose(Radium, function (Component) {
+  var DecoratedComponent = doSomething(Component);
+  return DecoratedComponent;
+});
+var newFactory = component.classDecorator(someDecorator);
+var Component = newFactory(function (props) {
+  // ... some implementation
+});
+
+React.render(, mountingPoint);
+```
+
+### Parameters
+
+| param            | type         | description                                                                                           |
+| ---------------- | ------------ | ----------------------------------------------------------------------------------------------------- |
+| `classDecorator` | Function     | Decorator to use for internal class (e.g. Redux connect, Radium)                                      |
+| `[displayName]`  | String       | _optional:_ Component's display name. Used when debug()'ing and by React                              |
+| `[mixins]`       | Array,Object | _optional:_ React mixins. Object literals with functions, or array of object literals with functions. |
+| `[render]`       | Function     | _optional:_ Stateless component to add memoization on.                                                |
+
+
+### Properties
+
+| property                | type     | description                       |
+| ----------------------- | -------- | --------------------------------- |
+| `shouldComponentUpdate` | Function | Get default shouldComponentUpdate |
+
+
+
+**Returns** `Component,Function`, 
+
+
 ### `omniscient.debug(pattern)`
 
 Activate debugging for components. Will log when a component renders,

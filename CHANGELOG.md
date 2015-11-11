@@ -3,6 +3,39 @@ Changelog
 
 Changelog with fixes and additions between each release.
 
+## Version `v4.1.0`
+
+### Additions
+
+1. Adds ability to add local decorator to component through `component.withDecorator()`:
+```js
+// Some third party libraries requires you to decorate the
+// React class, not the created component. You can do that
+// by creating a decorated component factory
+var someDecorator = compose(Radium, function (Component) {
+  var DecoratedComponent = doSomething(Component);
+  return DecoratedComponent;
+});
+var Component = component.classDecorator(someDecorator, function (props) {
+  // ... some implementation
+});
+React.render(<Component />, mountingPoint);
+```
+
+This can also be used as a partially applied function:
+
+```js
+var decoratedComponent = component.classDecorator(someDecorator);
+var Component = decoratedComponent(function (props) {
+  // ... some implementation
+});
+```
+
+### Bugfixes
+
+1. Fixes Omniscient component factory input to handle being new-ed up from within React. Fixes some test issues and potential bugs with contexts. See [#123](https://github.com/omniscientjs/omniscient/issues/123) for more info.
+2. Fixes as Omniscient component factory disguises as a React class. This worksaround the fact that many third party libraries uses custom ways to use classes. For instance hot reloading. See [#125](https://github.com/omniscientjs/omniscient/pull/125) for more information.
+
 ## Version `v4.0.0` - Breaking changes
 
 `React 0.14.0` introduced some very nice features such as stateless components, and we saw that it hit very close the the usage as we've seen in Omniscient.js for the last year. With this change we made some simplifications to our components to be even more similar to vanilla React. Now you can use Omniscient.js as you would with vanilla React, just with added optimizations. Much like memoization for normal functions.
