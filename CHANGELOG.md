@@ -34,7 +34,7 @@ var Component = decoratedComponent(function (props) {
 ### Bugfixes
 
 1. Fixes Omniscient component factory input to handle being new-ed up from within React. Fixes some test issues and potential bugs with contexts. See [#123](https://github.com/omniscientjs/omniscient/issues/123) for more info.
-2. Fixes as Omniscient component factory disguises as a React class. This worksaround the fact that many third party libraries uses custom ways to use classes. For instance hot reloading. See [#125](https://github.com/omniscientjs/omniscient/pull/125) for more information.
+2. Fixes as Omniscient component factory disguises as a React class. This works around the fact that many third party libraries uses custom ways to use classes. For instance hot reloading. See [#125](https://github.com/omniscientjs/omniscient/pull/125) for more information.
 
 ## Version `v4.0.0` - Breaking changes
 
