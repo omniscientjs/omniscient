@@ -643,6 +643,24 @@ describe('component', function () {
 
       Creator.type.should.equal(Type);
     });
+
+    it('will pass default props', function () {
+      var expectedPropValue = 'default-prop-value';
+
+      var lifecycleMethods = {
+        getDefaultProps: function () {
+          return { direction: expectedPropValue };
+        }
+      };
+      var Component = component(lifecycleMethods, function (props) {
+        should.equal(props.direction, expectedPropValue);
+        this.props.direction.should.equal(expectedPropValue);
+        return DOM.div();
+      });
+
+      render(Component());
+      render(React.createElement(Component)); // jsx
+    });
   });
 
   describe('should not re-render', function () {

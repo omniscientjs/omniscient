@@ -304,9 +304,7 @@ function factory (initialOptions) {
         create = assign(create, methodStatics);
       }
 
-      create.type = Component;
-
-      return create;
+      return assign(create, Component, { type: Component });
     }
   }
 
