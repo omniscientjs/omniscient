@@ -3,6 +3,10 @@ Changelog
 
 Changelog with fixes and additions between each release.
 
+## Version `v4.1.1`
+
+Fixes issue with create factory not mimicking correctly React classes after React 0.14. See [#126](https://github.com/omniscientjs/omniscient/issues/126) for more information.
+
 ## Version `v4.1.0`
 
 ### Additions
