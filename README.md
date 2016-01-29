@@ -52,7 +52,7 @@ ReactDOM.render(HelloMessage({ name: 'John' }), document.querySelector('#app'));
 
 ### Updating Output
 
-Following the next React example of a "Stateful component", the below example is how you could do it to avoid having state, but instead pass the state as a input of the application.
+Following the next React example of a "Stateful component", the below example is how you could do it to avoid having state, but instead pass the state as an input of the application.
 
 ```js
 var stop;
@@ -160,7 +160,7 @@ var FocusingInput = component({
 
 #### Talking back from child to parent
 
-Some times you would like to talk back to parents by passing down some sort of helper function or helper constructions like EventEmitters. In these cases you don't want to trigger a re-render if any of the internal changes. You can wrap the provided `shouldComponentUpdate` and extend it to ignore given fields. The helper library [Omnipotent](https://github.com/omniscientjs/omnipotent) has a implementation of this: the `ignore` decorator:
+Some times you would like to talk back to parents by passing down some sort of helper function or helper constructions like EventEmitters. In these cases you don't want to trigger a re-render if any of the internal changes. You can wrap the provided `shouldComponentUpdate` and extend it to ignore given fields. The helper library [Omnipotent](https://github.com/omniscientjs/omnipotent) has an implementation of this: the `ignore` decorator:
 
 ```js
 var Title = component('View', ({input, ignoreThis}) =>
@@ -227,7 +227,7 @@ var InefficientAlwaysRenderingText = component(function (props) {
 
 Rendering a component tree is well and fine, but how to update? You can do this in several ways: either by using something like the very popular [Redux](https://github.com/rackt/redux) with immutable data using [Immutable.js](https://github.com/facebook/immutable-js), or you could use [Immstruct and cursors](https://github.com/omniscientjs/immstruct).
 
-Cursors (similar to functional lenses) are shallow wrappers on top of immutable structures that allow you to listen for when a underlying structure is swapped out. That's it. A mechanism that allows you to subscribe for structural changes in your state. The power of cursors are that they are immutable them self. This means, checking if they point to a new value is very easy and very cheap. This shines when using it with the Omniscient.js default `shouldComponentUpdate`.
+Cursors (similar to functional lenses) are shallow wrappers on top of immutable structures that allow you to listen for when an underlying structure is swapped out. That's it. A mechanism that allows you to subscribe for structural changes in your state. The power of cursors is that they are immutable them self. This means, checking if they point to a new value is very easy and very cheap. This shines when using it with the Omniscient.js default `shouldComponentUpdate`.
 
 ### Example using Cursors
 
