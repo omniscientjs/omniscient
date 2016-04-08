@@ -1,7 +1,10 @@
 language: node_js
 node_js:
+  - "5.0"
   - "4.0"
 sudo: false
+before_install:
+  - "npm install react@15.0"
 notifications:
   webhooks:
     urls:
