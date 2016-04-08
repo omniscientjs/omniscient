@@ -26,7 +26,7 @@
     "jsdom": "^6.1.0",
     "mocha": "^2.0.1",
     "react": ">=0.14.0-rc1",
-    "react-dom": "^0.14.0-rc1",
+    "react-dom": ">=0.14.0-rc1",
     "uglify-js": "^2.4.15"
   },
   "scripts": {
