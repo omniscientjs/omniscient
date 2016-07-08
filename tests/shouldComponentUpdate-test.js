@@ -299,6 +299,24 @@ describe('shouldComponentUpdate', function () {
         }, local);
       });
 
+      it('should have overridable isEqualImmutable', function (done) {
+        var data = Immutable.fromJS({ foo: { value: 'bar' }, bar: [1, 2, 3] });
+
+        var local = component.withDefaults({
+          isEqualImmutable: function (a, b) {
+            a.get('value').should.equal('bar');
+            b.get(0).should.eql(1);
+            done();
+            return true;
+          }
+        }).shouldComponentUpdate;
+
+        shouldNotUpdate({
+          cursor: { data: data.get('foo') },
+          nextCursor: { data: data.get('bar') }
+        }, local);
+      });
+
       it('should have overridable isEqualState', function (done) {
         var local = component.withDefaults({
           isEqualState: function () { done(); }

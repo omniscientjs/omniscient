@@ -15,6 +15,7 @@ var filter  = require('lodash.pick'),
  * @property {Function} isEqualState Get default isEqualState
  * @property {Function} isEqualProps Get default isEqualProps
  * @property {Function} isEqualCursor Get default isEqualCursor
+ * @property {Function} isEqualImmutable Get default isEqualImmutable
  * @property {Function} isImmutable Get default isImmutable
  * @property {Function} isIgnorable Get default isIgnorable
  * @property {Function} debug Get default debug
@@ -33,6 +34,7 @@ module.exports = factory();
  * {
  *   isCursor: function (cursor), // check if is props
  *   isEqualCursor: function (oneCursor, otherCursor), // check cursor
+ *   isEqualImmutable: function (oneImmutableStructure, otherImmutableStructure), // check immutable structures
  *   isEqualState: function (currentState, nextState), // check state
  *   isImmutable: function (currentState, nextState), // check if object is immutable
  *   isEqualProps: function (currentProps, nextProps), // check props
@@ -53,13 +55,14 @@ function factory (methods) {
   var debug;
   methods = methods || {};
 
-  var _isCursor      = methods.isCursor || isCursor,
-      _isEqualCursor = methods.isEqualCursor || isEqualCursor,
-      _isEqualState  = methods.isEqualState || isEqualState,
-      _isEqualProps  = methods.isEqualProps || isEqualProps,
-      _isImmutable   = methods.isImmutable || isImmutable,
-      _isIgnorable   = methods.isIgnorable || isIgnorable,
-      _unCursor      = methods.unCursor || unCursor;
+  var _isCursor         = methods.isCursor || isCursor,
+      _isEqualCursor    = methods.isEqualCursor || isEqualCursor,
+      _isEqualImmutable = methods.isEqualImmutable || isEqualImmutable,
+      _isEqualState     = methods.isEqualState || isEqualState,
+      _isEqualProps     = methods.isEqualProps || isEqualProps,
+      _isImmutable      = methods.isImmutable || isImmutable,
+      _isIgnorable      = methods.isIgnorable || isIgnorable,
+      _unCursor         = methods.unCursor || unCursor;
 
   var isNotIgnorable = not(or(_isIgnorable, isChildren));
 
@@ -67,6 +70,7 @@ function factory (methods) {
   shouldComponentUpdate.isEqualState = _isEqualState;
   shouldComponentUpdate.isEqualProps = _isEqualProps;
   shouldComponentUpdate.isEqualCursor = _isEqualCursor;
+  shouldComponentUpdate.isEqualImmutable = _isEqualImmutable;
   shouldComponentUpdate.isImmutable = _isImmutable;
   shouldComponentUpdate.debug = debugFn;
 
@@ -111,7 +115,7 @@ function factory (methods) {
   function isEqualState (value, other) {
     return isEqual(value, other, function (current, next) {
       if (current === next) return true;
-      return compare(current, next, _isImmutable, isEqualImmutable);
+      return compare(current, next, _isImmutable, _isEqualImmutable);
     });
   }
 
@@ -134,7 +138,7 @@ function factory (methods) {
     var cursorsEqual = compare(value, other, _isCursor, _isEqualCursor);
     if (cursorsEqual !== void 0) return cursorsEqual;
 
-    var immutableEqual = compare(value, other, _isImmutable, isEqualImmutable);
+    var immutableEqual = compare(value, other, _isImmutable, _isEqualImmutable);
     if (immutableEqual !== void 0) return immutableEqual;
 
     return isEqual(value, other, function (current, next) {
@@ -143,7 +147,7 @@ function factory (methods) {
       var cursorsEqual = compare(current, next, _isCursor, _isEqualCursor);
       if (cursorsEqual !== void 0) return cursorsEqual;
 
-      return compare(current, next, _isImmutable, isEqualImmutable);
+      return compare(current, next, _isImmutable, _isEqualImmutable);
     });
   }
 
@@ -195,6 +199,8 @@ function factory (methods) {
   }
 }
 
+// Comparator used internally by isEqual implementation. Returns undefined
+// if we should do recursive isEqual.
 function compare (current, next, typeCheck, equalCheck) {
   var isCurrent = typeCheck(current);
   var isNext = typeCheck(next);
@@ -208,6 +214,17 @@ function compare (current, next, typeCheck, equalCheck) {
   return void 0;
 }
 
+/**
+ * Predicate to check if immutable structures are equal through reference checks.
+ * Override through `shouldComponentUpdate.withDefaults` to customize behaviour.
+ *
+ * @param {Immutable} a
+ * @param {Immutable} b
+ *
+ * @module shouldComponentUpdate.isEqualImmutable
+ * @returns {Boolean}
+ * @api public
+ */
 function isEqualImmutable (a, b) {
   return a === b;
 }

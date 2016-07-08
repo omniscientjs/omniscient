@@ -52,6 +52,7 @@ module.exports = factory();
  *   // Passed on to `shouldComponentUpdate`
  *   isCursor: function (cursor), // check if is props
  *   isEqualCursor: function (oneCursor, otherCursor), // check cursor
+ *   isEqualImmutable: function (oneImmutableStructure, otherImmutableStructure), // check immutable structures
  *   isEqualState: function (currentState, nextState), // check state
  *   isImmutable: function (currentState, nextState), // check if object is immutable
  *   isEqualProps: function (currentProps, nextProps), // check props
@@ -107,6 +108,7 @@ module.exports.withDefaults = factory;
 function factory (initialOptions) {
   var debug;
   initialOptions = initialOptions || {};
+
   var _shouldComponentUpdate = initialOptions.shouldComponentUpdate ||
         shouldComponentUpdate.withDefaults(initialOptions);
   var _isCursor = initialOptions.isCursor || shouldComponentUpdate.isCursor;

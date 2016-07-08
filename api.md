@@ -55,6 +55,7 @@ unwrap cursors, etc.
   // Passed on to `shouldComponentUpdate`
   isCursor: function (cursor), // check if is props
   isEqualCursor: function (oneCursor, otherCursor), // check cursor
+  isEqualImmutable: function (oneImmutableStructure, otherImmutableStructure), // check immutable structures
   isEqualState: function (currentState, nextState), // check state
   isImmutable: function (currentState, nextState), // check if object is immutable
   isEqualProps: function (currentProps, nextProps), // check props
@@ -253,15 +254,16 @@ You can do this if you don't want to use Omniscients syntactic sugar.
 
 ### Properties
 
-| property        | type     | description               |
-| --------------- | -------- | ------------------------- |
-| `isCursor`      | Function | Get default isCursor      |
-| `isEqualState`  | Function | Get default isEqualState  |
-| `isEqualProps`  | Function | Get default isEqualProps  |
-| `isEqualCursor` | Function | Get default isEqualCursor |
-| `isImmutable`   | Function | Get default isImmutable   |
-| `isIgnorable`   | Function | Get default isIgnorable   |
-| `debug`         | Function | Get default debug         |
+| property           | type     | description                  |
+| ------------------ | -------- | ---------------------------- |
+| `isCursor`         | Function | Get default isCursor         |
+| `isEqualState`     | Function | Get default isEqualState     |
+| `isEqualProps`     | Function | Get default isEqualProps     |
+| `isEqualCursor`    | Function | Get default isEqualCursor    |
+| `isEqualImmutable` | Function | Get default isEqualImmutable |
+| `isImmutable`      | Function | Get default isImmutable      |
+| `isIgnorable`      | Function | Get default isIgnorable      |
+| `debug`            | Function | Get default debug            |
 
 
 
@@ -277,6 +279,7 @@ Create a “local” instance of the shouldComponentUpdate with overriden defaul
 {
   isCursor: function (cursor), // check if is props
   isEqualCursor: function (oneCursor, otherCursor), // check cursor
+  isEqualImmutable: function (oneImmutableStructure, otherImmutableStructure), // check immutable structures
   isEqualState: function (currentState, nextState), // check state
   isImmutable: function (currentState, nextState), // check if object is immutable
   isEqualProps: function (currentProps, nextProps), // check props
@@ -346,6 +349,23 @@ implementations.
 | ----- | ------ | ----------- |
 | `a`   | Cursor |             |
 | `b`   | Cursor |             |
+
+
+
+**Returns** `Boolean`, 
+
+
+### `shouldComponentUpdate.isEqualImmutable(a, b)`
+
+Predicate to check if immutable structures are equal through reference checks.
+Override through `shouldComponentUpdate.withDefaults` to customize behaviour.
+
+### Parameters
+
+| param | type      | description |
+| ----- | --------- | ----------- |
+| `a`   | Immutable |             |
+| `b`   | Immutable |             |
 
 
 
