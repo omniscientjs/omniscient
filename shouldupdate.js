@@ -209,7 +209,7 @@ function compare (current, next, typeCheck, equalCheck) {
 }
 
 function isEqualImmutable (a, b) {
-  return a === b;
+  return a.equals(b);
 }
 
 /**
