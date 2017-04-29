@@ -182,18 +182,20 @@ describe('shouldComponentUpdate', function () {
     });
 
     it('when state have same immutable structures', function () {
-      var map = Immutable.List.of(1);
+      var map1 = Immutable.List.of(1);
+      var map2 = Immutable.List.of(1);
       shouldNotUpdate({
-        state: { foo: map },
-        nextState: { foo: map }
+        state: { foo: map1 },
+        nextState: { foo: map2 }
       });
     });
 
     it('when props have same immutable structures', function () {
-      var map = Immutable.List.of(1);
+      var map1 = Immutable.List.of(1);
+      var map2 = Immutable.List.of(1);
       shouldNotUpdate({
-        props: { foo: map },
-        nextProps: { foo: map }
+        props: { foo: map1 },
+        nextProps: { foo: map2 }
       });
     });
 

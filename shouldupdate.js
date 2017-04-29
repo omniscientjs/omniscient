@@ -226,7 +226,7 @@ function compare (current, next, typeCheck, equalCheck) {
  * @api public
  */
 function isEqualImmutable (a, b) {
-  return a === b;
+  return a.equals(b);
 }
 
 /**
