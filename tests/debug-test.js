@@ -57,7 +57,7 @@ describe('debug', function () {
       localComp.debug();
 
       var Component = localComp('DisplayName', function () {
-        return React.DOM.text('hello');
+        return React.DOM.text({ children: 'hello' });
       });
       render(Component());
     });
@@ -71,7 +71,7 @@ describe('debug', function () {
       localComp.debug();
 
       var Component = localComp('DisplayName', function () {
-        return React.DOM.text('hello');
+        return React.DOM.text({ children: 'hello' });
       });
       render(Component());
     });
@@ -85,7 +85,7 @@ describe('debug', function () {
       });
 
       var Component = localComp('DisplayName', function () {
-        return React.DOM.text('hello');
+        return React.DOM.text({ children: 'hello' });
       });
       render(Component());
     });
@@ -99,7 +99,7 @@ describe('debug', function () {
       });
 
       var Component = localComp(function () {
-        return React.DOM.text('hello');
+        return React.DOM.text({ children: 'hello' });
       });
       render(Component({ key: 'foobar' }));
     });
@@ -121,7 +121,7 @@ describe('debug', function () {
           };
         }
       }, function () {
-        return React.DOM.text('hello');
+        return React.DOM.text({ children: 'hello' });
       });
       render(Component());
     });
@@ -135,12 +135,12 @@ describe('debug', function () {
       });
 
       var AnotherComponent = localComp(function AnotherComponent () {
-        return React.DOM.text('hello');
+        return React.DOM.text({ children: 'hello' });
       });
       render(AnotherComponent());
 
       var Component = localComp(function MyComponent () {
-        return React.DOM.text('hello');
+        return React.DOM.text({ children: 'hello' });
       });
       render(Component());
     });
@@ -154,12 +154,12 @@ describe('debug', function () {
       });
 
       var AnotherComponent = localComp(function () {
-        return React.DOM.text('hello');
+        return React.DOM.text({ children: 'hello' });
       });
       render(AnotherComponent({ key: 'anotherKey' }));
 
       var Component = localComp(function () {
-        return React.DOM.text('hello');
+        return React.DOM.text({ children: 'hello' });
       });
       render(Component({ key: 'myKey' }));
     });
@@ -173,7 +173,7 @@ describe('debug', function () {
       });
 
       var Component = localComp(function () {
-        return React.DOM.text('hello');
+        return React.DOM.text({ children: 'hello' });
       });
       render(Component());
     });

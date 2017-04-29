@@ -2,6 +2,7 @@ var chai = require('chai');
 var jsdom = require('jsdom');
 var Immutable = require('immutable');
 var Cursor = require('immutable/contrib/cursor');
+var createClass = require('create-react-class');
 
 var React = require('react');
 var ReactDOM = require('react-dom');
@@ -197,7 +198,7 @@ describe('component', function () {
         shouldComponentUpdate: shouldUpdateMixin
       }];
 
-      var Component = React.createClass({
+      var Component = createClass({
         mixins: mixins,
         render: function () {
           this.shouldComponentUpdate.should.equal(shouldUpdateMixin);
