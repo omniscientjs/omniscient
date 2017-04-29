@@ -3,6 +3,12 @@ Changelog
 
 Changelog with fixes and additions between each release.
 
+## Version `v4.2.0` [WIP]
+
+### Bug Fixes
+
+1. Changes to use `createClass` package instead of `React.createClass` in lue with React 15.5 ([#134](https://github.com/omniscientjs/omniscient/issues/134))
+
 ## Version `v4.1.1`
 
 Fixes issue with create factory not mimicking correctly React classes after React 0.14. See [#126](https://github.com/omniscientjs/omniscient/issues/126) for more information.
