@@ -5,6 +5,7 @@ var chai = require('chai');
 chai.should();
 
 var React  = require('react');
+var ReactDOM = require('react-dom');
 var ReactServer = require('react-dom/server');
 
 var Immutable = require('immutable');
@@ -45,7 +46,7 @@ describe('debug', function () {
       console.info = this.info;
     });
 
-    it('should use debug when availeble', function (done) {
+    it('should use debug when available', function (done) {
       console.debug = function () {
         done();
       };
@@ -57,7 +58,7 @@ describe('debug', function () {
       localComp.debug();
 
       var Component = localComp('DisplayName', function () {
-        return React.DOM.text({ children: 'hello' });
+        return textNode('hello');
       });
       render(Component());
     });
@@ -71,7 +72,7 @@ describe('debug', function () {
       localComp.debug();
 
       var Component = localComp('DisplayName', function () {
-        return React.DOM.text({ children: 'hello' });
+        return textNode('hello');
       });
       render(Component());
     });
@@ -85,45 +86,26 @@ describe('debug', function () {
       });
 
       var Component = localComp('DisplayName', function () {
-        return React.DOM.text({ children: 'hello' });
+        return textNode('hello');
       });
       render(Component());
     });
 
     it('should log on render when debug with key', function (done) {
+      var mount = global.document.createElement('div');
+
       var localComp = component.withDefaults();
       localComp.debug(function logger (message) {
         message.should.contain('foobar');
         message.should.contain('render');
+        mount = undefined;
         done();
       });
 
       var Component = localComp(function () {
-        return React.DOM.text({ children: 'hello' });
+        return textNode('hello');
       });
-      render(Component({ key: 'foobar' }));
-    });
-
-    it('should log when debug with key for React 0.13 beta', function (done) {
-      var localComp = component.withDefaults();
-      localComp.debug(function logger (message) {
-        message.should.contain('foobar');
-        message.should.contain('render');
-        done();
-      });
-
-      var Component = localComp({
-        componentWillMount: function () {
-          this._reactInternalInstance = {
-            _currentElement: {
-              key: 'foobar'
-            }
-          };
-        }
-      }, function () {
-        return React.DOM.text({ children: 'hello' });
-      });
-      render(Component());
+      ReactDOM.render(Component('foobar'), mount);
     });
 
     it('should only log components matching regex passed as parameter', function (done) {
@@ -135,33 +117,38 @@ describe('debug', function () {
       });
 
       var AnotherComponent = localComp(function AnotherComponent () {
-        return React.DOM.text({ children: 'hello' });
+        return textNode('hello');
       });
       render(AnotherComponent());
 
       var Component = localComp(function MyComponent () {
-        return React.DOM.text({ children: 'hello' });
+        return textNode('hello');
       });
       render(Component());
     });
 
     it('should match on key', function (done) {
+      var mount1 = global.document.createElement('div');
+      var mount2 = global.document.createElement('div');
+
       var localComp = component.withDefaults();
       localComp.debug(/My/i, function logger (message) {
         message.should.not.contain('anotherKey');
         message.should.contain('myKey');
+        mount1 = undefined;
+        mount2 = undefined;
         done();
       });
 
       var AnotherComponent = localComp(function () {
-        return React.DOM.text({ children: 'hello' });
+        return textNode('hello');
       });
-      render(AnotherComponent({ key: 'anotherKey' }));
+      ReactDOM.render(AnotherComponent({ key: 'anotherKey' }), mount1);
 
       var Component = localComp(function () {
-        return React.DOM.text({ children: 'hello' });
+        return textNode('hello');
       });
-      render(Component({ key: 'myKey' }));
+      ReactDOM.render(Component({ key: 'myKey' }), mount2);
     });
 
     it('should log with unknown on render', function (done) {
@@ -173,7 +160,7 @@ describe('debug', function () {
       });
 
       var Component = localComp(function () {
-        return React.DOM.text({ children: 'hello' });
+        return textNode('hello');
       });
       render(Component());
     });
@@ -281,7 +268,8 @@ describe('debug', function () {
 
   beforeEach(function () {
     global.document = jsdom.jsdom('<html><body></body></html>');
-    global.window = global.document.parentWindow;
+    global.window = document.defaultView;
+    global.navigator = {userAgent: 'node.js'};
   });
 
   afterEach(function () {
@@ -289,6 +277,17 @@ describe('debug', function () {
     delete global.window;
   });
 });
+
+/**
+ * Interop between React 16.x (can return strings directly in a component's `render` method)
+ * and React <16 (must return a `text` element from a component's `render` method)
+ * @param {string} textContent 
+ */
+function textNode (textContent) {
+  return (React.DOM && React.DOM.text)
+    ? React.createElement('text', { children: textContent })
+    : textContent;
+}
 
 function render (component) {
   ReactServer.renderToString(component);
