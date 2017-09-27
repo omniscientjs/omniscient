@@ -7,7 +7,6 @@ var createClass = require('create-react-class');
 var React = require('react');
 var ReactDOM = require('react-dom');
 
-var DOM = React.DOM;
 var should = chai.should();
 
 var component = require('../');
@@ -23,7 +22,7 @@ describe('component', function () {
         this.constructor.should.have.property('displayName');
         this.constructor.displayName.should.equal('myComponent');
 
-        return DOM.text(null, 'hello');
+        return textNode('hello');
       });
 
       render(Component());
@@ -35,7 +34,7 @@ describe('component', function () {
         this.constructor.should.have.property('displayName');
         this.constructor.displayName.should.equal('MyComponentName');
 
-        return DOM.text(null, 'hello');
+        return textNode('hello');
       });
 
       render(Component());
@@ -56,7 +55,7 @@ describe('component', function () {
       });
 
       var Component = decoratedComponent(function MyComponentName () {
-        return DOM.text(null, 'hello');
+        return textNode('hello');
       });
 
       render(Component());
@@ -71,7 +70,7 @@ describe('component', function () {
       };
 
       var Component = component.classDecorator(decorator, function MyComponentName () {
-        return DOM.text(null, 'hello');
+        return textNode('hello');
       });
 
       render(Component());
@@ -87,7 +86,7 @@ describe('component', function () {
 
       var Component = component.classDecorator(decorator)({foo: function () {}}, function MyComponentName () {
         this.foo.should.be.a('function');
-        return DOM.text(null, 'hello');
+        return textNode('hello');
       });
 
       render(Component());
@@ -106,7 +105,7 @@ describe('component', function () {
 
       var Component = decoratedComponent(function MyComponentName () {
         this.constructor.displayName.should.equal('Foobar');
-        return DOM.text(null, 'hello');
+        return textNode('hello');
       });
 
       render(Component());
@@ -120,7 +119,7 @@ describe('component', function () {
       var mixins = [{ statics: { foo: noop, bar: noop } }];
 
       var Component = component(mixins, function () {
-        return DOM.text(null, 'hello');
+        return textNode('hello');
       });
 
       Component.foo.should.be.a('function');
@@ -131,7 +130,7 @@ describe('component', function () {
       var mixins = [{ statics: { foo: noop } }, { statics: { bar: noop } }];
 
       var Component = component(mixins, function () {
-        return DOM.text(null, 'hello');
+        return textNode('hello');
       });
 
       Component.foo.should.be.a('function');
@@ -147,7 +146,7 @@ describe('component', function () {
 
       var Component = component(mixins, function () {
         this.should.have.property('myMixin');
-        return DOM.text(null, 'hello');
+        return textNode('hello');
       });
 
       render(Component());
@@ -158,7 +157,7 @@ describe('component', function () {
 
       var Component = component(mixins, function () {
         this.should.have.property('myMixin');
-        return DOM.text(null, 'hello');
+        return textNode('hello');
       });
 
       render(Component());
@@ -170,7 +169,7 @@ describe('component', function () {
 
       var Component = component(mixins, function () {
         this.shouldComponentUpdate.should.equal(shouldUpdate);
-        return DOM.text(null, 'hello');
+        return textNode('hello');
       });
 
       render(Component({ foo: 'hello' }));
@@ -187,7 +186,7 @@ describe('component', function () {
 
       var Component = component(mixins, function () {
         this.shouldComponentUpdate.should.equal(shouldUpdate);
-        return DOM.text(null, 'hello');
+        return textNode('hello');
       });
 
       render(Component({ foo: 'hello' }));
@@ -203,7 +202,7 @@ describe('component', function () {
         render: function () {
           this.shouldComponentUpdate.should.equal(shouldUpdateMixin);
           done();
-          return DOM.text(null, 'hello');
+          return textNode('hello');
         }
       });
 
@@ -218,7 +217,7 @@ describe('component', function () {
       var Component = component(mixins, function (cursor, statics) {
         cursor.should.eql({});
         should.not.exist(statics);
-        return DOM.text(null, 'hello');
+        return textNode('hello');
       });
 
       render(Component());
@@ -230,7 +229,7 @@ describe('component', function () {
 
       var Component = component(mixins, function (cursor) {
         cursor.should.eql(cursor1);
-        return DOM.text(null, 'hello');
+        return textNode('hello');
       });
 
       render(Component(cursor1));
@@ -242,7 +241,7 @@ describe('component', function () {
 
       var Component = component(mixins, function (props) {
         props.cursor.should.eql(cursor1);
-        return DOM.text(null, 'hello');
+        return textNode('hello');
       });
 
       render(Component({ cursor: cursor1 }));
@@ -254,7 +253,7 @@ describe('component', function () {
 
       var Component = component(mixins, function (cursor) {
         cursor.should.equal(cursorInput);
-        return DOM.text(null, 'hello');
+        return textNode('hello');
       });
       render(Component(cursorInput));
     });
@@ -266,7 +265,7 @@ describe('component', function () {
       var Component = component(mixins, function (cursor) {
         this.cursor.should.equal(cursor);
         this.cursor.should.equal(cursorInput);
-        return DOM.text(null, 'hello');
+        return textNode('hello');
       });
       render(Component(cursorInput));
     });
@@ -276,7 +275,7 @@ describe('component', function () {
       var i = 0;
       var Component = component(function (cursor) {
         i++;
-        return DOM.text(null, 'hello');
+        return textNode('hello');
       });
 
       render(Component(cursorInput));
@@ -291,7 +290,7 @@ describe('component', function () {
       var input = { cursor: 'foo' };
       var Component = component(mixins, function (cursor) {
         cursor.should.eql(input);
-        return DOM.text(null, 'hello');
+        return textNode('hello');
       });
 
       render(Component(input));
@@ -303,7 +302,7 @@ describe('component', function () {
 
       var Component = component(mixins, function (immutableStructure) {
         immutableStructure.should.eql(imm);
-        return DOM.text(null, 'hello');
+        return textNode('hello');
       });
 
       render(Component(imm));
@@ -314,7 +313,7 @@ describe('component', function () {
 
       var Component = component(mixins, function () {
         hasKey(this, 'myKey');
-        return DOM.text(null, 'hello');
+        return textNode('hello');
       });
 
       render(Component('myKey'));
@@ -328,7 +327,7 @@ describe('component', function () {
 
         data.should.have.property('foo');
         data.foo.should.equal('hello');
-        return DOM.text(null, 'hello');
+        return textNode('hello');
       });
 
       render(Component('myKey', { foo: 'hello' }));
@@ -342,7 +341,7 @@ describe('component', function () {
       var Component = component(mixins, function (data) {
         data.should.have.property('foo');
         data.foo.should.equal('hello');
-        return DOM.text(null, 'hello');
+        return textNode('hello');
       });
 
       render(Component(props));
@@ -356,7 +355,7 @@ describe('component', function () {
         hasKey(this, 'myKey');
 
         cursor.should.equal(cursorInput);
-        return DOM.text(null, 'hello');
+        return textNode('hello');
       });
       render(Component('myKey', cursorInput));
     });
@@ -371,7 +370,7 @@ describe('component', function () {
 
         props.cursor.should.equal(outerCursor.cursor);
 
-        return DOM.text(null, 'hello');
+        return textNode('hello');
       });
 
       render(Component('myKey', outerCursor));
@@ -382,8 +381,8 @@ describe('component', function () {
 
       var outerCursor = { foo: 'hello' };
 
-      var c1 = DOM.text(null, 'hello');
-      var c2 = DOM.text(null, 'bar');
+      var c1 = textNode('hello');
+      var c2 = textNode('bar');
 
       var Component = component(mixins, function (cursor) {
         cursor.foo.should.equal(cursor.foo);
@@ -392,7 +391,7 @@ describe('component', function () {
         this.props.children[0].should.equal(c1);
         this.props.children[1].should.equal(c2);
 
-        return DOM.text(null, 'hello');
+        return textNode('hello');
       });
 
       render(Component(outerCursor, c1, c2));
@@ -409,10 +408,10 @@ describe('component', function () {
         cursor.foo.should.equal(outerCursor.foo);
         this.props.children.should.have.length(1);
 
-        return DOM.text(null, 'hello');
+        return textNode('hello');
       });
 
-      render(Component('myKey', outerCursor, DOM.text(null, 'hello')));
+      render(Component('myKey', outerCursor, textNode('hello')));
     });
 
     it('should get passed cursor-object and children', function (done) {
@@ -424,10 +423,10 @@ describe('component', function () {
         cursor.foo.should.equal(outerCursor.foo);
         this.props.children.should.have.length(1);
 
-        return DOM.text(null, 'hello');
+        return textNode('hello');
       });
 
-      render(Component(outerCursor, DOM.text(null, 'hello')));
+      render(Component(outerCursor, textNode('hello')));
     });
 
     it('should pass multiple cursors', function (done) {
@@ -438,7 +437,7 @@ describe('component', function () {
       var Component = component(mixins, function (cursor, staticarg) {
         cursor.one.should.equal(cursor1);
         cursor.two.should.equal(cursor2);
-        return DOM.text(null, 'hello');
+        return textNode('hello');
       });
       render(Component({ one: cursor1, two: cursor2 }));
     });
@@ -458,7 +457,7 @@ describe('component', function () {
         this.props.children[0].should.equal(c1);
         this.props.children[1].should.equal(c2);
 
-        return DOM.text(null, this.props.children);
+        return textNode(this.props.children);
       });
 
       render(Component(outerCursor, c1, c2));
@@ -478,7 +477,7 @@ describe('component', function () {
         this.props.children[0].should.equal(c1[0]);
         this.props.children[1].should.equal(c1[1]);
 
-        return DOM.text(null, this.props.children);
+        return textNode(this.props.children);
       });
 
       render(Component(outerCursor, c1));
@@ -495,7 +494,7 @@ describe('component', function () {
         this.props.children[0].should.equal(c1[0]);
         this.props.children[1].should.equal(c1[1]);
 
-        return DOM.text(null, this.props.children);
+        return textNode(this.props.children);
       });
 
       render(Component({}, c1));
@@ -514,7 +513,7 @@ describe('component', function () {
         this.props.children[0].should.equal(c1[0]);
         this.props.children[1].should.equal(c1[1]);
 
-        return DOM.text(null, this.props.children);
+        return textNode(this.props.children);
       });
 
       render(Component('myKey', {}, c1));
@@ -536,7 +535,7 @@ describe('component', function () {
       var Component = localComponent(function () {
         this.shouldComponentUpdate.should.equal(shouldUpdate);
         done();
-        return DOM.text(null, 'hello');
+        return textNode('hello');
       });
 
       render(Component({ foo: 'hello' }));
@@ -559,7 +558,7 @@ describe('component', function () {
 
       localComponent.shouldComponentUpdate.isCursor.should.equal(isCursor);
       var Component = localComponent(function () {
-        return DOM.text(null, 'hello');
+        return textNode('hello');
       });
 
       render(Component({ foo: 'hello' }));
@@ -573,7 +572,7 @@ describe('component', function () {
 
       localComponent.shouldComponentUpdate.isImmutable.should.equal(isImmutable);
       var Component = localComponent(function () {
-        return DOM.text(null, 'hello');
+        return textNode('hello');
       });
 
       render(Component({ foo: 'hello' }));
@@ -588,7 +587,7 @@ describe('component', function () {
 
       var Component = localComponent(function (cursor) {
         cursor.should.equal(cursor1);
-        return DOM.text(null, 'hello');
+        return textNode('hello');
       });
 
       render(React.createElement(Component, { cursor: cursor1 }));
@@ -604,7 +603,7 @@ describe('component', function () {
 
       var Component = component(mixins, function () {
         this.props.cursor.should.equal(props.cursor);
-        return DOM.text(null, 'hello');
+        return textNode('hello');
       });
       render(Component(props));
     });
@@ -617,18 +616,18 @@ describe('component', function () {
       var Component = component(mixins, function () {
         this.props.one.should.equal(cursor1);
         this.props.two.should.equal(cursor2);
-        return DOM.text(null, 'hello');
+        return textNode('hello');
       });
 
       render(Component({ one: cursor1, two: cursor2 }));
     });
   });
 
-  describe('creator disquises as a react class', function () {
+  describe('creator disguises as a react class', function () {
 
     it('creates react class instance, not an element, when passed `publicProps`, `publicContext`, and `ReactUpdateQueue`', function () {
       var Component = component(function () {
-        return DOM.div();
+        return React.createElement('div');
       });
       React.isValidElement(Component()).should.be.true;
       React.isValidElement(Component({}, {}, {})).should.be.false;
@@ -639,7 +638,7 @@ describe('component', function () {
       var comp = component.classDecorator(Class => Type = Class);
 
       var Creator = comp(function () {
-        return DOM.div();
+        return React.createElement('div');
       });
 
       Creator.type.should.equal(Type);
@@ -656,7 +655,7 @@ describe('component', function () {
       var Component = component(lifecycleMethods, function (props) {
         should.equal(props.direction, expectedPropValue);
         this.props.direction.should.equal(expectedPropValue);
-        return DOM.div();
+        return React.createElement('div');
       });
 
       render(Component());
@@ -669,7 +668,7 @@ describe('component', function () {
       var rendered = 0;
       var Component = component(function (input) {
         rendered = rendered + 1;
-        return DOM.text(null, 'Rendered ' + rendered + ' times');
+        return textNode('Rendered ' + rendered + ' times');
       });
 
       render(Component({}));
@@ -693,7 +692,7 @@ describe('component', function () {
 
     var Component = component([mixin], function (input, output) {
       renderCalled = renderCalled + 1;
-      return DOM.text(null, 'hello');
+      return textNode('hello');
     });
     var onChange = function () { return 1; };
     render(Component({}, {onChange: onChange }));
@@ -725,7 +724,7 @@ describe('component', function () {
 
     var Component = component([mixin], function (input, output) {
       renderCalled = renderCalled + 1;
-      return DOM.text(null, 'hello');
+      return textNode('hello');
     });
 
     var onChange = function () { return 1; };
@@ -763,13 +762,27 @@ describe('component', function () {
 
 function noop () {}
 
+/**
+ * Interop between React 16.x (can return strings directly in a component's `render` method)
+ * and React <16 (must return a `text` element from a component's `render` method)
+ * @param {string} textContent 
+ */
+function textNode (textContent) {
+  return (React.DOM && React.DOM.text)
+    ? React.createElement('text', { children: textContent })
+    : textContent;
+}
+
 function render (component) {
   ReactDOM.render(component, global.document.querySelector('#app'));
 }
 
 function hasKey(component, key) {
   var element = component._currentElement;
-  if (component._reactInternalInstance && component._reactInternalInstance._currentElement) {
+  if (component._reactInternalFiber) {
+    element = component._reactInternalFiber;
+  }
+  else if (component._reactInternalInstance && component._reactInternalInstance._currentElement) {
     element = component._reactInternalInstance._currentElement;
   }
   element.key.should.equal(key);

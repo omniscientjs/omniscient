@@ -5,7 +5,7 @@ var jsdom = require('jsdom');
 var Immutable = require('immutable');
 var immstruct = require('immstruct');
 
-var React, d;
+var React;
 
 var ReactDOM = require('react-dom');
 
@@ -28,7 +28,6 @@ describe('component render test', function () {
 
     // require React each time, as we have get a new jsdom
     React = require('react');
-    d = React.DOM;
 
     // component also uses React, so needs to happen after flush
     component = require('../');
@@ -67,11 +66,11 @@ describe('component render test', function () {
       // 2
       // 6
       calls.render[props.cursor.toJS().id]++;
-      return d.li({}, '');
+      return React.createElement('li', {}, '');
     });
 
     var List = component('List', function (props) {
-      return d.ul({}, props.cursor.toArray().map(function (item, i) {
+      return React.createElement('ul', {}, props.cursor.toArray().map(function (item, i) {
         return Item('component-' + i, { cursor: item });
       }));
     });
@@ -105,7 +104,7 @@ describe('component render test', function () {
         props.items.remove(props.items.indexOf(item));
       };
 
-      return d.ul({}, props.items.toArray().map(function (item) {
+      return React.createElement('ul', {}, props.items.toArray().map(function (item) {
         return Item({item: item,
                      key: 'item-' + item.get('id'),
                      statics: {onRemove: onRemove}});
@@ -113,7 +112,7 @@ describe('component render test', function () {
     });
 
     var Item = component('Item', function (props) {
-      return d.li({
+      return React.createElement('li', {
         id: 'item-' + props.item.get('id'),
         className: props.item.get('isSelected') ? 'selected' : '',
         onClick: function () {

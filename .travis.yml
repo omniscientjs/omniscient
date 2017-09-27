@@ -5,7 +5,7 @@ node_js:
   - "4.0"
 sudo: false
 before_install:
-  - "npm install react@15"
+  - "npm install react@15 react-dom@15"
 notifications:
   webhooks:
     urls:
