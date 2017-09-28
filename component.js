@@ -1,7 +1,7 @@
 'use strict';
 
 var createClass = require('create-react-class');
-var assign = require('lodash.assign');
+var assign = require('object-assign');
 var React = require('react');
 
 var shouldComponentUpdate = require('./shouldupdate');
@@ -111,9 +111,11 @@ function factory(initialOptions) {
   initialOptions = initialOptions || {};
 
   var _shouldComponentUpdate =
-    initialOptions.shouldComponentUpdate || shouldComponentUpdate.withDefaults(initialOptions);
+    initialOptions.shouldComponentUpdate ||
+    shouldComponentUpdate.withDefaults(initialOptions);
   var _isCursor = initialOptions.isCursor || shouldComponentUpdate.isCursor;
-  var _isImmutable = initialOptions.isImmutable || shouldComponentUpdate.isImmutable;
+  var _isImmutable =
+    initialOptions.isImmutable || shouldComponentUpdate.isImmutable;
   var _hiddenCursorField = initialOptions.cursorField || '__singleCursor';
   var _isNode = initialOptions.isNode || isNode;
   var _classDecorator = initialOptions.classDecorator || identity;
@@ -190,7 +192,10 @@ function factory(initialOptions) {
     if (shouldPartiallyApply) {
       return ComponentCreatorFactory(classDecorator);
     }
-    return ComponentCreatorFactory(classDecorator).apply(null, toArray(arguments).slice(1));
+    return ComponentCreatorFactory(classDecorator).apply(
+      null,
+      toArray(arguments).slice(1)
+    );
   };
   return CreatedComponent;
 
@@ -256,7 +261,11 @@ function factory(initialOptions) {
        * @returns {ReactElement}
        * @api public
        */
-      var create = function(keyOrProps, propsOrPublicContext, ReactUpdateQueue) {
+      var create = function(
+        keyOrProps,
+        propsOrPublicContext,
+        ReactUpdateQueue
+      ) {
         // After stateless arrow functions was allowed as components, react will instantiate
         // the `create` function if it has a prototype. We are passed `props`, `publicContext`
         // and `ReactUpdateQueue`.

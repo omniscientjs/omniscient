@@ -7,10 +7,9 @@
     "example": "example"
   },
   "dependencies": {
-    "create-react-class": "^15.5.2",
-    "lodash.assign": "^4.2.0",
-    "lodash.isequalwith": "^4.4.0",
-    "lodash.pickby": "^4.6.0"
+    "create-react-class": "^15.6.2",
+    "lodash.isequal": "^3.0.4",
+    "object-assign": "^4.1.1"
   },
   "peerDependencies": {
     "react": ">=0.14.0"
