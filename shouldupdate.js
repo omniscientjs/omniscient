@@ -1,8 +1,7 @@
-"use strict";
+'use strict';
 
-var filter  = require('lodash.pick'),
-    isEqual = require('lodash.isequal');
-
+var filter = require('lodash.pickby'),
+  isEqual = require('lodash.isequalwith');
 
 /**
  * Directly fetch `shouldComponentUpdate` mixin to use outside of Omniscient.
@@ -51,18 +50,18 @@ module.exports = factory();
  */
 module.exports.withDefaults = factory;
 
-function factory (methods) {
+function factory(methods) {
   var debug;
   methods = methods || {};
 
-  var _isCursor         = methods.isCursor || isCursor,
-      _isEqualCursor    = methods.isEqualCursor || isEqualCursor,
-      _isEqualImmutable = methods.isEqualImmutable || isEqualImmutable,
-      _isEqualState     = methods.isEqualState || isEqualState,
-      _isEqualProps     = methods.isEqualProps || isEqualProps,
-      _isImmutable      = methods.isImmutable || isImmutable,
-      _isIgnorable      = methods.isIgnorable || isIgnorable,
-      _unCursor         = methods.unCursor || unCursor;
+  var _isCursor = methods.isCursor || isCursor,
+    _isEqualCursor = methods.isEqualCursor || isEqualCursor,
+    _isEqualImmutable = methods.isEqualImmutable || isEqualImmutable,
+    _isEqualState = methods.isEqualState || isEqualState,
+    _isEqualProps = methods.isEqualProps || isEqualProps,
+    _isImmutable = methods.isImmutable || isImmutable,
+    _isIgnorable = methods.isIgnorable || isIgnorable,
+    _unCursor = methods.unCursor || unCursor;
 
   var isNotIgnorable = not(or(_isIgnorable, isChildren));
 
@@ -76,19 +75,18 @@ function factory (methods) {
 
   return shouldComponentUpdate;
 
-  function shouldComponentUpdate (nextProps, nextState) {
+  function shouldComponentUpdate(nextProps, nextState) {
     if (nextProps === this.props && nextState === this.state) {
       if (debug) debug.call(this, 'shouldComponentUpdate => false (equal input)');
       return false;
     }
-
     if (!_isEqualState(this.state, nextState)) {
       if (debug) debug.call(this, 'shouldComponentUpdate => true (state has changed)');
       return true;
     }
 
-    var filteredNextProps    = filter(nextProps, isNotIgnorable),
-        filteredCurrentProps = filter(this.props, isNotIgnorable);
+    var filteredNextProps = filter(nextProps, isNotIgnorable),
+      filteredCurrentProps = filter(this.props, isNotIgnorable);
 
     if (!_isEqualProps(filteredCurrentProps, filteredNextProps)) {
       if (debug) debug.call(this, 'shouldComponentUpdate => true (props have changed)');
@@ -112,8 +110,8 @@ function factory (methods) {
    * @returns {Boolean}
    * @api public
    */
-  function isEqualState (value, other) {
-    return isEqual(value, other, function (current, next) {
+  function isEqualState(value, other) {
+    return isEqual(value, other, function(current, next) {
       if (current === next) return true;
       return compare(current, next, _isImmutable, _isEqualImmutable);
     });
@@ -132,7 +130,7 @@ function factory (methods) {
    * @returns {Boolean}
    * @api public
    */
-  function isEqualProps (value, other) {
+  function isEqualProps(value, other) {
     if (value === other) return true;
 
     var cursorsEqual = compare(value, other, _isCursor, _isEqualCursor);
@@ -141,7 +139,7 @@ function factory (methods) {
     var immutableEqual = compare(value, other, _isImmutable, _isEqualImmutable);
     if (immutableEqual !== void 0) return immutableEqual;
 
-    return isEqual(value, other, function (current, next) {
+    return isEqual(value, other, function(current, next) {
       if (current === next) return true;
 
       var cursorsEqual = compare(current, next, _isCursor, _isEqualCursor);
@@ -163,13 +161,13 @@ function factory (methods) {
    * @returns {Boolean}
    * @api public
    */
-  function isEqualCursor (a, b) {
+  function isEqualCursor(a, b) {
     return _unCursor(a) === _unCursor(b);
   }
 
-  function debugFn (pattern, logFn) {
+  function debugFn(pattern, logFn) {
     if (typeof pattern === 'function') {
-      logFn   = pattern;
+      logFn = pattern;
       pattern = void 0;
     }
 
@@ -182,10 +180,12 @@ function factory (methods) {
     }
 
     var regex = new RegExp(pattern || '.*');
-    debug = function (str) {
-      var element = (this._reactInternalFiber) ? this._reactInternalFiber : 
-                    (this._reactInternalInstance) ? this._reactInternalInstance._currentElement :
-                    this._currentElement;
+    debug = function(str) {
+      var element = this._reactInternalFiber
+        ? this._reactInternalFiber
+        : this._reactInternalInstance
+          ? this._reactInternalInstance._currentElement
+          : this._currentElement;
       var key = element && element.key ? ' key=' + element.key : '';
       var name = this.constructor.displayName;
       if (!key && !name) {
@@ -200,7 +200,7 @@ function factory (methods) {
 
 // Comparator used internally by isEqual implementation. Returns undefined
 // if we should do recursive isEqual.
-function compare (current, next, typeCheck, equalCheck) {
+function compare(current, next, typeCheck, equalCheck) {
   var isCurrent = typeCheck(current);
   var isNext = typeCheck(next);
 
@@ -224,7 +224,7 @@ function compare (current, next, typeCheck, equalCheck) {
  * @returns {Boolean}
  * @api public
  */
-function isEqualImmutable (a, b) {
+function isEqualImmutable(a, b) {
   return a === b;
 }
 
@@ -269,12 +269,12 @@ function unCursor(cursor) {
  * @returns {Boolean}
  * @api public
  */
-function isCursor (potential) {
+function isCursor(potential) {
   return !!(potential && typeof potential.deref === 'function');
 }
 
-function not (fn) {
-  return function () {
+function not(fn) {
+  return function() {
     return !fn.apply(fn, arguments);
   };
 }
@@ -293,16 +293,16 @@ function not (fn) {
  * @returns {Boolean}
  * @api public
  */
-function isIgnorable (_, key) {
+function isIgnorable(_, key) {
   return false;
 }
 
-function isChildren (_, key) {
+function isChildren(_, key) {
   return key === 'children';
 }
 
-function or (fn1, fn2) {
-  return function () {
+function or(fn1, fn2) {
+  return function() {
     return fn1.apply(null, arguments) || fn2.apply(null, arguments);
   };
 }

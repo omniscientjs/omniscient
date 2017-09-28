@@ -1,16 +1,17 @@
 {
   "name": "omniscient",
   "version": "4.1.1",
-  "description": "A library providing an abstraction for React components for passing the same data structure through the entire component flow using cursors and immutable data structures.",
+  "description":
+    "A library providing an abstraction for React components for passing the same data structure through the entire component flow using cursors and immutable data structures.",
   "main": "component.js",
   "directories": {
     "example": "example"
   },
   "dependencies": {
     "create-react-class": "^15.5.2",
-    "lodash.assign": "^3.0.0",
-    "lodash.isequal": "^3.0.0",
-    "lodash.pick": "^3.0.0"
+    "lodash.assign": "^4.2.0",
+    "lodash.isequalwith": "^4.4.0",
+    "lodash.pickby": "^4.6.0"
   },
   "peerDependencies": {
     "react": ">=0.14.0"
@@ -40,11 +41,7 @@
     "type": "git",
     "url": "git://github.com/omniscientjs/omniscient.git"
   },
-  "keywords": [
-    "quiescent",
-    "react",
-    "immutable"
-  ],
+  "keywords": ["quiescent", "react", "immutable"],
   "browserify-shim": {
     "react": "global:React"
   },
