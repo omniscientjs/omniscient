@@ -11,9 +11,8 @@ var ReactDOM = require('react-dom');
 
 var component;
 
-describe('component render test', function () {
-
-  beforeEach(function () {
+describe('component render test', function() {
+  beforeEach(function() {
     // React needs a dom before being required
     // https://github.com/facebook/react/blob/master/src/vendor/core/ExecutionEnvironment.js#L39
     global.document = jsdom.jsdom('<html><body><div id="app"></div></body></html>');
@@ -34,9 +33,12 @@ describe('component render test', function () {
     // component.debug();
   });
 
-  it('should only re-render components that depend on changed data, but call shouldComponentUpdate for all', function (done) {
-    var FIRST = 0, SECOND = 1;
-    var structure = immstruct({ items: [ { id: FIRST }, { id: SECOND } ] });
+  it('should only re-render components that depend on changed data, but call shouldComponentUpdate for all', function(
+    done
+  ) {
+    var FIRST = 0,
+      SECOND = 1;
+    var structure = immstruct({ items: [{ id: FIRST }, { id: SECOND }] });
 
     var calls = { render: {}, shouldComponentUpdate: {} };
     calls.render[FIRST] = 0;
@@ -44,84 +46,99 @@ describe('component render test', function () {
     calls.shouldComponentUpdate[FIRST] = 0;
     calls.shouldComponentUpdate[SECOND] = 0;
 
-    var mixins = [{
-      // 5
-      shouldComponentUpdate: function () {
-        var id = this.props.cursor.get('id');
-        calls.shouldComponentUpdate[id]++;
+    var mixins = [
+      {
+        // 5
+        shouldComponentUpdate: function() {
+          var id = this.props.cursor.get('id');
+          calls.shouldComponentUpdate[id]++;
 
-        return component.shouldComponentUpdate.apply(this, arguments);
-      },
-      // 7
-      componentDidUpdate: function () {
-        calls.shouldComponentUpdate[FIRST].should.equal(1);
-        calls.shouldComponentUpdate[SECOND].should.equal(1);
-        calls.render[FIRST].should.equal(2);
-        calls.render[SECOND].should.equal(1);
-        done();
+          return component.shouldComponentUpdate.apply(this, arguments);
+        },
+        // 7
+        componentDidUpdate: function() {
+          calls.shouldComponentUpdate[FIRST].should.equal(1);
+          calls.shouldComponentUpdate[SECOND].should.equal(1);
+          calls.render[FIRST].should.equal(2);
+          calls.render[SECOND].should.equal(1);
+          done();
+        }
       }
-    }];
+    ];
 
-    var Item = component('Item', mixins, function (props) {
+    var Item = component('Item', mixins, function(props) {
       // 2
       // 6
       calls.render[props.cursor.toJS().id]++;
       return React.createElement('li', {}, '');
     });
 
-    var List = component('List', function (props) {
-      return React.createElement('ul', {}, props.cursor.toArray().map(function (item, i) {
-        return Item('component-' + i, { cursor: item });
-      }));
+    var List = component('List', function(props) {
+      return React.createElement(
+        'ul',
+        {},
+        props.cursor.toArray().map(function(item, i) {
+          return Item('component-' + i, { cursor: item });
+        })
+      );
     });
 
     var div = document.createElement('div');
     ReactDOM.render(List({ cursor: structure.cursor('items') }), div); // 1
 
-    structure.on('swap', function () {
+    structure.on('swap', function() {
       ReactDOM.render(List({ cursor: structure.cursor('items') }), div); // 4
     });
 
-    structure.cursor().update('items', function (items) {
+    structure.cursor().update('items', function(items) {
       return items.set(FIRST, Immutable.Map({ id: FIRST, changed: true })); // 3
     });
   });
 
-  it('should handle updates that mutate owners state', function (done) {
-    var click = function (node) {
+  it('should handle updates that mutate owners state', function(done) {
+    var click = function(node) {
       var event = new window.Event();
       event.initEvent('click', true, false);
       node.dispatchEvent(event);
     };
 
     var structure = immstruct({
-      items: [{ id: 0}, { id: 1},
-              { id: 2}, { id: 3}]
+      items: [{ id: 0 }, { id: 1 }, { id: 2 }, { id: 3 }]
     });
 
-    var List = component('List', function (props) {
-      var onRemove = function (item) {
+    var List = component('List', function(props) {
+      var onRemove = function(item) {
         props.items.remove(props.items.indexOf(item));
       };
 
-      return React.createElement('ul', {}, props.items.toArray().map(function (item) {
-        return Item({item: item,
-                     key: 'item-' + item.get('id'),
-                     statics: {onRemove: onRemove}});
-      }));
+      return React.createElement(
+        'ul',
+        {},
+        props.items.toArray().map(function(item) {
+          return Item({
+            item: item,
+            key: 'item-' + item.get('id'),
+            statics: { onRemove: onRemove }
+          });
+        })
+      );
     });
 
-    var Item = component('Item', function (props) {
-      return React.createElement('li', {
-        id: 'item-' + props.item.get('id'),
-        className: props.item.get('isSelected') ? 'selected' : '',
-        onClick: function () {
-          props.statics.onRemove(props.item);
-        }
-      }, props.item.get('id'));
+    var Item = component('Item', function(props) {
+      return React.createElement(
+        'li',
+        {
+          id: 'item-' + props.item.get('id'),
+          className: props.item.get('isSelected') ? 'selected' : '',
+          onClick: function() {
+            props.statics.onRemove(props.item);
+          }
+        },
+        props.item.get('id')
+      );
     });
 
-    var render = function () {
+    var render = function() {
       ReactDOM.render(List({ items: structure.cursor('items') }), document.querySelector('#app'));
     };
 

@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 var shouldupdate = require('./shouldupdate');
 
@@ -41,14 +41,13 @@ module.exports = factory();
  */
 module.exports.withDefaults = factory;
 
-function factory (methods) {
+function factory(methods) {
   var isEqual = (methods && methods.isEqualProps) || shouldupdate.isEqualProps;
 
-  return function cached (f) {
-    var input,
-        output;
+  return function cached(f) {
+    var input, output;
 
-    return function () {
+    return function() {
       if (!isEqual(arguments, input)) {
         output = f.apply(this, arguments);
       }

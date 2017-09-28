@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 var createClass = require('create-react-class');
 var assign = require('lodash.assign');
@@ -106,12 +106,12 @@ module.exports = factory();
  */
 module.exports.withDefaults = factory;
 
-function factory (initialOptions) {
+function factory(initialOptions) {
   var debug;
   initialOptions = initialOptions || {};
 
-  var _shouldComponentUpdate = initialOptions.shouldComponentUpdate ||
-        shouldComponentUpdate.withDefaults(initialOptions);
+  var _shouldComponentUpdate =
+    initialOptions.shouldComponentUpdate || shouldComponentUpdate.withDefaults(initialOptions);
   var _isCursor = initialOptions.isCursor || shouldComponentUpdate.isCursor;
   var _isImmutable = initialOptions.isImmutable || shouldComponentUpdate.isImmutable;
   var _hiddenCursorField = initialOptions.cursorField || '__singleCursor';
@@ -185,7 +185,7 @@ function factory (initialOptions) {
    * @returns {Component|Function}
    * @api public
    */
-  CreatedComponent.classDecorator = function (classDecorator) {
+  CreatedComponent.classDecorator = function(classDecorator) {
     var shouldPartiallyApply = arguments.length === 1;
     if (shouldPartiallyApply) {
       return ComponentCreatorFactory(classDecorator);
@@ -194,8 +194,7 @@ function factory (initialOptions) {
   };
   return CreatedComponent;
 
-  function ComponentCreatorFactory (passedClassDecorator) {
-
+  function ComponentCreatorFactory(passedClassDecorator) {
     /**
      * Activate debugging for components. Will log when a component renders,
      * the outcome of `shouldComponentUpdate`, and why the component re-renders.
@@ -222,14 +221,14 @@ function factory (initialOptions) {
 
     return ComponentCreator;
 
-    function ComponentCreator (displayName, mixins, render) {
+    function ComponentCreator(displayName, mixins, render) {
       var options = createDefaultArguments(displayName, mixins, render);
       var methodStatics = pickStaticMixins(options.mixins);
 
       var componentObject = {
         displayName: options.displayName || options.render.name,
         mixins: options.mixins,
-        render: function render () {
+        render: function render() {
           if (debug) debug.call(this, 'render');
           // If `props['__singleCursor']` is set a single cursor was passed
           // to the component, pick it out and pass it.
@@ -257,29 +256,28 @@ function factory (initialOptions) {
        * @returns {ReactElement}
        * @api public
        */
-      var create = function (keyOrProps, propsOrPublicContext, ReactUpdateQueue) {
+      var create = function(keyOrProps, propsOrPublicContext, ReactUpdateQueue) {
         // After stateless arrow functions was allowed as components, react will instantiate
         // the `create` function if it has a prototype. We are passed `props`, `publicContext`
         // and `ReactUpdateQueue`.
         // https://github.com/facebook/react/blob/88bae3fb73511893519195e451c56896463f669b/src/renderers/shared/reconciler/ReactCompositeComponent.js#L154-L171
         if (typeof ReactUpdateQueue == 'object' && !_isNode(ReactUpdateQueue)) {
           var publicProps = keyOrProps,
-              publicContext = propsOrPublicContext;
+            publicContext = propsOrPublicContext;
           return new Component(publicProps, publicContext, ReactUpdateQueue);
         }
 
         var key = keyOrProps,
-            props = propsOrPublicContext;
+          props = propsOrPublicContext;
 
         if (typeof key === 'object') {
           props = key;
-          key   = void 0;
+          key = void 0;
         }
 
         var children = flatten(sliceFrom(arguments, props).filter(_isNode));
 
-        var _props,
-            inputCursor;
+        var _props, inputCursor;
 
         // If passed props is a signle cursor we move it to `props[_hiddenCursorField]`
         // to simplify should component update. The render function will move it back.
@@ -311,25 +309,24 @@ function factory (initialOptions) {
     }
   }
 
-  function debugFn (pattern, logFn) {
+  function debugFn(pattern, logFn) {
     if (_shouldComponentUpdate.debug) {
       debug = _shouldComponentUpdate.debug(pattern, logFn);
     }
   }
 
-  function createDefaultArguments (displayName, mixins, render) {
-
+  function createDefaultArguments(displayName, mixins, render) {
     // (render)
     if (typeof displayName === 'function') {
-      render      = displayName;
-      mixins      = [];
+      render = displayName;
+      mixins = [];
       displayName = void 0;
     }
 
     // (mixins, render)
     if (typeof displayName === 'object' && typeof mixins === 'function') {
-      render      = mixins;
-      mixins      = displayName;
+      render = mixins;
+      mixins = displayName;
       displayName = void 0;
     }
 
@@ -371,28 +368,28 @@ function factory (initialOptions) {
  * @returns {Boolean}
  * @api private
  */
-function isNode (propValue) {
+function isNode(propValue) {
   switch (typeof propValue) {
-  case 'number':
-  case 'string':
-    return true;
-  case 'boolean':
-    return !propValue;
-  case 'object':
-    if (Array.isArray(propValue)) {
-      return propValue.every(isNode);
-    }
-    if (React.isValidElement(propValue)) {
+    case 'number':
+    case 'string':
       return true;
-    }
-    return false;
-  default:
-    return false;
+    case 'boolean':
+      return !propValue;
+    case 'object':
+      if (Array.isArray(propValue)) {
+        return propValue.every(isNode);
+      }
+      if (React.isValidElement(propValue)) {
+        return true;
+      }
+      return false;
+    default:
+      return false;
   }
 }
 
-function pickStaticMixins (mixins) {
-  var filtered = mixins.filter(function (obj) {
+function pickStaticMixins(mixins) {
+  var filtered = mixins.filter(function(obj) {
     return !!obj.statics;
   });
 
@@ -401,44 +398,46 @@ function pickStaticMixins (mixins) {
   }
 
   var statics = {};
-  filtered.forEach(function (obj) {
+  filtered.forEach(function(obj) {
     statics = assign(statics, obj.statics);
   });
 
   return statics;
 }
 
-function removeOldStaticMethods (mixins) {
-  mixins.filter(function (obj) {
-    return !!obj.statics;
-  }).forEach(function (obj) {
-    delete obj.statics;
-  });
+function removeOldStaticMethods(mixins) {
+  mixins
+    .filter(function(obj) {
+      return !!obj.statics;
+    })
+    .forEach(function(obj) {
+      delete obj.statics;
+    });
 }
 
-function hasShouldComponentUpdate (mixins) {
-  return mixins.some(function (mixin) {
+function hasShouldComponentUpdate(mixins) {
+  return mixins.some(function(mixin) {
     if (mixin.shouldComponentUpdate) return true;
     if (!Array.isArray(mixin.mixins)) return false;
     return hasShouldComponentUpdate(mixin.mixins);
   });
 }
 
-function identity (fn) {
+function identity(fn) {
   return fn;
 }
 
-function toArray (args) {
+function toArray(args) {
   return Array.prototype.slice.call(args);
 }
 
-function sliceFrom (args, value) {
+function sliceFrom(args, value) {
   var array = toArray(args);
   var index = Math.max(array.indexOf(value), 0);
   return array.slice(index);
 }
 
 // Just a shallow flatten
-function flatten (array) {
+function flatten(array) {
   return Array.prototype.concat.apply([], array);
 }

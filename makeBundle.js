@@ -18,7 +18,7 @@ var b = browserify({
 });
 b.add(inputFile);
 b.transform(shim);
-b.bundle(function (err, buf) {
+b.bundle(function(err, buf) {
   if (err) {
     throw err;
   }
