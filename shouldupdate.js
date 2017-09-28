@@ -1,7 +1,6 @@
 'use strict';
 
-var filter = require('lodash.pickby'),
-  isEqual = require('lodash.isequalwith');
+var isEqual = require('lodash.isequal');
 
 /**
  * Directly fetch `shouldComponentUpdate` mixin to use outside of Omniscient.
@@ -77,11 +76,13 @@ function factory(methods) {
 
   function shouldComponentUpdate(nextProps, nextState) {
     if (nextProps === this.props && nextState === this.state) {
-      if (debug) debug.call(this, 'shouldComponentUpdate => false (equal input)');
+      if (debug)
+        debug.call(this, 'shouldComponentUpdate => false (equal input)');
       return false;
     }
     if (!_isEqualState(this.state, nextState)) {
-      if (debug) debug.call(this, 'shouldComponentUpdate => true (state has changed)');
+      if (debug)
+        debug.call(this, 'shouldComponentUpdate => true (state has changed)');
       return true;
     }
 
@@ -89,7 +90,8 @@ function factory(methods) {
       filteredCurrentProps = filter(this.props, isNotIgnorable);
 
     if (!_isEqualProps(filteredCurrentProps, filteredNextProps)) {
-      if (debug) debug.call(this, 'shouldComponentUpdate => true (props have changed)');
+      if (debug)
+        debug.call(this, 'shouldComponentUpdate => true (props have changed)');
       return true;
     }
 
@@ -277,6 +279,15 @@ function not(fn) {
   return function() {
     return !fn.apply(fn, arguments);
   };
+}
+
+function filter(obj, predicate) {
+  return Object.keys(obj).reduce(function(acc, key) {
+    if (predicate(obj[key], key)) {
+      acc[key] = obj[key];
+    }
+    return acc;
+  }, {});
 }
 
 /**
