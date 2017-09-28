@@ -1,8 +1,7 @@
 {
   "name": "omniscient",
-  "version": "4.1.1",
-  "description":
-    "A library providing an abstraction for React components for passing the same data structure through the entire component flow using cursors and immutable data structures.",
+  "version": "4.2.0",
+  "description": "A library providing an abstraction for React components for passing the same data structure through the entire component flow using cursors and immutable data structures.",
   "main": "component.js",
   "directories": {
     "example": "example"
@@ -32,14 +31,17 @@
     "test": "mocha -R dot tests/**-test.js",
     "test-watch": "mocha -G -w -R min tests/**-test.js",
     "dist": "node makeBundle.js",
-    "build-docs":
-      "cat component.js shouldupdate.js cached.js | dox -r | doxme > api.md"
+    "build-docs": "cat component.js shouldupdate.js cached.js | dox -r | doxme > api.md"
   },
   "repository": {
     "type": "git",
     "url": "git://github.com/omniscientjs/omniscient.git"
   },
-  "keywords": ["quiescent", "react", "immutable"],
+  "keywords": [
+    "quiescent",
+    "react",
+    "immutable"
+  ],
   "author": "@torgeir,@mikaelbr",
   "license": "MIT",
   "bugs": {
