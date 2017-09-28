@@ -3,5 +3,5 @@
   "prettier.tabWidth": 2,
   "prettier.trailingComma": "none",
   "prettier.singleQuote": true,
-  "prettier.printWidth": 100
+  "prettier.printWidth": 80
 }
