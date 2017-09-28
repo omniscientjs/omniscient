@@ -119,7 +119,7 @@ React.render(, mountingPoint);
 ### `omniscient(classDecorator, [displayName], [mixins], [render])`
 
 Create components for functional views, with an attached local class decorator.
-Omniscient uses a `React.createClass()` internally to create an higher order
+Omniscient uses a `createClass()` internally to create an higher order
 component to attach performance boost and add some syntactic sugar to your
 components. Sometimes third party apps need to be added as decorator to this
 internal class. For instance Redux or Radium.
