@@ -3,11 +3,20 @@ Changelog
 
 Changelog with fixes and additions between each release.
 
-## Version `v4.2.0` [WIP]
+## Version `v4.2.0`
 
-### Bug Fixes
+### Minor changes
+1. Adds compatability with React v16 ([#136](https://github.com/omniscientjs/omniscient/pull/136), thanks to [@dpoindexter](https://github.com/dpoindexter))
+2. Changes to use `createClass` package instead of `React.createClass` in lue with React 15.5 ([#134](https://github.com/omniscientjs/omniscient/issues/134))
+3. Adds ability to override default behavior of isEqalImmutable (see [#133](https://github.com/omniscientjs/omniscient/pull/))
 
-1. Changes to use `createClass` package instead of `React.createClass` in lue with React 15.5 ([#134](https://github.com/omniscientjs/omniscient/issues/134))
+### Internal Changes
+
+1. Changes build system to Webpack
+2. Changes from lodash.assign to object-assign as this is what react-create-class uses. (deduping)
+3. Removes lodash.pickBy, using own implementation instead. Reducing size.
+4. Setup vscode settings with recommended prettier plugin.
+5. Bumps internal dependencies
 
 ## Version `v4.1.1`
 
