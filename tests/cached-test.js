@@ -1,5 +1,4 @@
 var chai = require('chai');
-var jsdom = require('jsdom');
 var Immutable = require('immutable');
 var Cursor = require('immutable/contrib/cursor');
 

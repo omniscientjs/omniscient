@@ -15,9 +15,9 @@ describe('component render test', function() {
   beforeEach(function() {
     // React needs a dom before being required
     // https://github.com/facebook/react/blob/master/src/vendor/core/ExecutionEnvironment.js#L39
-    global.document = jsdom.jsdom('<html><body><div id="app"></div></body></html>');
-    global.window = global.document.defaultView;
-    global.navigator = global.window.navigator;
+    global.window = new jsdom.JSDOM('<html><body><div id="app"></div></body></html>').window;
+    global.document = window.document;
+    global.navigator = window.navigator;
 
     // React creates a dummy dom node that uses the current document.
     // As require calls are cached, this does not get recreated,
@@ -97,8 +97,7 @@ describe('component render test', function() {
 
   it('should handle updates that mutate owners state', function(done) {
     var click = function(node) {
-      var event = new window.Event();
-      event.initEvent('click', true, false);
+      var event = new window.Event('click', { bubbles: true, cancelable: false });
       node.dispatchEvent(event);
     };
 

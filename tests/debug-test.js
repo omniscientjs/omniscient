@@ -283,8 +283,8 @@ describe('debug', function() {
   });
 
   beforeEach(function() {
-    global.document = jsdom.jsdom('<html><body></body></html>');
-    global.window = document.defaultView;
+    global.window = new jsdom.JSDOM('<html><body></body></html>').window;
+    global.document = window.document;
     global.navigator = { userAgent: 'node.js' };
   });
 

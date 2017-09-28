@@ -775,8 +775,8 @@ describe('component', function() {
   });
 
   beforeEach(function() {
-    global.document = jsdom.jsdom('<html><body><div id="app"></div></body></html>');
-    global.window = global.document.defaultView;
+    global.window = new jsdom.JSDOM('<html><body><div id="app"></div></body></html>').window;
+    global.document = window.document;
   });
 
   afterEach(function() {
