@@ -1,6 +1,6 @@
 ![Omniscient Logo](./omniscient-logo.png)
 
-[![NPM version][npm-image]][npm-url] [![Build Status][travis-image]][travis-url] [![Coverage Status][coverage-image]][coverage-url] [![Gitter][gitter-image]][gitter-url]
+[![NPM version][npm-image]][npm-url] [![Build Status][travis-image]][travis-url] [![Coverage Status][coverage-image]][coverage-url] [![Gitter][gitter-image]][gitter-url] [![Known Vulnerabilities](https://snyk.io/test/github/omniscientjs/omniscient/badge.svg)](https://snyk.io/test/github/omniscientjs/omniscient)
 
 > Do fast top-down rendering embracing immutable data and functional programming.
 
