@@ -284,8 +284,12 @@ function factory(initialOptions) {
           key = void 0;
         }
 
-        var children = flatten(sliceFrom(arguments, props).filter(_isNode));
-
+        var isFirstLevel = true;
+        var children = flatten(
+          sliceFrom(arguments, props).filter(function(item, i) {
+            return _isNode(item, i, isFirstLevel);
+          })
+        );
         var _props, inputCursor;
 
         // If passed props is a signle cursor we move it to `props[_hiddenCursorField]`
@@ -306,7 +310,6 @@ function factory(initialOptions) {
         if (children.length) {
           _props.children = children;
         }
-
         return React.createElement(Component, _props);
       };
 
@@ -377,16 +380,19 @@ function factory(initialOptions) {
  * @returns {Boolean}
  * @api private
  */
-function isNode(propValue) {
+function isNode(propValue, i, firstLevel) {
   switch (typeof propValue) {
     case 'number':
-    case 'string':
       return true;
+    case 'string':
+      return i !== 0 || !firstLevel;
     case 'boolean':
       return !propValue;
     case 'object':
       if (Array.isArray(propValue)) {
-        return propValue.every(isNode);
+        return propValue.every(function(item, n) {
+          return isNode(item, n, false);
+        });
       }
       if (React.isValidElement(propValue)) {
         return true;
