@@ -16,7 +16,10 @@ Changelog with fixes and additions between each release.
 2. Changes from lodash.assign to object-assign as this is what react-create-class uses. (deduping)
 3. Removes lodash.pickBy, using own implementation instead. Reducing size.
 4. Setup vscode settings with recommended prettier plugin.
-5. Bumps internal dependencies
+5. Adds prettier precommit step.
+6. Changes from mocha to Jest
+7. Adds codecov integration.
+8. Bumps internal dependencies
 
 ## Version `v4.1.1`
 
