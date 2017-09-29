@@ -16,6 +16,7 @@
     "react": ">=0.14.0"
   },
   "devDependencies": {
+    "bithound": "^1.7.0",
     "codecov": "^2.3.0",
     "dox": "^0.9.0",
     "doxme": "git://github.com/mikaelbr/doxme#dev",
@@ -37,7 +38,8 @@
     "dist": "node makeBundle.js",
     "build-docs":
       "cat component.js shouldupdate.js cached.js | dox -r | doxme > api.md",
-    "precommit": "lint-staged"
+    "precommit": "lint-staged",
+    "bithound": "bithound check git@github.com:omniscientjs/omniscient.git"
   },
   "lint-staged": {
     "*.{js,json,css}": ["prettier --write", "git add"]
