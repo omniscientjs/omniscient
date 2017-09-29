@@ -14,4 +14,3 @@ notifications:
     on_start: false     # default: false
 script:
   - npm test && npm run codecov
-  - npm run bithound
