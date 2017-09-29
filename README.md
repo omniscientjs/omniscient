@@ -363,9 +363,9 @@ The [OmniscientJS github organization](https://github.com/omniscientjs) has a lo
 [travis-image]: http://img.shields.io/travis/omniscientjs/omniscient.svg?style=flat
 
 [coverage-url]: https://codecov.io/gh/omniscientjs/omniscient
-[coverage-image]: https://codecov.io/gh/omniscientjs/omniscient/branch/master/graph/badge.svg
+[coverage-image]: https://img.shields.io/codecov/c/github/omniscientjs/omniscient.svg?style=flat
 
 [gitter-url]: https://gitter.im/omniscientjs/omniscient?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge
-[gitter-image]: https://badges.gitter.im/Join%20Chat.svg
+[gitter-image]: https://img.shields.io/gitter/room/nwjs/nw.js.svg?style=flat
 
 *Logo created by the creative people at [Know Associates](http://knowassociates.com/)*
