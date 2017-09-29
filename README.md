@@ -1,6 +1,6 @@
 ![Omniscient Logo](./omniscient-logo.png)
 
-[![NPM version][npm-image]][npm-url] [![Build Status][travis-image]][travis-url] [![Dependency Status][depstat-image]][depstat-url] [![Gitter][gitter-image]][gitter-url]
+[![NPM version][npm-image]][npm-url] [![Build Status][travis-image]][travis-url] [![Coverage Status][coverage-image]][coverage-url] [![Gitter][gitter-image]][gitter-url]
 
 > Do fast top-down rendering embracing immutable data and functional programming.
 
@@ -362,8 +362,8 @@ The [OmniscientJS github organization](https://github.com/omniscientjs) has a lo
 [travis-url]: http://travis-ci.org/omniscientjs/omniscient
 [travis-image]: http://img.shields.io/travis/omniscientjs/omniscient.svg?style=flat
 
-[depstat-url]: https://gemnasium.com/omniscientjs/omniscient
-[depstat-image]: http://img.shields.io/gemnasium/omniscientjs/omniscient.svg?style=flat
+[coverage-url]: https://codecov.io/gh/omniscientjs/omniscient
+[coverage-image]: https://codecov.io/gh/omniscientjs/omniscient/branch/master/graph/badge.svg
 
 [gitter-url]: https://gitter.im/omniscientjs/omniscient?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge
 [gitter-image]: https://badges.gitter.im/Join%20Chat.svg
