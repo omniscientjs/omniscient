@@ -1,4 +1,4 @@
-![Omniscient Logo](https://dl.dropboxusercontent.com/u/2361994/omniscient/omniscient-logo.png)
+![Omniscient Logo](./omniscient-logo.png)
 
 [![NPM version][npm-image]][npm-url] [![Build Status][travis-image]][travis-url] [![Dependency Status][depstat-image]][depstat-url] [![Gitter][gitter-image]][gitter-url]
 
