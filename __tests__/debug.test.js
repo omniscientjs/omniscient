@@ -1,12 +1,6 @@
-var jsdom = require('jsdom');
-
-var assert = require('assert');
-var chai = require('chai');
-chai.should();
-
 var React = require('react');
+var assert = require('assert');
 var ReactDOM = require('react-dom');
-var ReactServer = require('react-dom/server');
 
 var Immutable = require('immutable');
 var Cursor = require('immutable/contrib/cursor');
@@ -15,37 +9,50 @@ var component = require('../');
 var shouldComponentUpdate = require('../shouldupdate');
 var isCursor = shouldComponentUpdate.isCursor;
 
-describe('debug', function() {
-  describe('api', function() {
-    it('should expose debug function on component', function() {
-      component.should.have.property('debug');
-      component.withDefaults().should.have.property('debug');
+describe('debug', () => {
+  let testContext;
+  let root;
+
+  beforeEach(() => {
+    testContext = {};
+  });
+
+  describe('api', () => {
+    test('should expose debug function on component', () => {
+      expect(component).toHaveProperty('debug');
+      expect(component.withDefaults()).toHaveProperty('debug');
     });
 
-    it('should expose debug function on shouldupdate', function() {
-      shouldComponentUpdate.debug.should.be.a('function');
-      shouldComponentUpdate.withDefaults().debug.should.be.a('function');
+    test('should expose debug function on shouldupdate', () => {
+      expect(typeof shouldComponentUpdate.debug).toBe('function');
+      expect(typeof shouldComponentUpdate.withDefaults().debug).toBe(
+        'function'
+      );
     });
 
-    it('should expose debug function on shouldupdate from component', function() {
-      component.shouldComponentUpdate.debug.should.be.a('function');
-      component.withDefaults().shouldComponentUpdate.debug.should.be.a('function');
-      component.withDefaults().shouldComponentUpdate.debug.should.be.a('function');
+    test('should expose debug function on shouldupdate from component', () => {
+      expect(typeof component.shouldComponentUpdate.debug).toBe('function');
+      expect(typeof component.withDefaults().shouldComponentUpdate.debug).toBe(
+        'function'
+      );
+      expect(typeof component.withDefaults().shouldComponentUpdate.debug).toBe(
+        'function'
+      );
     });
   });
 
-  describe('debugger', function() {
-    beforeEach(function() {
-      this.debug = console.debug;
-      this.info = console.info;
+  describe('debugger', () => {
+    beforeEach(() => {
+      testContext.debug = console.debug;
+      testContext.info = console.info;
     });
 
-    afterEach(function() {
-      console.debug = this.debug;
-      console.info = this.info;
+    afterEach(() => {
+      console.debug = testContext.debug;
+      console.info = testContext.info;
     });
 
-    it('should use debug when available', function(done) {
+    test('should use debug when available', done => {
       console.debug = function() {
         done();
       };
@@ -62,7 +69,7 @@ describe('debug', function() {
       render(Component());
     });
 
-    it('should use console.info if debug not available', function(done) {
+    test('should use console.info if debug not available', done => {
       console.debug = void 0;
       console.info = function() {
         done();
@@ -76,11 +83,11 @@ describe('debug', function() {
       render(Component());
     });
 
-    it('should log on render when debug with displayname', function(done) {
+    test('should log on render when debug with displayname', done => {
       var localComp = component.withDefaults();
       localComp.debug(function logger(message) {
-        message.should.contain('DisplayName');
-        message.should.contain('render');
+        expect(message).toContain('DisplayName');
+        expect(message).toContain('render');
         done();
       });
 
@@ -90,28 +97,27 @@ describe('debug', function() {
       render(Component());
     });
 
-    it('should log on render when debug with key', function(done) {
-      var mount = global.document.createElement('div');
-
+    test('should log on render when debug with key', done => {
       var localComp = component.withDefaults();
       localComp.debug(function logger(message) {
-        message.should.contain('foobar');
-        message.should.contain('render');
+        expect(message).toContain('foobar');
+        expect(message).toContain('render');
         mount = undefined;
         done();
       });
 
-      var Component = localComp(function() {
-        return textNode('hello');
+      var Component = localComp(function({ children }) {
+        return textNode('Hello');
       });
-      ReactDOM.render(Component('foobar'), mount);
+      const root = document.createElement('div');
+      ReactDOM.render(Component('foobar'), root);
     });
 
-    it('should only log components matching regex passed as parameter', function(done) {
+    test('should only log components matching regex passed as parameter', done => {
       var localComp = component.withDefaults();
       localComp.debug(/My/, function logger(message) {
-        message.should.not.contain('AnotherComponent');
-        message.should.contain('MyComponent');
+        expect(message).not.toContain('AnotherComponent');
+        expect(message).toContain('MyComponent');
         done();
       });
 
@@ -126,14 +132,14 @@ describe('debug', function() {
       render(Component());
     });
 
-    it('should match on key', function(done) {
+    test('should match on key', done => {
       var mount1 = global.document.createElement('div');
       var mount2 = global.document.createElement('div');
 
       var localComp = component.withDefaults();
       localComp.debug(/My/i, function logger(message) {
-        message.should.not.contain('anotherKey');
-        message.should.contain('myKey');
+        expect(message).not.toContain('anotherKey');
+        expect(message).toContain('myKey');
         mount1 = undefined;
         mount2 = undefined;
         done();
@@ -150,11 +156,11 @@ describe('debug', function() {
       ReactDOM.render(Component({ key: 'myKey' }), mount2);
     });
 
-    it('should log with unknown on render', function(done) {
+    test('should log with unknown on render', done => {
       var localComp = component.withDefaults();
       localComp.debug(function logger(message) {
-        message.should.contain('Unknown');
-        message.should.contain('render');
+        expect(message).toContain('Unknown');
+        expect(message).toContain('render');
         done();
       });
 
@@ -164,14 +170,14 @@ describe('debug', function() {
       render(Component());
     });
 
-    it('should log on number of cursors differ', function(done) {
+    test('should log on number of cursors differ', done => {
       var data = Immutable.fromJS({ foo: 'bar', bar: [1, 2, 3] });
       var one = Cursor.from(data, ['foo']);
       var two = Cursor.from(data, ['bar']);
 
       var localComp = shouldComponentUpdate.withDefaults();
       localComp.debug(function logger(message) {
-        message.should.contain('true (props have changed)');
+        expect(message).toContain('true (props have changed)');
         done();
       });
 
@@ -189,14 +195,14 @@ describe('debug', function() {
       );
     });
 
-    it('should log on cursors have different keys', function(done) {
+    test('should log on cursors have different keys', done => {
       var data = Immutable.fromJS({ foo: 'bar', bar: [1, 2, 3] });
       var one = Cursor.from(data, ['foo']);
       var two = Cursor.from(data, ['bar']);
 
       var localComp = shouldComponentUpdate.withDefaults();
       localComp.debug(function logger(message) {
-        message.should.contain('true (props have changed)');
+        expect(message).toContain('true (props have changed)');
         done();
       });
 
@@ -213,14 +219,14 @@ describe('debug', function() {
       );
     });
 
-    it('should log on cursors have changed', function(done) {
+    test('should log on cursors have changed', done => {
       var data = Immutable.fromJS({ foo: 'bar', bar: [1, 2, 3] });
       var one = Cursor.from(data, ['foo']);
       var two = Cursor.from(data, ['bar']);
 
       var localComp = shouldComponentUpdate.withDefaults();
       localComp.debug(function logger(message) {
-        message.should.contain('true (props have changed)');
+        expect(message).toContain('true (props have changed)');
         done();
       });
 
@@ -233,10 +239,10 @@ describe('debug', function() {
       );
     });
 
-    it('should log on state has changed', function(done) {
+    test('should log on state has changed', done => {
       var localComp = shouldComponentUpdate.withDefaults();
       localComp.debug(function logger(message) {
-        message.should.contain('true (state has changed)');
+        expect(message).toContain('true (state has changed)');
         done();
       });
 
@@ -249,10 +255,10 @@ describe('debug', function() {
       );
     });
 
-    it('should log on properties have changed', function(done) {
+    test('should log on properties have changed', done => {
       var localComp = shouldComponentUpdate.withDefaults();
       localComp.debug(function logger(message) {
-        message.should.contain('true (props have changed)');
+        expect(message).toContain('true (props have changed)');
         done();
       });
 
@@ -265,10 +271,10 @@ describe('debug', function() {
       );
     });
 
-    it('should log on unchanged', function(done) {
+    test('should log on unchanged', done => {
       var localComp = shouldComponentUpdate.withDefaults();
       localComp.debug(function logger(message) {
-        message.should.contain('shouldComponentUpdate => false');
+        expect(message).toContain('shouldComponentUpdate => false');
         done();
       });
 
@@ -282,16 +288,14 @@ describe('debug', function() {
     });
   });
 
-  beforeEach(function() {
-    global.window = new jsdom.JSDOM('<html><body></body></html>').window;
-    global.document = window.document;
+  beforeEach(() => {
     global.navigator = { userAgent: 'node.js' };
+    root = document.createElement('div');
   });
 
-  afterEach(function() {
-    delete global.document;
-    delete global.window;
-  });
+  function render(component) {
+    return ReactDOM.render(component, root);
+  }
 });
 
 /**
@@ -305,23 +309,21 @@ function textNode(textContent) {
     : textContent;
 }
 
-function render(component) {
-  ReactServer.renderToString(component);
-}
-
 function shouldNotUpdate(opts, fn) {
-  callShouldUpdate(opts, fn).should.equal(false);
+  expect(callShouldUpdate(opts, fn)).toBe(false);
 }
 
 function shouldUpdate(opts, fn) {
-  callShouldUpdate(opts, fn).should.equal(true);
+  expect(callShouldUpdate(opts, fn)).toBe(true);
 }
 
 function callShouldUpdate(opts, fn) {
   fn = fn || shouldComponentUpdate;
 
   var props = isCursor(opts.cursor) ? { cursor: opts.cursor } : opts.cursor;
-  var nextProps = isCursor(opts.nextCursor) ? { cursor: opts.nextCursor } : opts.nextCursor;
+  var nextProps = isCursor(opts.nextCursor)
+    ? { cursor: opts.nextCursor }
+    : opts.nextCursor;
 
   props = props || {};
   nextProps = nextProps || {};

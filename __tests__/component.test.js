@@ -1,5 +1,3 @@
-var chai = require('chai');
-var jsdom = require('jsdom');
 var Immutable = require('immutable');
 var Cursor = require('immutable/contrib/cursor');
 var createClass = require('create-react-class');
@@ -7,18 +5,16 @@ var createClass = require('create-react-class');
 var React = require('react');
 var ReactDOM = require('react-dom');
 
-var should = chai.should();
-
 var component = require('../');
 var shouldUpdateMixin = require('../shouldupdate');
 
-describe('component', function() {
-  describe('arguments', function() {
-    it('should take displayName', function(done) {
-      var mixins = [{ componentDidMount: done }];
+describe('component', () => {
+  describe('arguments', () => {
+    test('should take displayName', done => {
+      var mixins = [{ componentDidMount: () => done() }];
       var Component = component('myComponent', mixins, function() {
-        this.constructor.should.have.property('displayName');
-        this.constructor.displayName.should.equal('myComponent');
+        expect(this.constructor).toHaveProperty('displayName');
+        expect(this.constructor.displayName).toBe('myComponent');
 
         return textNode('hello');
       });
@@ -26,11 +22,11 @@ describe('component', function() {
       render(Component());
     });
 
-    it('should set displayName from render function name', function(done) {
-      var mixins = [{ componentDidMount: done }];
+    test('should set displayName from render function name', done => {
+      var mixins = [{ componentDidMount: () => done() }];
       var Component = component(mixins, function MyComponentName() {
-        this.constructor.should.have.property('displayName');
-        this.constructor.displayName.should.equal('MyComponentName');
+        expect(this.constructor).toHaveProperty('displayName');
+        expect(this.constructor.displayName).toBe('MyComponentName');
 
         return textNode('hello');
       });
@@ -39,8 +35,8 @@ describe('component', function() {
     });
   });
 
-  describe('decorator', function() {
-    it('should attach decorator', function() {
+  describe('decorator', () => {
+    test('should attach decorator', () => {
       var hasBeenCalled = false;
       var decorator = function(SomeClass) {
         hasBeenCalled = true;
@@ -55,25 +51,28 @@ describe('component', function() {
       });
 
       render(Component());
-      hasBeenCalled.should.equal(true);
+      expect(hasBeenCalled).toBe(true);
     });
 
-    it('should attach inline decorator', function() {
+    test('should attach inline decorator', () => {
       var hasBeenCalled = false;
       var decorator = function(SomeClass) {
         hasBeenCalled = true;
         return SomeClass;
       };
 
-      var Component = component.classDecorator(decorator, function MyComponentName() {
-        return textNode('hello');
-      });
+      var Component = component.classDecorator(
+        decorator,
+        function MyComponentName() {
+          return textNode('hello');
+        }
+      );
 
       render(Component());
-      hasBeenCalled.should.equal(true);
+      expect(hasBeenCalled).toBe(true);
     });
 
-    it('should allow for creating a partially applied classDecorator factory', function() {
+    test('should allow for creating a partially applied classDecorator factory', () => {
       var hasBeenCalled = false;
       var decorator = function(SomeClass) {
         hasBeenCalled = true;
@@ -83,18 +82,18 @@ describe('component', function() {
       var Component = component.classDecorator(decorator)(
         { foo: function() {} },
         function MyComponentName() {
-          this.foo.should.be.a('function');
+          expect(typeof this.foo).toBe('function');
           return textNode('hello');
         }
       );
 
       render(Component());
-      hasBeenCalled.should.equal(true);
+      expect(hasBeenCalled).toBe(true);
     });
 
-    it('should allow to extend class as decorator', function() {
+    test('should allow to extend class as decorator', () => {
       var decorator = function(ComposedComponent) {
-        ComposedComponent.displayName.should.equal('MyComponentName');
+        expect(ComposedComponent.displayName).toBe('MyComponentName');
         ComposedComponent.displayName = 'Foobar';
         return ComposedComponent;
       };
@@ -103,7 +102,7 @@ describe('component', function() {
       });
 
       var Component = decoratedComponent(function MyComponentName() {
-        this.constructor.displayName.should.equal('Foobar');
+        expect(this.constructor.displayName).toBe('Foobar');
         return textNode('hello');
       });
 
@@ -111,73 +110,75 @@ describe('component', function() {
     });
   });
 
-  describe('statics', function() {
-    it('should take static methods', function() {
+  describe('statics', () => {
+    test('should take static methods', () => {
       var mixins = [{ statics: { foo: noop, bar: noop } }];
 
       var Component = component(mixins, function() {
         return textNode('hello');
       });
 
-      Component.foo.should.be.a('function');
-      Component.bar.should.be.a('function');
+      expect(typeof Component.foo).toBe('function');
+      expect(typeof Component.bar).toBe('function');
     });
 
-    it('should take static methods from several mixins', function() {
+    test('should take static methods from several mixins', () => {
       var mixins = [{ statics: { foo: noop } }, { statics: { bar: noop } }];
 
       var Component = component(mixins, function() {
         return textNode('hello');
       });
 
-      Component.foo.should.be.a('function');
-      Component.bar.should.be.a('function');
+      expect(typeof Component.foo).toBe('function');
+      expect(typeof Component.bar).toBe('function');
     });
   });
 
-  describe('mixins', function() {
-    it('should take mixins', function(done) {
-      var mixins = [{ componentDidMount: done, myMixin: noop }];
+  describe('mixins', () => {
+    test('should take mixins', done => {
+      var mixins = [{ componentDidMount: () => done(), myMixin: noop }];
 
       var Component = component(mixins, function() {
-        this.should.have.property('myMixin');
+        expect(this).toHaveProperty('myMixin');
         return textNode('hello');
       });
 
       render(Component());
     });
 
-    it('should take single object as mixin', function(done) {
-      var mixins = { componentDidMount: done, myMixin: noop };
+    test('should take single object as mixin', done => {
+      var mixins = { componentDidMount: () => done(), myMixin: noop };
 
       var Component = component(mixins, function() {
-        this.should.have.property('myMixin');
+        expect(this).toHaveProperty('myMixin');
         return textNode('hello');
       });
 
       render(Component());
     });
 
-    it('should have overridable shouldComponentUpdate in mixin', function(done) {
+    test('should have overridable shouldComponentUpdate in mixin', done => {
       var shouldUpdate = function(nextProps) {
         return true;
       };
-      var mixins = [{ componentDidMount: done, shouldComponentUpdate: shouldUpdate }];
+      var mixins = [
+        { componentDidMount: () => done(), shouldComponentUpdate: shouldUpdate }
+      ];
 
       var Component = component(mixins, function() {
-        this.shouldComponentUpdate.should.equal(shouldUpdate);
+        expect(this.shouldComponentUpdate).toBe(shouldUpdate);
         return textNode('hello');
       });
 
       render(Component({ foo: 'hello' }));
     });
 
-    it('should have overridable shouldComponentUpdate in nested mixin', function(done) {
+    test('should have overridable shouldComponentUpdate in nested mixin', done => {
       var shouldUpdate = function(nextProps) {
         return true;
       };
       var mixins = {
-        componentDidMount: done,
+        componentDidMount: () => done(),
         mixins: [
           {
             mixins: [{ shouldComponentUpdate: shouldUpdate }]
@@ -186,14 +187,14 @@ describe('component', function() {
       };
 
       var Component = component(mixins, function() {
-        this.shouldComponentUpdate.should.equal(shouldUpdate);
+        expect(this.shouldComponentUpdate).toBe(shouldUpdate);
         return textNode('hello');
       });
 
       render(Component({ foo: 'hello' }));
     });
 
-    it('should allow shouldComponentUpdate as mixin to vanilla React', function(done) {
+    test('should allow shouldComponentUpdate as mixin to vanilla React', done => {
       var mixins = [
         {
           shouldComponentUpdate: shouldUpdateMixin
@@ -203,7 +204,7 @@ describe('component', function() {
       var Component = createClass({
         mixins: mixins,
         render: function() {
-          this.shouldComponentUpdate.should.equal(shouldUpdateMixin);
+          expect(this.shouldComponentUpdate).toBe(shouldUpdateMixin);
           done();
           return textNode('hello');
         }
@@ -213,66 +214,66 @@ describe('component', function() {
     });
   });
 
-  describe('render function arguments', function() {
-    it('should handle no arguments', function(done) {
-      var mixins = [{ componentDidMount: done, myMixin: noop }];
+  describe('render function arguments', () => {
+    test('should handle no arguments', done => {
+      var mixins = [{ componentDidMount: () => done(), myMixin: noop }];
       var Component = component(mixins, function(cursor, statics) {
-        cursor.should.eql({});
-        should.not.exist(statics);
+        expect(cursor).toEqual({});
+        expect(statics).toBeFalsy();
         return textNode('hello');
       });
 
       render(Component());
     });
 
-    it('should pass single cursor', function(done) {
-      var mixins = [{ componentDidMount: done, myMixin: noop }];
+    test('should pass single cursor', done => {
+      var mixins = [{ componentDidMount: () => done(), myMixin: noop }];
       var cursor1 = { cursor: {} };
 
       var Component = component(mixins, function(cursor) {
-        cursor.should.eql(cursor1);
+        expect(cursor).toEqual(cursor1);
         return textNode('hello');
       });
 
       render(Component(cursor1));
     });
 
-    it('should pass objected cursor', function(done) {
-      var mixins = [{ componentDidMount: done, myMixin: noop }];
+    test('should pass objected cursor', done => {
+      var mixins = [{ componentDidMount: () => done(), myMixin: noop }];
       var cursor1 = { cursor: {} };
 
       var Component = component(mixins, function(props) {
-        props.cursor.should.eql(cursor1);
+        expect(props.cursor).toEqual(cursor1);
         return textNode('hello');
       });
 
       render(Component({ cursor: cursor1 }));
     });
 
-    it('should pass and expose single immutable cursor', function(done) {
-      var mixins = [{ componentDidMount: done }];
+    test('should pass and expose single immutable cursor', done => {
+      var mixins = [{ componentDidMount: () => done() }];
       var cursorInput = Cursor.from(Immutable.fromJS({ foo: 'hello' }), 'foo');
 
       var Component = component(mixins, function(cursor) {
-        cursor.should.equal(cursorInput);
+        expect(cursor).toBe(cursorInput);
         return textNode('hello');
       });
       render(Component(cursorInput));
     });
 
-    it('should pass and expose single immutable cursor on this.props', function(done) {
-      var mixins = [{ componentDidMount: done }];
+    test('should pass and expose single immutable cursor on this.props', done => {
+      var mixins = [{ componentDidMount: () => done() }];
       var cursorInput = Cursor.from(Immutable.fromJS({ foo: 'hello' }), 'foo');
 
       var Component = component(mixins, function(cursor) {
-        this.cursor.should.equal(cursor);
-        this.cursor.should.equal(cursorInput);
+        expect(this.cursor).toBe(cursor);
+        expect(this.cursor).toBe(cursorInput);
         return textNode('hello');
       });
       render(Component(cursorInput));
     });
 
-    it('should pass and expose single immutable cursor on this.props and re-render', function() {
+    test('should pass and expose single immutable cursor on this.props and re-render', () => {
       var cursorInput = Cursor.from(Immutable.fromJS({ foo: 'hello' }), 'foo');
       var i = 0;
       var Component = component(function(cursor) {
@@ -290,34 +291,34 @@ describe('component', function() {
         )
       );
 
-      i.should.equal(2);
+      expect(i).toBe(2);
     });
 
-    it('should pass single cursor', function(done) {
-      var mixins = [{ componentDidMount: done, myMixin: noop }];
+    test('should pass single cursor', done => {
+      var mixins = [{ componentDidMount: () => done(), myMixin: noop }];
       var input = { cursor: 'foo' };
       var Component = component(mixins, function(cursor) {
-        cursor.should.eql(input);
+        expect(cursor).toEqual(input);
         return textNode('hello');
       });
 
       render(Component(input));
     });
 
-    it('should pass single immutable structure', function(done) {
-      var mixins = [{ componentDidMount: done, myMixin: noop }];
+    test('should pass single immutable structure', done => {
+      var mixins = [{ componentDidMount: () => done(), myMixin: noop }];
       var imm = Immutable.List.of(1);
 
       var Component = component(mixins, function(immutableStructure) {
-        immutableStructure.should.eql(imm);
+        expect(immutableStructure).toEqual(imm);
         return textNode('hello');
       });
 
       render(Component(imm));
     });
 
-    it('should set React key', function(done) {
-      var mixins = [{ componentDidMount: done }];
+    test('should set React key', done => {
+      var mixins = [{ componentDidMount: () => done() }];
 
       var Component = component(mixins, function() {
         hasKey(this, 'myKey');
@@ -327,56 +328,56 @@ describe('component', function() {
       render(Component('myKey'));
     });
 
-    it('should get passed key and cursor-objects', function(done) {
-      var mixins = [{ componentDidMount: done }];
+    test('should get passed key and cursor-objects', done => {
+      var mixins = [{ componentDidMount: () => done() }];
 
       var Component = component(mixins, function(data) {
         hasKey(this, 'myKey');
 
-        data.should.have.property('foo');
-        data.foo.should.equal('hello');
+        expect(data).toHaveProperty('foo');
+        expect(data.foo).toBe('hello');
         return textNode('hello');
       });
 
       render(Component('myKey', { foo: 'hello' }));
     });
 
-    it('should not mutate the props passed', function(done) {
-      var mixins = [{ componentDidMount: done }];
+    test('should not mutate the props passed', done => {
+      var mixins = [{ componentDidMount: () => done() }];
 
       var props = { foo: 'hello' };
 
       var Component = component(mixins, function(data) {
-        data.should.have.property('foo');
-        data.foo.should.equal('hello');
+        expect(data).toHaveProperty('foo');
+        expect(data.foo).toBe('hello');
         return textNode('hello');
       });
 
       render(Component(props));
     });
 
-    it('should get passed key and immutable cursor-objects', function(done) {
-      var mixins = [{ componentDidMount: done }];
+    test('should get passed key and immutable cursor-objects', done => {
+      var mixins = [{ componentDidMount: () => done() }];
       var cursorInput = Cursor.from(Immutable.fromJS({ foo: 'hello' }), 'foo');
 
       var Component = component(mixins, function(cursor) {
         hasKey(this, 'myKey');
 
-        cursor.should.equal(cursorInput);
+        expect(cursor).toBe(cursorInput);
         return textNode('hello');
       });
       render(Component('myKey', cursorInput));
     });
 
-    it('should get passed key, cursor-objects and statics', function(done) {
-      var mixins = [{ componentDidMount: done }];
+    test('should get passed key, cursor-objects and statics', done => {
+      var mixins = [{ componentDidMount: () => done() }];
 
       var outerCursor = { cursor: 'hello' };
 
       var Component = component(mixins, function(props) {
         hasKey(this, 'myKey');
 
-        props.cursor.should.equal(outerCursor.cursor);
+        expect(props.cursor).toBe(outerCursor.cursor);
 
         return textNode('hello');
       });
@@ -384,8 +385,8 @@ describe('component', function() {
       render(Component('myKey', outerCursor));
     });
 
-    it('should get passed cursor-object and children', function(done) {
-      var mixins = [{ componentDidMount: done }];
+    test('should get passed cursor-object and children', done => {
+      var mixins = [{ componentDidMount: () => done() }];
 
       var outerCursor = { foo: 'hello' };
 
@@ -393,11 +394,11 @@ describe('component', function() {
       var c2 = textNode('bar');
 
       var Component = component(mixins, function(cursor) {
-        cursor.foo.should.equal(cursor.foo);
-        this.props.children.should.have.length(2);
+        expect(cursor.foo).toBe(cursor.foo);
+        expect(this.props.children).toHaveLength(2);
 
-        this.props.children[0].should.equal(c1);
-        this.props.children[1].should.equal(c2);
+        expect(this.props.children[0]).toBe(c1);
+        expect(this.props.children[1]).toBe(c2);
 
         return textNode('hello');
       });
@@ -405,16 +406,16 @@ describe('component', function() {
       render(Component(outerCursor, c1, c2));
     });
 
-    it('should get passed key, cursor-object and children', function(done) {
-      var mixins = [{ componentDidMount: done }];
+    test('should get passed key, cursor-object and children', done => {
+      var mixins = [{ componentDidMount: () => done() }];
 
       var outerCursor = { foo: 'hello' };
 
       var Component = component(mixins, function(cursor) {
         hasKey(this, 'myKey');
 
-        cursor.foo.should.equal(outerCursor.foo);
-        this.props.children.should.have.length(1);
+        expect(cursor.foo).toBe(outerCursor.foo);
+        expect(this.props.children).toHaveLength(1);
 
         return textNode('hello');
       });
@@ -422,14 +423,14 @@ describe('component', function() {
       render(Component('myKey', outerCursor, textNode('hello')));
     });
 
-    it('should get passed cursor-object and children', function(done) {
-      var mixins = [{ componentDidMount: done }];
+    test('should get passed cursor-object and children', done => {
+      var mixins = [{ componentDidMount: () => done() }];
 
       var outerCursor = { foo: 'hello' };
 
       var Component = component(mixins, function(cursor, statics) {
-        cursor.foo.should.equal(outerCursor.foo);
-        this.props.children.should.have.length(1);
+        expect(cursor.foo).toBe(outerCursor.foo);
+        expect(this.props.children).toHaveLength(1);
 
         return textNode('hello');
       });
@@ -437,21 +438,21 @@ describe('component', function() {
       render(Component(outerCursor, textNode('hello')));
     });
 
-    it('should pass multiple cursors', function(done) {
-      var mixins = [{ componentDidMount: done }];
+    test('should pass multiple cursors', done => {
+      var mixins = [{ componentDidMount: () => done() }];
       var cursor1 = {};
       var cursor2 = {};
 
       var Component = component(mixins, function(cursor, staticarg) {
-        cursor.one.should.equal(cursor1);
-        cursor.two.should.equal(cursor2);
+        expect(cursor.one).toBe(cursor1);
+        expect(cursor.two).toBe(cursor2);
         return textNode('hello');
       });
       render(Component({ one: cursor1, two: cursor2 }));
     });
 
-    it('can take strings as children', function(done) {
-      var mixins = [{ componentDidMount: done }];
+    test('can take strings as children', done => {
+      var mixins = [{ componentDidMount: () => done() }];
 
       var outerCursor = { foo: 'hello' };
 
@@ -459,11 +460,11 @@ describe('component', function() {
       var c2 = 'world';
 
       var Component = component(mixins, function(cursor) {
-        cursor.foo.should.equal(cursor.foo);
-        this.props.children.should.have.length(2);
+        expect(cursor.foo).toBe(cursor.foo);
+        expect(this.props.children).toHaveLength(2);
 
-        this.props.children[0].should.equal(c1);
-        this.props.children[1].should.equal(c2);
+        expect(this.props.children[0]).toBe(c1);
+        expect(this.props.children[1]).toBe(c2);
 
         return textNode(this.props.children);
       });
@@ -471,19 +472,19 @@ describe('component', function() {
       render(Component(outerCursor, c1, c2));
     });
 
-    it('can take arrays as children', function(done) {
-      var mixins = [{ componentDidMount: done }];
+    test('can take arrays as children', done => {
+      var mixins = [{ componentDidMount: () => done() }];
 
       var outerCursor = { foo: 'hello' };
 
       var c1 = ['hello', 'world'];
 
       var Component = component(mixins, function(cursor) {
-        cursor.foo.should.equal(cursor.foo);
-        this.props.children.should.have.length(2);
+        expect(cursor.foo).toBe(cursor.foo);
+        expect(this.props.children).toHaveLength(2);
 
-        this.props.children[0].should.equal(c1[0]);
-        this.props.children[1].should.equal(c1[1]);
+        expect(this.props.children[0]).toBe(c1[0]);
+        expect(this.props.children[1]).toBe(c1[1]);
 
         return textNode(this.props.children);
       });
@@ -491,16 +492,16 @@ describe('component', function() {
       render(Component(outerCursor, c1));
     });
 
-    it('can take props & children', function(done) {
-      var mixins = [{ componentDidMount: done }];
+    test('can take props & children', done => {
+      var mixins = [{ componentDidMount: () => done() }];
 
       var c1 = ['hello', 'world'];
 
       var Component = component(mixins, function(cursor) {
-        this.props.children.should.have.length(2);
+        expect(this.props.children).toHaveLength(2);
 
-        this.props.children[0].should.equal(c1[0]);
-        this.props.children[1].should.equal(c1[1]);
+        expect(this.props.children[0]).toBe(c1[0]);
+        expect(this.props.children[1]).toBe(c1[1]);
 
         return textNode(this.props.children);
       });
@@ -508,18 +509,18 @@ describe('component', function() {
       render(Component({}, c1));
     });
 
-    it('can take key, props & children', function(done) {
-      var mixins = [{ componentDidMount: done }];
+    test('can take key, props & children', done => {
+      var mixins = [{ componentDidMount: () => done() }];
 
       var c1 = ['hello', 'world'];
 
       var Component = component(mixins, function(cursor) {
         hasKey(this, 'myKey');
 
-        this.props.children.should.have.length(2);
+        expect(this.props.children).toHaveLength(2);
 
-        this.props.children[0].should.equal(c1[0]);
-        this.props.children[1].should.equal(c1[1]);
+        expect(this.props.children[0]).toBe(c1[0]);
+        expect(this.props.children[1]).toBe(c1[1]);
 
         return textNode(this.props.children);
       });
@@ -528,8 +529,8 @@ describe('component', function() {
     });
   });
 
-  describe('overridables', function() {
-    it('should have overridable shouldComponentUpdate', function(done) {
+  describe('overridables', () => {
+    test('should have overridable shouldComponentUpdate', done => {
       var shouldUpdate = function() {
         return true;
       };
@@ -537,11 +538,11 @@ describe('component', function() {
         shouldComponentUpdate: shouldUpdate
       });
 
-      localComponent.shouldComponentUpdate.should.equal(shouldUpdate);
-      localComponent.name.should.equal('ComponentCreator');
+      expect(localComponent.shouldComponentUpdate).toBe(shouldUpdate);
+      expect(localComponent.name).toBe('ComponentCreator');
 
       var Component = localComponent(function() {
-        this.shouldComponentUpdate.should.equal(shouldUpdate);
+        expect(this.shouldComponentUpdate).toBe(shouldUpdate);
         done();
         return textNode('hello');
       });
@@ -549,7 +550,7 @@ describe('component', function() {
       render(Component({ foo: 'hello' }));
     });
 
-    it('should have debug on product of withDefaults', function() {
+    test('should have debug on product of withDefaults', () => {
       var shouldUpdate = function() {
         return true;
       };
@@ -557,10 +558,10 @@ describe('component', function() {
         shouldComponentUpdate: shouldUpdate
       });
 
-      localComponent.debug.should.be.a('function');
+      expect(typeof localComponent.debug).toBe('function');
     });
 
-    it('should have overridable isCursor', function(done) {
+    test('should have overridable isCursor', done => {
       var isCursor = function() {
         return done();
       };
@@ -568,7 +569,7 @@ describe('component', function() {
         isCursor: isCursor
       });
 
-      localComponent.shouldComponentUpdate.isCursor.should.equal(isCursor);
+      expect(localComponent.shouldComponentUpdate.isCursor).toBe(isCursor);
       var Component = localComponent(function() {
         return textNode('hello');
       });
@@ -576,7 +577,7 @@ describe('component', function() {
       render(Component({ foo: 'hello' }));
     });
 
-    it('should have overridable isImmutable', function(done) {
+    test('should have overridable isImmutable', done => {
       var isImmutable = function() {
         return done();
       };
@@ -584,7 +585,9 @@ describe('component', function() {
         isImmutable: isImmutable
       });
 
-      localComponent.shouldComponentUpdate.isImmutable.should.equal(isImmutable);
+      expect(localComponent.shouldComponentUpdate.isImmutable).toBe(
+        isImmutable
+      );
       var Component = localComponent(function() {
         return textNode('hello');
       });
@@ -592,7 +595,7 @@ describe('component', function() {
       render(Component({ foo: 'hello' }));
     });
 
-    it('should have overridable cursorField', function() {
+    test('should have overridable cursorField', () => {
       var localComponent = component.withDefaults({
         cursorField: 'cursor'
       });
@@ -600,7 +603,7 @@ describe('component', function() {
       var cursor1 = {};
 
       var Component = localComponent(function(cursor) {
-        cursor.should.equal(cursor1);
+        expect(cursor).toBe(cursor1);
         return textNode('hello');
       });
 
@@ -608,26 +611,26 @@ describe('component', function() {
     });
   });
 
-  describe('exposes arguments as props', function() {
-    it('should expose single cursor', function(done) {
-      var mixins = [{ componentDidMount: done }];
+  describe('exposes arguments as props', () => {
+    test('should expose single cursor', done => {
+      var mixins = [{ componentDidMount: () => done() }];
       var props = { cursor: 'cursor' };
 
       var Component = component(mixins, function() {
-        this.props.cursor.should.equal(props.cursor);
+        expect(this.props.cursor).toBe(props.cursor);
         return textNode('hello');
       });
       render(Component(props));
     });
 
-    it('should expose multiple cursors', function(done) {
-      var mixins = [{ componentDidMount: done }];
+    test('should expose multiple cursors', done => {
+      var mixins = [{ componentDidMount: () => done() }];
       var cursor1 = {};
       var cursor2 = {};
 
       var Component = component(mixins, function() {
-        this.props.one.should.equal(cursor1);
-        this.props.two.should.equal(cursor2);
+        expect(this.props.one).toBe(cursor1);
+        expect(this.props.two).toBe(cursor2);
         return textNode('hello');
       });
 
@@ -635,16 +638,16 @@ describe('component', function() {
     });
   });
 
-  describe('creator disguises as a react class', function() {
-    it('creates react class instance, not an element, when passed `publicProps`, `publicContext`, and `ReactUpdateQueue`', function() {
+  describe('creator disguises as a react class', () => {
+    test('creates react class instance, not an element, when passed `publicProps`, `publicContext`, and `ReactUpdateQueue`', () => {
       var Component = component(function() {
         return React.createElement('div');
       });
-      React.isValidElement(Component()).should.be.true;
-      React.isValidElement(Component({}, {}, {})).should.be.false;
+      expect(React.isValidElement(Component())).toBe(true);
+      expect(React.isValidElement(Component({}, {}, {}))).toBe(false);
     });
 
-    it('exposes `type` on itself', function() {
+    test('exposes `type` on itself', () => {
       var Type;
       var comp = component.classDecorator(Class => (Type = Class));
 
@@ -652,10 +655,10 @@ describe('component', function() {
         return React.createElement('div');
       });
 
-      Creator.type.should.equal(Type);
+      expect(Creator.type).toBe(Type);
     });
 
-    it('will pass default props', function() {
+    test('will pass default props', () => {
       var expectedPropValue = 'default-prop-value';
 
       var lifecycleMethods = {
@@ -664,8 +667,8 @@ describe('component', function() {
         }
       };
       var Component = component(lifecycleMethods, function(props) {
-        should.equal(props.direction, expectedPropValue);
-        this.props.direction.should.equal(expectedPropValue);
+        expect(props.direction).toBe(expectedPropValue);
+        expect(this.props.direction).toBe(expectedPropValue);
         return React.createElement('div');
       });
 
@@ -674,8 +677,8 @@ describe('component', function() {
     });
   });
 
-  describe('should not re-render', function() {
-    it('should not rerender on equivalent input', function() {
+  describe('should not re-render', () => {
+    test('should not rerender on equivalent input', () => {
       var rendered = 0;
       var Component = component(function(input) {
         rendered = rendered + 1;
@@ -684,15 +687,15 @@ describe('component', function() {
 
       render(Component({}));
 
-      rendered.should.equal(1);
+      expect(rendered).toBe(1);
 
       render(Component({}));
 
-      rendered.should.equal(1);
+      expect(rendered).toBe(1);
     });
   });
 
-  it('passing componentWillReceiveProps as mixin', function(done) {
+  test('passing componentWillReceiveProps as mixin', done => {
     var willReceivePropsCalled = 0;
     var renderCalled = 0;
     var mixin = {
@@ -709,15 +712,15 @@ describe('component', function() {
       return 1;
     };
     render(Component({}, { onChange: onChange }));
-    renderCalled.should.equal(1);
+    expect(renderCalled).toBe(1);
 
     render(Component({}, { onChange: onChange }));
-    renderCalled.should.equal(1);
-    willReceivePropsCalled.should.equal(1);
+    expect(renderCalled).toBe(1);
+    expect(willReceivePropsCalled).toBe(1);
 
     render(Component({}, { onChange: onChange }));
-    renderCalled.should.equal(1);
-    willReceivePropsCalled.should.equal(2);
+    expect(renderCalled).toBe(1);
+    expect(willReceivePropsCalled).toBe(2);
 
     render(
       Component(
@@ -729,13 +732,13 @@ describe('component', function() {
         }
       )
     );
-    renderCalled.should.equal(2);
-    willReceivePropsCalled.should.equal(3);
+    expect(renderCalled).toBe(2);
+    expect(willReceivePropsCalled).toBe(3);
 
     done();
   });
 
-  it('passing componentWillMount as mixin', function(done) {
+  test('passing componentWillMount as mixin', done => {
     var willMountCalled = 0;
     var renderCalled = 0;
     var mixin = {
@@ -753,36 +756,35 @@ describe('component', function() {
       return 1;
     };
     render(Component({}, { onChange: onChange }));
-    renderCalled.should.equal(1);
-    willMountCalled.should.equal(1);
+    expect(renderCalled).toBe(1);
+    expect(willMountCalled).toBe(1);
 
     render(Component({}, { onChange: onChange }));
-    renderCalled.should.equal(1);
-    willMountCalled.should.equal(1);
+    expect(renderCalled).toBe(1);
+    expect(willMountCalled).toBe(1);
 
     onChange = function() {
       return 3;
     };
     render(Component({ a: 1 }, { onChange: onChange }));
-    renderCalled.should.equal(2);
-    willMountCalled.should.equal(1);
+    expect(renderCalled).toBe(2);
+    expect(willMountCalled).toBe(1);
 
     render(Component({ a: 1 }, { onChange: onChange }));
-    renderCalled.should.equal(2);
-    willMountCalled.should.equal(1);
+    expect(renderCalled).toBe(2);
+    expect(willMountCalled).toBe(1);
 
     done();
   });
 
-  beforeEach(function() {
-    global.window = new jsdom.JSDOM('<html><body><div id="app"></div></body></html>').window;
-    global.document = window.document;
+  var root;
+  beforeEach(() => {
+    root = document.createElement('div');
   });
 
-  afterEach(function() {
-    delete global.document;
-    delete global.window;
-  });
+  function render(component) {
+    ReactDOM.render(component, root);
+  }
 });
 
 function noop() {}
@@ -797,17 +799,15 @@ function textNode(textContent) {
     ? React.createElement('text', { children: textContent })
     : textContent;
 }
-
-function render(component) {
-  ReactDOM.render(component, global.document.querySelector('#app'));
-}
-
 function hasKey(component, key) {
   var element = component._currentElement;
   if (component._reactInternalFiber) {
     element = component._reactInternalFiber;
-  } else if (component._reactInternalInstance && component._reactInternalInstance._currentElement) {
+  } else if (
+    component._reactInternalInstance &&
+    component._reactInternalInstance._currentElement
+  ) {
     element = component._reactInternalInstance._currentElement;
   }
-  element.key.should.equal(key);
+  expect(element.key).toBe(key);
 }

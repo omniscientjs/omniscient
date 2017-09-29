@@ -1,8 +1,7 @@
 {
   "name": "omniscient",
   "version": "4.2.0",
-  "description":
-    "A library providing an abstraction for React components for passing the same data structure through the entire component flow using cursors and immutable data structures.",
+  "description": "A library providing an abstraction for React components for passing the same data structure through the entire component flow using cursors and immutable data structures.",
   "main": "component.js",
   "directories": {
     "example": "example"
@@ -16,31 +15,34 @@
     "react": ">=0.14.0"
   },
   "devDependencies": {
-    "chai": "^4.1.2",
     "dox": "^0.9.0",
     "doxme": "git://github.com/mikaelbr/doxme#dev",
+    "enzyme": "^3.0.0",
+    "enzyme-adapter-react-16": "^1.0.0",
     "immstruct": "^2.0.0",
     "immutable": "^3.8.1",
     "jest": "^21.2.1",
-    "jsdom": "^11.2.0",
-    "mocha": "^3.5.3",
     "react": ">=16.0.0",
     "react-dom": ">=16.0.0",
+    "react-test-renderer": "^16.0.0",
     "uglifyjs-webpack-plugin": "^0.4.6",
     "webpack": "^3.6.0"
   },
   "scripts": {
     "test": "jest",
-    "test-watch": "mocha -G -w -R min tests/**-test.js",
+    "test-watch": "npm run test -- --watch",
     "dist": "node makeBundle.js",
-    "build-docs":
-      "cat component.js shouldupdate.js cached.js | dox -r | doxme > api.md"
+    "build-docs": "cat component.js shouldupdate.js cached.js | dox -r | doxme > api.md"
   },
   "repository": {
     "type": "git",
     "url": "git://github.com/omniscientjs/omniscient.git"
   },
-  "keywords": ["quiescent", "react", "immutable"],
+  "keywords": [
+    "quiescent",
+    "react",
+    "immutable"
+  ],
   "author": "@torgeir,@mikaelbr",
   "license": "MIT",
   "bugs": {
@@ -48,6 +50,11 @@
   },
   "homepage": "https://github.com/omniscientjs/omniscient",
   "jest": {
-    "testMatch": ["./tests/*-test.js"]
+    "setupFiles": [
+      "<rootDir>/__tests__/setup.js"
+    ],
+    "testMatch": [
+      "<rootDir>/__tests__/**/*.test.js"
+    ]
   }
 }

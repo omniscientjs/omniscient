@@ -1,41 +1,13 @@
-var chai = require('chai');
-var should = chai.should();
-var jsdom = require('jsdom');
+const Immutable = require('immutable');
+const immstruct = require('immstruct');
 
-var Immutable = require('immutable');
-var immstruct = require('immstruct');
+const ReactDOM = require('react-dom');
+const { mount } = require('enzyme');
+const component = require('../');
+const React = require('react');
 
-var React;
-
-var ReactDOM = require('react-dom');
-
-var component;
-
-describe('component render test', function() {
-  beforeEach(function() {
-    // React needs a dom before being required
-    // https://github.com/facebook/react/blob/master/src/vendor/core/ExecutionEnvironment.js#L39
-    global.window = new jsdom.JSDOM('<html><body><div id="app"></div></body></html>').window;
-    global.document = window.document;
-    global.navigator = window.navigator;
-
-    // React creates a dummy dom node that uses the current document.
-    // As require calls are cached, this does not get recreated,
-    // so flush the cache, so it does
-    // https://groups.google.com/forum/#!topic/reactjs/5UlF-mBsG2o
-    for (var i in require.cache) delete require.cache[i];
-
-    // require React each time, as we have get a new jsdom
-    React = require('react');
-
-    // component also uses React, so needs to happen after flush
-    component = require('../');
-    // component.debug();
-  });
-
-  it('should only re-render components that depend on changed data, but call shouldComponentUpdate for all', function(
-    done
-  ) {
+describe('component render test', () => {
+  test('should only re-render components that depend on changed data, but call shouldComponentUpdate for all', done => {
     var FIRST = 0,
       SECOND = 1;
     var structure = immstruct({ items: [{ id: FIRST }, { id: SECOND }] });
@@ -57,10 +29,10 @@ describe('component render test', function() {
         },
         // 7
         componentDidUpdate: function() {
-          calls.shouldComponentUpdate[FIRST].should.equal(1);
-          calls.shouldComponentUpdate[SECOND].should.equal(1);
-          calls.render[FIRST].should.equal(2);
-          calls.render[SECOND].should.equal(1);
+          expect(calls.shouldComponentUpdate[FIRST]).toBe(1);
+          expect(calls.shouldComponentUpdate[SECOND]).toBe(1);
+          expect(calls.render[FIRST]).toBe(2);
+          expect(calls.render[SECOND]).toBe(1);
           done();
         }
       }
@@ -95,12 +67,7 @@ describe('component render test', function() {
     });
   });
 
-  it('should handle updates that mutate owners state', function(done) {
-    var click = function(node) {
-      var event = new window.Event('click', { bubbles: true, cancelable: false });
-      node.dispatchEvent(event);
-    };
-
+  test('should handle updates that mutate owners state', done => {
     var structure = immstruct({
       items: [{ id: 0 }, { id: 1 }, { id: 2 }, { id: 3 }]
     });
@@ -137,27 +104,24 @@ describe('component render test', function() {
       );
     });
 
+    var tree;
     var render = function() {
-      ReactDOM.render(List({ items: structure.cursor('items') }), document.querySelector('#app'));
+      tree = mount(List({ items: structure.cursor('items') }));
     };
 
     structure.on('swap', render);
     render();
 
-    var ul = document.querySelector('#app').firstChild;
+    tree.find('li#item-1').simulate('click');
 
-    should.equal(ul.children.length, 4, 'should contain 4 list items');
+    expect(tree.find('li').length).toBe(3);
+    expect(tree.find('#item-1').length).toBe(0);
 
-    click(document.querySelector('#item-1'));
+    tree.find('li#item-0').simulate('click');
 
-    should.equal(ul.children.length, 3, 'item should have being removed');
-    should.equal(document.querySelector('#item-1'), null, 'item was removed');
-
-    click(document.querySelector('#item-0'));
-
-    should.equal(ul.children.length, 2, 'item should have being removed');
-    should.equal(document.querySelector('#item-1'), null, 'item-1 is still removed');
-    should.equal(document.querySelector('#item-0'), null, 'item-0 was removed');
+    expect(tree.find('li').length).toBe(2);
+    expect(tree.find('li#item-1').length).toBe(0);
+    expect(tree.find('li#item-0').length).toBe(0);
     done();
   });
 });
