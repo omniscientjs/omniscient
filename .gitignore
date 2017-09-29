@@ -3,3 +3,5 @@ node_modules
 bundle.js
 .bundle.js
 npm-debug.log
+
+coverage

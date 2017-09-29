@@ -2,7 +2,6 @@ const Immutable = require('immutable');
 const immstruct = require('immstruct');
 
 const ReactDOM = require('react-dom');
-const { mount } = require('enzyme');
 const component = require('../');
 const React = require('react');
 
@@ -67,7 +66,17 @@ describe('component render test', () => {
     });
   });
 
-  test('should handle updates that mutate owners state', done => {
+  test('should handle updates that mutate owners state', () => {
+    const root = document.createElement('div');
+    document.body.appendChild(root);
+    var click = function(node) {
+      var event = new window.Event('click', {
+        bubbles: true,
+        cancelable: false
+      });
+      node.dispatchEvent(event);
+    };
+
     var structure = immstruct({
       items: [{ id: 0 }, { id: 1 }, { id: 2 }, { id: 3 }]
     });
@@ -94,34 +103,36 @@ describe('component render test', () => {
       return React.createElement(
         'li',
         {
-          id: 'item-' + props.item.get('id'),
-          className: props.item.get('isSelected') ? 'selected' : '',
-          onClick: function() {
-            props.statics.onRemove(props.item);
-          }
+          className: props.item.get('isSelected') ? 'selected' : ''
         },
-        props.item.get('id')
+        React.createElement(
+          'button',
+          {
+            id: 'item-' + props.item.get('id'),
+            onClick: function() {
+              props.statics.onRemove(props.item);
+            }
+          },
+          props.item.get('id')
+        )
       );
     });
 
-    var tree;
     var render = function() {
-      tree = mount(List({ items: structure.cursor('items') }));
+      ReactDOM.render(List({ items: structure.cursor('items') }), root);
     };
 
     structure.on('swap', render);
     render();
+    click(root.querySelector('button#item-1'));
 
-    tree.find('li#item-1').simulate('click');
+    expect(root.querySelectorAll('li').length).toBe(3);
+    expect(root.querySelectorAll('#item-1').length).toBe(0);
 
-    expect(tree.find('li').length).toBe(3);
-    expect(tree.find('#item-1').length).toBe(0);
+    click(root.querySelector('button#item-0'));
 
-    tree.find('li#item-0').simulate('click');
-
-    expect(tree.find('li').length).toBe(2);
-    expect(tree.find('li#item-1').length).toBe(0);
-    expect(tree.find('li#item-0').length).toBe(0);
-    done();
+    expect(root.querySelectorAll('li').length).toBe(2);
+    expect(root.querySelectorAll('button#item-1').length).toBe(0);
+    expect(root.querySelectorAll('button#item-0').length).toBe(0);
   });
 });
