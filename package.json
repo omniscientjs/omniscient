@@ -57,5 +57,11 @@
     "testMatch": ["<rootDir>/__tests__/**/*.test.js"],
     "coverageDirectory": "./coverage/",
     "collectCoverage": true
+  },
+  "prettier": {
+    "tabWidth": 2,
+    "trailingComma": "none",
+    "singleQuote": true,
+    "printWidth": 80
   }
 }
