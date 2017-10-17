@@ -8,6 +8,14 @@ var shouldComponentUpdate = require('./shouldupdate');
 var cached = require('./cached');
 
 /**
+ * When present on the prototype of a component constructor in React 16,
+ * indicates that a component can be instantiated
+ */
+var isComponentSigil = {
+  isReactComponent: {}
+};
+
+/**
  * Create components for functional views.
  *
  * The API of Omniscient is pretty simple, you create a Stateless React Component
@@ -261,19 +269,21 @@ function factory(initialOptions) {
        * @returns {ReactElement}
        * @api public
        */
-      var create = function(
-        keyOrProps,
-        propsOrPublicContext,
-        ReactUpdateQueue
-      ) {
-        // After stateless arrow functions was allowed as components, react will instantiate
-        // the `create` function if it has a prototype. We are passed `props`, `publicContext`
-        // and `ReactUpdateQueue`.
-        // https://github.com/facebook/react/blob/88bae3fb73511893519195e451c56896463f669b/src/renderers/shared/reconciler/ReactCompositeComponent.js#L154-L171
-        if (typeof ReactUpdateQueue == 'object' && !_isNode(ReactUpdateQueue)) {
+      function create(keyOrProps, propsOrPublicContext, updater) {
+        // `create` must handle two scenarios (given a component like `var MyComponent = component(() => <div />)`)
+        //
+        // 1. direct calls: `MyComponent();`
+        //    direct calls should return a new ReactElement
+        // 2. instantiation via React renderer: ReactDOM.render(<MyComponent />);
+        //    instantiation should create a new instance of the underlying ReactClass
+        //
+        // To know which scenario we're in, we have to understand whether the current call
+        // was made with the `new` keyword (via a React renderer). If not, assume the function
+        // was called directly from userland
+        if (this && this.constructor === create) {
           var publicProps = keyOrProps,
             publicContext = propsOrPublicContext;
-          return new Component(publicProps, publicContext, ReactUpdateQueue);
+          return new Component(publicProps, publicContext, updater);
         }
 
         var key = keyOrProps,
@@ -292,7 +302,7 @@ function factory(initialOptions) {
         );
         var _props, inputCursor;
 
-        // If passed props is a signle cursor we move it to `props[_hiddenCursorField]`
+        // If passed props is a single cursor we move it to `props[_hiddenCursorField]`
         // to simplify should component update. The render function will move it back.
         // The name '__singleCursor' is used to not clash with names of user passed properties
         if (_isCursor(props) || _isImmutable(props)) {
@@ -311,12 +321,13 @@ function factory(initialOptions) {
           _props.children = children;
         }
         return React.createElement(Component, _props);
-      };
+      }
 
       if (methodStatics) {
         create = assign(create, methodStatics);
       }
 
+      assign(create.prototype, isComponentSigil);
       return assign(create, Component, { type: Component });
     }
   }

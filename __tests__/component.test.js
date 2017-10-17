@@ -639,12 +639,20 @@ describe('component', () => {
   });
 
   describe('creator disguises as a react class', () => {
+    test('contains `isReactComponent` in its prototype chain', function() {
+      var Component = component(function() {
+        return React.createElement('div');
+      });
+
+      expect(Component.prototype.isReactComponent).not.toBeFalsy();
+    });
+
     test('creates react class instance, not an element, when passed `publicProps`, `publicContext`, and `ReactUpdateQueue`', () => {
       var Component = component(function() {
         return React.createElement('div');
       });
       expect(React.isValidElement(Component())).toBe(true);
-      expect(React.isValidElement(Component({}, {}, {}))).toBe(false);
+      expect(React.isValidElement(new Component({}, {}))).toBe(false);
     });
 
     test('exposes `type` on itself', () => {
