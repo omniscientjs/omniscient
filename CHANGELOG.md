@@ -5,10 +5,13 @@ Changelog with fixes and additions between each release.
 
 ## Version `v4.2.0`
 
+Thanks to [@dpoindexter](https://github.com/dpoindexter) for helping out with this release.
+
 ### Minor changes
 1. Adds compatability with React v16 ([#136](https://github.com/omniscientjs/omniscient/pull/136), thanks to [@dpoindexter](https://github.com/dpoindexter))
 2. Changes to use `createClass` package instead of `React.createClass` in lue with React 15.5 ([#134](https://github.com/omniscientjs/omniscient/issues/134))
 3. Adds ability to override default behavior of isEqalImmutable (see [#133](https://github.com/omniscientjs/omniscient/pull/))
+4. Make component instantiation more general in order to support React 16 (see [#137](https://github.com/omniscientjs/omniscient/pull/137))
 
 ### Internal Changes
 
