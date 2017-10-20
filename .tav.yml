@@ -1,0 +1,15 @@
+react-14:
+  name: react
+  versions: 0.14.9
+  peerDependencies: react-dom@^0.14.0
+  commands: npm run jest
+react-15:
+  name: react
+  versions: 15.6.2
+  peerDependencies: react-dom@^15.0.0
+  commands: npm run jest
+react-16:
+  name: react
+  versions: 16.0.0
+  peerDependencies: react-dom@^16.0.0
+  commands: npm run jest

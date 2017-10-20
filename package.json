@@ -29,11 +29,13 @@
     "react": ">=16.0.0",
     "react-dom": ">=16.0.0",
     "react-test-renderer": "^16.0.0",
+    "test-all-versions": "^3.1.1",
     "uglifyjs-webpack-plugin": "^0.4.6",
     "webpack": "^3.6.0"
   },
   "scripts": {
-    "test": "jest",
+    "test": "tav",
+    "jest": "jest",
     "codecov": "codecov",
     "test-watch": "jest --watch",
     "dist": "node makeBundle.js",
