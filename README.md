@@ -2,6 +2,13 @@
 
 [![NPM version][npm-image]][npm-url] [![Build Status][travis-image]][travis-url] [![Coverage Status][coverage-image]][coverage-url] [![Gitter][gitter-image]][gitter-url] [![Known Vulnerabilities](https://snyk.io/test/github/omniscientjs/omniscient/badge.svg)](https://snyk.io/test/github/omniscientjs/omniscient)
 
+---
+
+## Retirement Notice
+**We can happily announce that as of [React 16.6](https://reactjs.org/blog/2018/10/23/react-v-16-6.html), Omniscient.js can enjoy retirement after a job well done. The new [`React.memo`](https://reactjs.org/docs/react-api.html#reactmemo) API can for most cases replace the Omniscient decorator with your own `areEqual` function. It's not exactly the same, but we feel that it is close enough for most cases. Thanks for supporting Omniscient all these years.** 
+
+---
+
 > Do fast top-down rendering embracing immutable data and functional programming.
 
 > Omniscient pairs the simplicity of [Quiescent](https://github.com/levand/quiescent) with
